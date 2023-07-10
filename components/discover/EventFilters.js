@@ -193,7 +193,7 @@ const EventFilters = ({
     <Animated.View
       style={{
         height: "auto",
-        top: 80,
+        top: responsiveSizes[height].discoverEventFilterMargin,
         width: "96%",
         alignSelf: "center",
         position: "absolute",

@@ -4,6 +4,7 @@ const ipadSizes = {
   header: 75,
   logoHeight: 60,
   logoWidth: 155,
+  discoverEventFilterMargin: 80,
   sliderItemFontSize: 28,
   borderWidth: 2,
   iconSize: 40,
@@ -103,6 +104,8 @@ const iphoneSizes = {
   sliderItemFontSize: 18,
   borderWidth: 1,
   iconSize: 27,
+  discoverEventFilterMargin: 80,
+
   settingsIcon: 30,
   bottomNavigatorHeight: 80,
   displayLabels: true,
@@ -196,7 +199,7 @@ const smallerIphoneSizes = {
   header: 60,
   bottomNavigatorHeight: 55,
   discoverFilterSize: 18,
-  locationAvatarFit: 18
+  locationAvatarFit: 18,
 };
 
 const responsiveSizes = {
@@ -214,7 +217,8 @@ const responsiveSizes = {
   // mini,
   926: iphoneSizes,
   // 14 plus, 13 pro max, 12 pro max,
-  932: {...iphoneSizes, header: 90},
+  932: { ...iphoneSizes, header: 90, discoverEventFilterMargin: 95,
+ },
   // 14 pro max,
   896: iphoneSizes,
   // 11 pro max

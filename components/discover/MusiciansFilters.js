@@ -350,7 +350,7 @@ const MusiciansFilter = ({
       style={{
         // height: "auto",
         display: "flex",
-        top: 80,
+        top: responsiveSizes[height].discoverEventFilterMargin,
         width: "96%",
         alignSelf: "center",
         position: "absolute",
