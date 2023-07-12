@@ -50,19 +50,21 @@ const InstrumentEdit = ({
   const searchInstruments = async (text) => {
     setSearching(text);
     let token = await AsyncStorage.getItem("jwt");
-    fetch(`http://${API_ROOT}/instrumentsearch`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ searching: text }),
-    })
-      .then((resp) => resp.json())
-      .then((resp) => {
-        setResult(resp.instruments);
+    if (text.length) {
+      fetch(`http://${API_ROOT}/instrumentsearch`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ searching: text }),
       })
-      .catch((err) => console.log(err));
+        .then((resp) => resp.json())
+        .then((resp) => {
+          setResult(resp.instruments);
+        })
+        .catch((err) => console.log(err));
+    }
   };
   const deleteGenre = async (genre) => {
     let token = await AsyncStorage.getItem("jwt");
@@ -134,21 +136,23 @@ const InstrumentEdit = ({
   };
   const searchGenres = async (text) => {
     setGenreSearching(text);
-    let token = await AsyncStorage.getItem("jwt");
+    if (text.length) {
+      let token = await AsyncStorage.getItem("jwt");
 
-    fetch(`http://${API_ROOT}/genresearch`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ searching: text }),
-    })
-      .then((resp) => resp.json())
-      .then((resp) => {
-        setGenreResult(resp.genres);
+      fetch(`http://${API_ROOT}/genresearch`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ searching: text }),
       })
-      .catch((err) => console.log(err));
+        .then((resp) => resp.json())
+        .then((resp) => {
+          setGenreResult(resp.genres);
+        })
+        .catch((err) => console.log(err));
+    }
   };
 
   const selectNewInstrument = (item) => {
@@ -182,39 +186,43 @@ const InstrumentEdit = ({
     } else {
       setArtistSearch(text);
     }
+    if (text.length) {
     let token = await AsyncStorage.getItem("jwt");
-    fetch(`http://${API_ROOT}/artistsearch`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ searching: text }),
-    })
-      .then((resp) => resp.json())
-      .then((resp) => {
-        if (forSong) {
-          setSongArtistResult(resp.artists);
-        } else {
-          setArtistResult(resp.artists);
-        }
-      });
+      fetch(`http://${API_ROOT}/artistsearch`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ searching: text }),
+      })
+        .then((resp) => resp.json())
+        .then((resp) => {
+          if (forSong) {
+            setSongArtistResult(resp.artists);
+          } else {
+            setArtistResult(resp.artists);
+          }
+        });
+    }
   };
   const searchSongs = async (text) => {
     setSongSearch(text);
+    if (text.length) {
     let token = await AsyncStorage.getItem("jwt");
-    fetch(`http://${API_ROOT}/songsearch`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ searching: text }),
-    })
-      .then((resp) => resp.json())
-      .then((resp) => {
-        setSongResult(resp.songs);
-      });
+      fetch(`http://${API_ROOT}/songsearch`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ searching: text }),
+      })
+        .then((resp) => resp.json())
+        .then((resp) => {
+          setSongResult(resp.songs);
+        });
+    }
   };
   const clearInstrumentResult = () => {
     // setResult([]);

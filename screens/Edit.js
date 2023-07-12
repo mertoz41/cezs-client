@@ -68,7 +68,7 @@ const Edit = ({ navigation, currentUser, notificationChannel }) => {
   };
   const getAddress = (text) => {
     setLocation(text);
-    if (location?.length > 2) {
+    if (text.length > 2 && location !== text) {
       fetch(
         `https://geocode.search.hereapi.com/v1/geocode?q=${location}&apiKey=${HERE_API_KEY}`
       )

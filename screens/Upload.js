@@ -312,7 +312,7 @@ const Upload = ({ navigation, currentUser, recordedVideo }) => {
               ) : null}
             </View>
 
-            {result?.length ? (
+            {result.length ? (
               <ScrollView
                 keyboardShouldPersistTaps={"always"}
                 style={{
@@ -435,7 +435,7 @@ const Upload = ({ navigation, currentUser, recordedVideo }) => {
                 ) : null}
               </View>
             )}
-            {genreResult?.length ? (
+            {genreResult.length ? (
               <ScrollView
                 keyboardShouldPersistTaps={"always"}
                 style={{
@@ -541,8 +541,10 @@ const Upload = ({ navigation, currentUser, recordedVideo }) => {
 
   const searchMusicItem = (setAction, options, text, setResult) => {
     setAction(text);
-    let filtered = options.filter((item) => item.name.includes(text));
-    setResult(filtered);
+    if (text.length) {
+      let filtered = options.filter((item) => item.name.includes(text));
+      setResult(filtered);
+    }
   };
 
   const checkPostButton = () => {

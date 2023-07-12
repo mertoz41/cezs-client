@@ -116,46 +116,50 @@ const NewEvent = ({
 
   const selectingGenre = (genr) => {
     newEventGenre(genr);
-    setGenreResult([]);
     setGenreSearch("");
+    setGenreResult([]);
     Keyboard.dismiss();
   };
 
   const searchInstruments = async (text) => {
     setSearching(text);
-    let token = await AsyncStorage.getItem("jwt");
+    if (text.length) {
+      let token = await AsyncStorage.getItem("jwt");
 
-    fetch(`http://${API_ROOT}/instrumentsearch`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ searching: text }),
-    })
-      .then((resp) => resp.json())
-      .then((resp) => {
-        setInstrumentResult(resp.instruments);
+      fetch(`http://${API_ROOT}/instrumentsearch`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ searching: text }),
       })
-      .catch((err) => Toast.show({ type: "error", text1: err.message }));
+        .then((resp) => resp.json())
+        .then((resp) => {
+          setInstrumentResult(resp.instruments);
+        })
+        .catch((err) => Toast.show({ type: "error", text1: err.message }));
+    }
   };
 
   const searchGenres = async (text) => {
     setGenreSearch(text);
     let token = await AsyncStorage.getItem("jwt");
-    fetch(`http://${API_ROOT}/genresearch`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ searching: text }),
-    })
-      .then((resp) => resp.json())
-      .then((resp) => {
-        setGenreResult(resp.genres);
+    if (text.length) {
+      fetch(`http://${API_ROOT}/genresearch`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ searching: text }),
       })
-      .catch((err) => Toast.show({ type: "error", text1: err.message }));
+        .then((resp) => resp.json())
+        .then((resp) => {
+          setGenreResult(resp.genres);
+        })
+        .catch((err) => Toast.show({ type: "error", text1: err.message }));
+    }
   };
   const toLocation = (location) => {
     setSelectedAddress(location);
@@ -460,10 +464,6 @@ const NewEvent = ({
       </View>
     );
   };
-  const clearInstrumentResult = () => {
-    setInstrumentResult([]);
-    Keyboard.dismiss();
-  };
 
   const removeInstrument = (inst) => {
     let filtered = eventInstruments.filter(
@@ -475,10 +475,6 @@ const NewEvent = ({
   const removeGenre = (genr) => {
     let filtered = eventGenres.filter((genre) => genre.name !== genr.name);
     setEventGenres(filtered);
-  };
-  const clearGenreResult = () => {
-    setGenreResult([]);
-    Keyboard.dismiss();
   };
 
   const renderDescription = () => {
@@ -520,7 +516,6 @@ const NewEvent = ({
   };
   const renderMusicSection = (
     title,
-    clearResult,
     value,
     select,
     search,
@@ -563,7 +558,7 @@ const NewEvent = ({
               }}
               onChangeText={(text) => search(text)}
             />
-            {searchResult?.length ? (
+            {searchResult.length ? (
               <ScrollView
                 style={{
                   borderTopWidth: "1px",
@@ -687,7 +682,6 @@ const NewEvent = ({
           {renderDescription()}
           {renderMusicSection(
             "instruments",
-            clearInstrumentResult,
             searching,
             selectingInstrument,
             searchInstruments,
@@ -697,7 +691,6 @@ const NewEvent = ({
           )}
           {renderMusicSection(
             "genres",
-            clearGenreResult,
             genreSearch,
             selectingGenre,
             searchGenres,
