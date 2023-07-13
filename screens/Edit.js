@@ -200,18 +200,7 @@ const Edit = ({ navigation, currentUser, notificationChannel }) => {
         showToast("error", err.message);
       });
   };
-  const deleteFavArtist = (artist) => {
-    console.log(artist);
-    // fetch(`http://${API_ROOT}/deleteuserartists`, {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-type": "application/json",
-    //     Authorization: `Bearer ${token}`,
-    //   },
-    //   body: JSON.stringify(unFavoriteObj),
-    // })
-    //   .then((resp) => resp.json())
-  };
+
   const showToast = (type, first, second) => {
     Toast.show({
       type: type,

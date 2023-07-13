@@ -37,7 +37,6 @@ const Profile = ({ currentUser, navigation }) => {
         userId: currentUser.id,
       });
     }
-    navigation.navigate("Follow", type);
   };
   const toSongScreen = (song) => {
     navigation.navigate("Song", { id: song.song_id });

@@ -124,6 +124,7 @@ const EventsHeader = ({
               tint="dark"
               style={{
                 padding: 5,
+                // backgroundColor: "rgba(147,112,219, .3)",
               }}
             >
               {sectionDisplay === "musicians"
@@ -151,6 +152,7 @@ const EventsHeader = ({
               alignSelf: "flex-start",
               display: "flex",
               flexDirection: "row",
+              // backgroundColor: "rgba(147,112,219, .3)",
             }}
           >
             <Text
@@ -234,9 +236,11 @@ const EventsHeader = ({
           }}
         >
           <BlurView
-            intensity={30}
+            intensity={20}
             tint="dark"
-            style={{ justifyContent: "center" }}
+            style={{
+              justifyContent: "center",
+            }}
           >
             <MaterialIcons
               name="add"
@@ -251,20 +255,29 @@ const EventsHeader = ({
   const renderNewEventLabel = () => (
     <View
       style={{
-        padding: 5,
-        backgroundColor: "rgba(147,112,219, .6)",
+        backgroundColor: "rgba(147,112,219, .3)",
         borderRadius: 10,
+        overflow: "hidden",
       }}
     >
-      <Text
+      <BlurView
+        intensity={20}
+        tint="dark"
         style={{
-          color: "black",
-          fontWeight: "700",
-          fontSize: responsiveSizes[height].discoverFilterSize,
+          justifyContent: "center",
+          padding: 5,
         }}
       >
-        {newEvent ? "new gig" : "new audition"}
-      </Text>
+        <Text
+          style={{
+            color: "white",
+            fontWeight: "700",
+            fontSize: responsiveSizes[height].discoverFilterSize,
+          }}
+        >
+          {newEvent ? "new gig" : "new audition"}
+        </Text>
+      </BlurView>
     </View>
   );
   const renderLeftSide = () => {
@@ -328,14 +341,17 @@ const EventsHeader = ({
             onPress={() => clearState()}
           >
             <BlurView
-              intensity={30}
+              intensity={20}
               tint="dark"
-              style={{ justifyContent: "center" }}
+              style={{
+                justifyContent: "center",
+                backgroundColor: "rgba(147,112,219, .4)",
+              }}
             >
               <MaterialIcons
                 name="close"
                 size={responsiveSizes[height].discoverAddButton}
-                color="black"
+                color="white"
               />
             </BlurView>
           </TouchableOpacity>

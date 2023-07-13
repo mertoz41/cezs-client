@@ -191,15 +191,16 @@ const Artist = ({ route, navigation, currentUser }) => {
             setUsersFavorite={setUsersFavorite}
             usersFavorite={usersFavorite}
           />
-
-          <TabView
-            renderTabBar={renderTabBar}
-            navigationState={{ index, routes }}
-            renderScene={renderScene}
-            onIndexChange={setIndex}
-            initialLayout={initialLayout}
-            style={{ height: 30 }}
-          />
+          {allPosts.length || songs.length ? (
+            <TabView
+              renderTabBar={renderTabBar}
+              navigationState={{ index, routes }}
+              renderScene={renderScene}
+              onIndexChange={setIndex}
+              initialLayout={initialLayout}
+              style={{ height: 30 }}
+            />
+          ) : null}
         </View>
       )}
     </View>

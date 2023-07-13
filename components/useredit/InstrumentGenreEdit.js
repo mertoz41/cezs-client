@@ -167,14 +167,12 @@ const InstrumentEdit = ({
   };
 
   const selectArtist = (item) => {
-    console.log(item);
     setNewFavoriteArtists([...newFavoriteArtists, item]);
     setArtistSearch("");
     setArtistResult([]);
   };
 
   const selectSong = (item) => {
-    // setNewFavoriteSongs([...newFavoriteSongs, item]);
     setSongArtistSearch(item.artist_name);
     setSongSearch(item.name);
     setSongResult([]);

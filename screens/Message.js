@@ -52,7 +52,7 @@ const Message = ({ navigation, route, currentUser, chatrooms }) => {
     return () => {
       if (kablo.current) {
         kablo.current.unsubscribe();
-        console.log(`unsubscribed from chatroom`);
+        // console.log(`unsubscribed from chatroom`);
       }
     };
   }, [existingChat]);
@@ -82,7 +82,7 @@ const Message = ({ navigation, route, currentUser, chatrooms }) => {
       { channel: "ChatroomsChannel", chatroom_id: id },
       {
         connected() {
-          console.log(currentUser.username + " connected to channel " + id);
+          // console.log(currentUser.username + " connected to channel " + id);
         },
         received(data) {
           if (data.user_id !== currentUser.id) {

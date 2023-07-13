@@ -326,7 +326,7 @@ const NewEvent = ({
                 autoCapitalize="none"
                 style={{
                   fontSize: responsiveSizes[height].sliderItemFontSize,
-                  color: "black",
+                  color: "white",
                   fontWeight: "500",
                 }}
                 onChangeText={(text) => getAddress(text)}
@@ -672,11 +672,7 @@ const NewEvent = ({
         opacity: translation,
       }}
     >
-      <BlurView
-        intensity={20}
-        tint="dark"
-        style={reusableStyles.discoverBackground}
-      >
+      <BlurView intensity={20} tint="dark">
         <View style={styles.box}>
           {renderAddress()}
           {renderDescription()}
@@ -714,7 +710,7 @@ const NewEvent = ({
         ) : (
           <TouchableOpacity
             style={{
-              backgroundColor: "rgba(147,112,219, .6)",
+              backgroundColor: "rgba(147,112,219, .4)",
               alignSelf: "flex-end",
               margin: 10,
               padding: 10,
@@ -726,6 +722,7 @@ const NewEvent = ({
               style={{
                 fontSize: responsiveSizes[height].sliderItemFontSize,
                 fontWeight: "700",
+                color: "white"
               }}
             >
               POST
@@ -753,6 +750,7 @@ const styles = StyleSheet.create({
   },
 
   box: {
+    paddingTop: 5,
     justifyContent: "center",
   },
 });

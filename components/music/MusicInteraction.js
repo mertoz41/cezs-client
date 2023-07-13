@@ -6,7 +6,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { connect } from "react-redux";
 import { MaterialIcons } from "@expo/vector-icons";
 import Toast from "react-native-toast-message";
-import { responsiveSizes } from "../../constants/reusableFunctions";
+import {
+  responsiveSizes,
+  addPostsToTimeline,
+  removePostsFromTimeline,
+} from "../../constants/reusableFunctions";
 const { height } = Dimensions.get("window");
 const MusicInteractions = ({
   currentUser,
@@ -18,7 +22,7 @@ const MusicInteractions = ({
   setTheItem,
   setUsersFavorite,
   usersFavorite,
-  deviceRange,
+  accountPosts,
 }) => {
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -40,6 +44,7 @@ const MusicInteractions = ({
       .then((resp) => resp.json())
       .then((resp) => {
         updateCurrentUser("unfollow");
+        removePostsFromTimeline(`${title}_id`, content.id);
       })
       .catch((err) => {
         let updatedItem = {
@@ -71,6 +76,7 @@ const MusicInteractions = ({
       .then((resp) => resp.json())
       .then((resp) => {
         updateCurrentUser("follow");
+        addPostsToTimeline(accountPosts.slice(0, 3));
       })
       .catch((err) => {
         setFollows(false);

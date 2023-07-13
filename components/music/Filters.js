@@ -143,6 +143,7 @@ const Filters = ({
           content={content}
           setFollows={setFollows}
           follows={follows}
+          accountPosts={accountPosts}
           favoriteItems={favoriteItems}
           title={title}
           setTheItem={setTheItem}

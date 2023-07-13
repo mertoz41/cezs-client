@@ -1,5 +1,6 @@
 import store from "../redux/store";
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { API_ROOT } from ".";
 const ipadSizes = {
   header: 75,
   logoHeight: 60,
@@ -46,11 +47,13 @@ const ipadSizes = {
   },
 
   selectedItem: {
-    backgroundColor: "rgba(147,112,219, .6)",
+    backgroundColor: "rgba(147,112,219, .3)",
+
+    // backgroundColor: "rgba(147,112,219, .6)",
     borderWidth: 2,
     borderRadius: 10,
     padding: 5,
-    borderColor: "rgba(147,112,219, .6)",
+    borderColor: "rgba(147,112,219, .3)",
   },
 
   regularItem: {
@@ -144,7 +147,7 @@ const iphoneSizes = {
   },
 
   selectedItem: {
-    backgroundColor: "rgba(147,112,219, .6)",
+    backgroundColor: "rgba(147,112,219, .4)",
     borderWidth: 1,
     borderRadius: 10,
     padding: 5,
@@ -217,8 +220,7 @@ const responsiveSizes = {
   // mini,
   926: iphoneSizes,
   // 14 plus, 13 pro max, 12 pro max,
-  932: { ...iphoneSizes, header: 90, discoverEventFilterMargin: 95,
- },
+  932: { ...iphoneSizes, header: 90, discoverEventFilterMargin: 95 },
   // 14 pro max,
   896: iphoneSizes,
   // 11 pro max
@@ -284,6 +286,38 @@ const getTiming = (created_at) => {
   }
 };
 
+const removePostsFromTimeline = (type, id) => {
+  let filteredTimeline = [...store.getState().timeline].filter(
+    (post) => post[type] && post[type] !== id
+  );
+  store.dispatch({ type: "UPDATE_TIMELINE", timeline: filteredTimeline });
+};
+
+const addPostsToTimeline = async (posts) => {
+  let token = await AsyncStorage.getItem("jwt");
+
+  const postIds = posts.map((post) => post.id);
+  fetch(`http://${API_ROOT}/musicposts`, {
+    method: "POST",
+    headers: {
+      "Content-type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      posts: postIds,
+    }),
+  })
+    .then((resp) => resp.json())
+    .then((resp) => {
+      const sortedTimeline = [...resp, ...store.getState().timeline].sort(
+        (a, b) => {
+          return new Date(b.created_at) - new Date(a.created_at);
+        }
+      );
+      store.dispatch({ type: "UPDATE_TIMELINE", timeline: sortedTimeline });
+    });
+};
+
 const preparePostView = (item, posts, title) => {
   let postIds = posts.map((post) => post.id);
   let sliced = postIds.slice(postIds.indexOf(item.id));
@@ -323,4 +357,6 @@ export {
   checkEmail,
   responsiveSizes,
   locationItemWidth,
+  addPostsToTimeline,
+  removePostsFromTimeline,
 };

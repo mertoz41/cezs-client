@@ -153,7 +153,7 @@ class Timeline extends Component {
       { channel: "VideoConversionChannel", user_id: id },
       {
         connected() {
-          console.log("connected to channel" + id);
+          // console.log("connected to channel" + id);
         },
         received(data) {
           addToTimeline(data);
@@ -199,7 +199,7 @@ class Timeline extends Component {
   };
 
   renderItem = ({ item, index }) => {
-    return (
+    return this.props.timeline.length ? (
       <PostItem
         origin="timeline"
         isFocused={this.props.isFocused}
@@ -214,6 +214,8 @@ class Timeline extends Component {
         songPage={this.songPage}
         onLoop={this.state.onLoop}
       />
+    ) : (
+      this.renderEmptyMessage()
     );
   };
   nextVideo = () => {
@@ -391,7 +393,6 @@ class Timeline extends Component {
             </Text>
           </View>
         ) : null}
-
         {this.props.timeline.length
           ? this.renderFlatList()
           : this.renderEmptyMessage()}

@@ -36,7 +36,7 @@ const EditSection = ({
           <TextInput
             multiline
             placeholder={
-              label === "bio" ? "add your bio here" : `enter ${label}`
+              label === "bio" ? "add your bio" : `enter ${label}`
             }
             placeholderTextColor="gray"
             value={currentValue}

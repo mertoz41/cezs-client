@@ -158,7 +158,7 @@ const Map = ({
                     }}
                   >
                     <BlurView
-                      intensity={50}
+                      intensity={20}
                       tint="dark"
                       style={{
                         height: responsiveSizes[height].locationButtonHeight,

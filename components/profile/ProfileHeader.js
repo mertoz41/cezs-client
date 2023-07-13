@@ -7,8 +7,12 @@ import store from "../../redux/store";
 import { API_ROOT } from "../../constants";
 import OptionsButton from "../reusables/OptionsButton";
 import Toast from "react-native-toast-message";
-import { responsiveSizes } from "../../constants/reusableFunctions";
-const {height} = Dimensions.get("window")
+import {
+  responsiveSizes,
+  addPostsToTimeline,
+  removePostsFromTimeline,
+} from "../../constants/reusableFunctions";
+const { height } = Dimensions.get("window");
 const ProfileHeader = ({
   account,
   currentUser,
@@ -36,6 +40,10 @@ const ProfileHeader = ({
       .then((resp) => resp.json())
       .then((resp) => {
         getAccount(account.id);
+        removePostsFromTimeline(
+          `${account.username ? "user" : "band"}_id`,
+          account.id
+        );
         let updatedCurrentUser = {
           ...currentUser,
           follows_count: currentUser.follows_count - 1,
@@ -48,6 +56,7 @@ const ProfileHeader = ({
       })
       .catch((err) => Toast.show({ type: "error", text1: err.message }));
   };
+
   const followAccount = async (account) => {
     let token = await AsyncStorage.getItem("jwt");
     fetch(
@@ -64,6 +73,8 @@ const ProfileHeader = ({
       .then((resp) => resp.json())
       .then((resp) => {
         getAccount(account.id);
+        addPostsToTimeline(account.posts.slice(0, 3));
+
         setFollows(true);
         let updatedCurrentUser = {
           ...currentUser,
