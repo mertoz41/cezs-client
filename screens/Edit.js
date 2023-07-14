@@ -25,6 +25,7 @@ import Toast from "react-native-toast-message";
 import { checkEmail, responsiveSizes } from "../constants/reusableFunctions";
 import { BlurView } from "expo-blur";
 import ChangePasswordModal from "../components/useredit/ChangePasswordModal";
+import DeleteUserModal from "../components/useredit/DeleteUserModal";
 import consumer from "../consumer/consumer";
 const { height } = Dimensions.get("window");
 const Edit = ({ navigation, currentUser, notificationChannel }) => {
@@ -41,6 +42,7 @@ const Edit = ({ navigation, currentUser, notificationChannel }) => {
   const [newFavoriteSongs, setNewFavoriteSongs] = useState([]);
   const [loading, setLoading] = useState(false);
   const [passwordModalVisible, setPasswordModalVisible] = useState(false);
+  const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   useEffect(() => {
     updateEditUser(currentUser);
   }, []);
@@ -270,27 +272,52 @@ const Edit = ({ navigation, currentUser, notificationChannel }) => {
 
   const renderLogout = () => {
     return (
-      <TouchableOpacity
+      <View
         style={{
-          alignSelf: "flex-end",
-          marginTop: 50,
-          margin: 10,
-          padding: 5,
-          borderRadius: 10,
-          borderWidth: responsiveSizes[height].borderWidth,
-          borderColor: "#9370DB",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          marginTop: 20,
         }}
-        onPress={() => logUserOut()}
       >
-        <Text
+        <TouchableOpacity
           style={{
-            fontSize: responsiveSizes[height].sliderItemFontSize,
-            color: "white",
+            margin: 10,
+            padding: 5,
+            borderRadius: 10,
+            borderWidth: responsiveSizes[height].borderWidth,
+            borderColor: "gray",
           }}
+          onPress={() => setDeleteModalVisible(true)}
         >
-          Log out
-        </Text>
-      </TouchableOpacity>
+          <Text
+            style={{
+              fontSize: responsiveSizes[height].sliderItemFontSize,
+              color: "white",
+            }}
+          >
+            delete account
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{
+            margin: 10,
+            padding: 5,
+            borderRadius: 10,
+            borderWidth: responsiveSizes[height].borderWidth,
+            borderColor: "#9370DB",
+          }}
+          onPress={() => logUserOut()}
+        >
+          <Text
+            style={{
+              fontSize: responsiveSizes[height].sliderItemFontSize,
+              color: "white",
+            }}
+          >
+            Log out
+          </Text>
+        </TouchableOpacity>
+      </View>
     );
   };
   const openCameraPics = async () => {
@@ -386,6 +413,10 @@ const Edit = ({ navigation, currentUser, notificationChannel }) => {
       <ChangePasswordModal
         passwordModalVisible={passwordModalVisible}
         setPasswordModalVisible={setPasswordModalVisible}
+      />
+      <DeleteUserModal
+        deleteModalVisible={deleteModalVisible}
+        setDeleteModalVisible={setDeleteModalVisible}
       />
       <KeyboardAvoidingView behavior="padding">
         <ScrollView keyboardShouldPersistTaps={"always"}>

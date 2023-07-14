@@ -25,12 +25,30 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "extra": {},
+    "extra": {
+      "eas": {
+        "projectId": "a7c41134-0bcd-4818-986b-ffbe5b434321"
+      }
+    },
     "runtimeVersion": {
       "policy": "sdkVersion"
     },
     "updates": {
       "url": "https://u.expo.dev/ec4b00b3-48b9-4d4f-a22c-2b8c326ab1cb"
-    }
+    },
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow access to upload your avatar or video"
+        }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow access to record yourself playing your instrument"
+        }
+      ]
+    ]
   }
 }

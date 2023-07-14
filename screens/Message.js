@@ -39,11 +39,16 @@ const Message = ({ navigation, route, currentUser, chatrooms }) => {
   const [allMessagesDisplayed, setAllMessagesDisplayed] = useState(false);
   const [existingChat, setExistingChat] = useState(null);
   const [searching, setSearching] = useState("");
+
+  const [deletedUser, setDeletedUser] = useState(false);
   const kablo = useRef(null);
 
   useEffect(() => {
     if (route.params && route.params.room) {
       setUpExistingChat(route.params.room);
+      if (!route.params.room.users.length) {
+        setDeletedUser(true);
+      }
     } else if (route.params && route.params.newMessage) {
       setSelectedUser(route.params.newMessage);
     } else if (existingChat) {
@@ -250,7 +255,11 @@ const Message = ({ navigation, route, currentUser, chatrooms }) => {
   };
 
   const renderHeader = () => {
-    const title = selectedUser ? selectedUser.username : "new message";
+    const title = deletedUser
+      ? "deleted user"
+      : selectedUser
+      ? selectedUser.username
+      : "new message";
     return (
       <View
         style={{
@@ -338,7 +347,7 @@ const Message = ({ navigation, route, currentUser, chatrooms }) => {
     <View style={styles.container}>
       {renderHeader()}
       <View style={{ flex: 1 }}>
-        {!selectedUser ? (
+        {!selectedUser && !deletedUser? (
           <View style={{ flexDirection: "row" }}>
             <View style={{ flex: 1 }}>
               <TextInput
