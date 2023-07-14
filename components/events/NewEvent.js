@@ -326,7 +326,7 @@ const NewEvent = ({
                 autoCapitalize="none"
                 style={{
                   fontSize: responsiveSizes[height].sliderItemFontSize,
-                  color: "white",
+                  // color: "white",
                   fontWeight: "500",
                 }}
                 onChangeText={(text) => getAddress(text)}
