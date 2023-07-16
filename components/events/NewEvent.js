@@ -64,7 +64,7 @@ const NewEvent = ({
     setAddressInput(text);
     if (addressInput.length > 2) {
       fetch(
-        `https://geocode.search.hereapi.com/v1/geocode?q=${addressInput}&apiKey=${HERE_API_KEY}`
+        `https://geocode.search.hereapi.com/v1/geocode?q=${addressInput}&apiKey=YOQNPW6X0YomatyblsMiCWD7m2F_sirWAV4upk3e0l4`
       )
         .then((resp) => resp.json())
         .then((resp) => {
@@ -722,7 +722,7 @@ const NewEvent = ({
               style={{
                 fontSize: responsiveSizes[height].sliderItemFontSize,
                 fontWeight: "700",
-                color: "white"
+                color: "white",
               }}
             >
               POST

@@ -29,7 +29,7 @@ const ShareLocation = ({ currentUser }) => {
   };
   const getCityState = (location) => {
     fetch(
-      `https://reverse.geocoder.ls.hereapi.com/6.2/reversegeocode.json?apiKey=${HERE_API_KEY}&mode=retrieveAddresses&prox=${location.latitude},${location.longitude}`
+      `https://reverse.geocoder.ls.hereapi.com/6.2/reversegeocode.json?apiKey=YOQNPW6X0YomatyblsMiCWD7m2F_sirWAV4upk3e0l4&mode=retrieveAddresses&prox=${location.latitude},${location.longitude}`
     )
       .then((resp) => resp.json())
       .then((resp) => {
@@ -45,7 +45,7 @@ const ShareLocation = ({ currentUser }) => {
   };
   const getCityStateCoords = (city, state, cityStateName) => {
     fetch(
-      `https://geocoder.ls.hereapi.com/6.2/geocode.json?apiKey=${HERE_API_KEY}&searchtext=${city}+${state}`
+      `https://geocoder.ls.hereapi.com/6.2/geocode.json?apiKey=YOQNPW6X0YomatyblsMiCWD7m2F_sirWAV4upk3e0l4&searchtext=${city}+${state}`
     )
       .then((resp) => resp.json())
       .then((resp) => {

@@ -72,7 +72,7 @@ const Edit = ({ navigation, currentUser, notificationChannel }) => {
     setLocation(text);
     if (text.length > 2 && location !== text) {
       fetch(
-        `https://geocode.search.hereapi.com/v1/geocode?q=${location}&apiKey=${HERE_API_KEY}`
+        `https://geocode.search.hereapi.com/v1/geocode?q=${location}&apiKey=YOQNPW6X0YomatyblsMiCWD7m2F_sirWAV4upk3e0l4`
       )
         .then((resp) => resp.json())
         .then((resp) => {
