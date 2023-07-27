@@ -7,6 +7,9 @@ import {
   TextInput,
   ScrollView,
   Dimensions,
+  Keyboard,
+  TouchableWithoutFeedback,
+  Animated,
   ActivityIndicator,
 } from "react-native";
 import { Video } from "expo-av";
@@ -18,7 +21,7 @@ import { CommonActions } from "@react-navigation/native";
 import { connect } from "react-redux";
 import { ListItem, Avatar } from "react-native-elements";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import EditHeader from "../components/reusables/Header";
+import UploadHeader from "../components/upload/UploadHeader";
 import { API_ROOT } from "../constants/index";
 import { responsiveSizes } from "../constants/reusableFunctions";
 const { width, height } = Dimensions.get("window");
@@ -44,6 +47,7 @@ const Upload = ({ navigation, currentUser, recordedVideo }) => {
   const [videoPlaying, setVideoPlaying] = useState(true);
   const [loadPercent, setLoadPercent] = useState(0);
   const videoRef = useRef(null);
+  const translation = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
     generateThumbnail();
@@ -526,6 +530,7 @@ const Upload = ({ navigation, currentUser, recordedVideo }) => {
   const selectNewInstrument = (item) => {
     setInstruments([...instruments, item]);
     setSearching("");
+    Keyboard.dismiss();
     setResult([]);
   };
   const selectGenre = (item) => {
@@ -547,66 +552,72 @@ const Upload = ({ navigation, currentUser, recordedVideo }) => {
     }
   };
 
-  const checkPostButton = () => {
-    if (selectedGenre && instruments.length) {
-      return true;
-    }
-    return false;
-  };
-
   const postVideo = async () => {
-    setUploading(true);
-    let token = await AsyncStorage.getItem("jwt");
+    if (selectedGenre && instruments.length) {
+      Animated.timing(translation, {
+        toValue: 0,
+        useNativeDriver: true,
+      }).start();
+      setTimeout(() => {
+        setUploading(true);
+      }, 500);
 
-    let splitted = recordedVideo.uri.split(".");
-    let fileEnding = splitted[splitted.length - 1];
-    let timeline = timeline;
-    let formData = new FormData();
-    formData.append("clip", {
-      uri: recordedVideo.uri,
-      type: `${recordedVideo.type}/${fileEnding}`,
-      name: `upload.${fileEnding}`,
-    });
-    let thumbnailSplit = thumbnail.split(".");
-    let thumbnailEnding = thumbnailSplit[thumbnailSplit.length - 1];
-    formData.append("thumbnail", {
-      uri: thumbnail,
-      type: `image/${thumbnailEnding}`,
-      name: `upload.${thumbnailEnding}`,
-    });
-    let namedInstruments = instruments.map((inst) => inst.name);
-    if (songSearch.length) {
-      formData.append("song_name", songSearch.trim());
-    }
-    if (artistSearch.length) {
-      formData.append("artist_name", artistSearch.trim());
-    }
-    formData.append("description", description);
-    formData.append("instruments", JSON.stringify(namedInstruments));
-    formData.append("genre", selectedGenre.name.trim());
-    if (author.username) {
-      formData.append("user_id", currentUser.id);
+      let token = await AsyncStorage.getItem("jwt");
+
+      let splitted = recordedVideo.uri.split(".");
+      let fileEnding = splitted[splitted.length - 1];
+      let timeline = timeline;
+      let formData = new FormData();
+      formData.append("clip", {
+        uri: recordedVideo.uri,
+        type: `${recordedVideo.type}/${fileEnding}`,
+        name: `upload.${fileEnding}`,
+      });
+      let thumbnailSplit = thumbnail.split(".");
+      let thumbnailEnding = thumbnailSplit[thumbnailSplit.length - 1];
+      formData.append("thumbnail", {
+        uri: thumbnail,
+        type: `image/${thumbnailEnding}`,
+        name: `upload.${thumbnailEnding}`,
+      });
+      let namedInstruments = instruments.map((inst) => inst.name);
+      if (songSearch.length) {
+        formData.append("song_name", songSearch.trim());
+      }
+      if (artistSearch.length) {
+        formData.append("artist_name", artistSearch.trim());
+      }
+      formData.append("description", description);
+      formData.append("instruments", JSON.stringify(namedInstruments));
+      formData.append("genre", selectedGenre.name.trim());
+      if (author.username) {
+        formData.append("user_id", currentUser.id);
+      } else {
+        formData.append("band_id", author.id);
+      }
+      formData.append("description", description);
+
+      await axios
+        .post(`http://${API_ROOT}/posts`, formData, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-type": "multipart/form-data",
+          },
+          onUploadProgress: (event) => {
+            let prog = event.loaded / event.total;
+            setLoadPercent((prog * 100).toFixed());
+          },
+        })
+        .then((resp) => {
+          setLoadPercent(0);
+          toTimeline();
+          setUploading(false);
+          Toast.show({ type: "success", text1: "Your video is processing." });
+        })
+        .catch((err) => alert(err));
     } else {
-      formData.append("band_id", author.id);
+      Toast.show({ type: "error", text1: "Genre and instrument required." });
     }
-    formData.append("description", description);
-
-    await axios
-      .post(`http://${API_ROOT}/posts`, formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-type": "multipart/form-data",
-        },
-        onUploadProgress: (event) => {
-          let prog = event.loaded / event.total;
-          setLoadPercent((prog * 100).toFixed());
-        },
-      })
-      .then((resp) => {
-        toTimeline();
-        setUploading(false);
-      })
-      .catch((err) => alert(err));
   };
 
   const renderVideoSection = () => {
@@ -690,55 +701,28 @@ const Upload = ({ navigation, currentUser, recordedVideo }) => {
   };
   return (
     <View style={styles.container}>
-      <EditHeader
+      <UploadHeader
         title={uploading ? "uploading" : "upload"}
         goBack={backTo}
         actionLabel="post"
         loading={uploading}
-        displayAction={checkPostButton()}
         action={postVideo}
+        loadPercent={loadPercent}
       />
-      {uploading ? (
-        <View
-          style={{
-            height: 40,
-            width: "100%",
-            flexDirection: "row",
-            justifyContent: "space-between",
-          }}
-        >
-          <View
-            style={{
-              backgroundColor: "#9370DB",
-              height: 40,
-              width: `${loadPercent}%`,
-              position: "absolute",
-            }}
-          ></View>
-          <Text
-            style={{
-              fontSize: 24,
-              position: "absolute",
-              right: 0,
-              fontWeight: "bold",
-              marginRight: 10,
-              color: "white",
-              textAlign: "right",
-            }}
-          >
-            {loadPercent}%
-          </Text>
-        </View>
-      ) : (
-        <ScrollView keyboardShouldPersistTaps={"always"}>
-          {renderSongSection()}
-          {renderArtistSection()}
-          {renderDescriptionSection()}
-          {renderGenreSection()}
-          {renderInstrumentSection()}
-          {currentUser.bands.length ? renderAuthorSection() : null}
-          {renderVideoSection()}
-        </ScrollView>
+      {uploading ? null : (
+        <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+          <Animated.View style={{ opacity: translation }}>
+            <ScrollView keyboardShouldPersistTaps={"handled"}>
+              {renderSongSection()}
+              {renderArtistSection()}
+              {renderDescriptionSection()}
+              {renderGenreSection()}
+              {renderInstrumentSection()}
+              {currentUser.bands.length ? renderAuthorSection() : null}
+              {renderVideoSection()}
+            </ScrollView>
+          </Animated.View>
+        </TouchableWithoutFeedback>
       )}
     </View>
   );
