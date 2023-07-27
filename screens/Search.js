@@ -9,8 +9,8 @@ import {
   Dimensions,
   ActivityIndicator,
 } from "react-native";
-import { ListItem, Avatar } from "react-native-elements";
-import { MaterialIcons, Feather } from "@expo/vector-icons";
+import { Avatar } from "react-native-elements";
+import { MaterialIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { API_ROOT } from "../constants/index";
 import { connect } from "react-redux";
@@ -24,6 +24,13 @@ const Search = ({ navigation, currentUser }) => {
   const [searchingFor, setSearchingFor] = useState("users");
   const [loading, setLoading] = useState(false);
   const [instruments, setInstruments] = useState([]);
+  const [postInstruments, setPostInstruments] = useState([]);
+  const [postGenres, setPostGenres] = useState([]);
+  const [postCount, setPostCount] = useState(0);
+  const [userCount, setUserCount] = useState(0);
+  const [bandCount, setBandCount] = useState(0);
+  const [accountInstruments, setAccountInstruments] = useState([]);
+  const [accountGenres, setAccountGenres] = useState([]);
   const [genres, setGenres] = useState([]);
   const [selectedInstruments, setSelectedInstruments] = useState([]);
   const [selectedGenres, setSelectedGenres] = useState([]);
@@ -50,16 +57,24 @@ const Search = ({ navigation, currentUser }) => {
     })
       .then((resp) => resp.json())
       .then((resp) => {
-        let genreMapped = resp.genres.map((genre) => ({
-          name: genre.name,
-          id: genre.id,
-        }));
-        setGenres(genreMapped);
-        let mapped = resp.instruments.map((inst) => ({
-          name: inst.name,
-          id: inst.id,
-        }));
-        setInstruments(mapped);
+        setPostInstruments(resp.post_instrument_filters);
+        setPostGenres(resp.post_genre_filters);
+
+        setAccountInstruments(resp.account_instrument_filters);
+        setAccountGenres(resp.account_genre_filters);
+        setPostCount(resp.post_count);
+        setUserCount(resp.user_count);
+        setBandCount(resp.band_count);
+        // let genreMapped = resp.genres.map((genre) => ({
+        //   name: genre.name,
+        //   id: genre.id,
+        // }));
+        // setGenres(genreMapped);
+        // let mapped = resp.instruments.map((inst) => ({
+        //   name: inst.name,
+        //   id: inst.id,
+        // }));
+        // setInstruments(mapped);
         setArtistViews(resp.artist_views);
         setSongViews(resp.song_views);
         setArtistPosts(resp.artist_posts);
@@ -389,26 +404,41 @@ const Search = ({ navigation, currentUser }) => {
           alignItems: "flex-end",
         }}
       >
-        {optionButton("posts")}
-        {optionButton("bands")}
-        {optionButton("users")}
+        {optionButton(`${postCount} posts`)}
+        {optionButton(`${bandCount} bands`)}
+        {optionButton(`${userCount} users`)}
         {optionButton("songs")}
         {optionButton("artists")}
       </View>
     );
   };
   const renderMusicFilters = () => {
-    return searchingFor == "users" ||
-      searchingFor == "bands" ||
-      searchingFor == "posts" ? (
+    let musicInstruments;
+    let musicGenres;
+    switch (searchingFor) {
+      case "users":
+        musicInstruments = accountInstruments;
+        musicGenres = accountGenres;
+        break;
+      case "bands":
+        musicInstruments = accountInstruments;
+        musicGenres = accountGenres;
+        break;
+      case "posts":
+        musicInstruments = postInstruments;
+        musicGenres = postGenres;
+        break;
+    }
+
+    return (
       <View style={{ marginTop: 0 }}>
-        {instruments.length ? (
+        {musicInstruments?.length ? (
           <View>
             <Text style={responsiveSizes[height].sectionTitle}>
               instruments
             </Text>
             <ScrollView horizontal={true}>
-              {instruments.map((inst, i) => (
+              {musicInstruments.map((inst, i) => (
                 <TouchableOpacity
                   key={i}
                   style={styles.filterItem}
@@ -428,11 +458,11 @@ const Search = ({ navigation, currentUser }) => {
             </ScrollView>
           </View>
         ) : null}
-        {genres.length ? (
+        {musicGenres?.length ? (
           <View>
             <Text style={responsiveSizes[height].sectionTitle}>genres</Text>
             <ScrollView horizontal={true}>
-              {genres.map((genr, i) => (
+              {musicGenres.map((genr, i) => (
                 <TouchableOpacity
                   style={styles.filterItem}
                   key={i}
@@ -453,7 +483,7 @@ const Search = ({ navigation, currentUser }) => {
           </View>
         ) : null}
       </View>
-    ) : null;
+    );
   };
 
   const renderMusicResult = (musicResult, action) => {
@@ -484,10 +514,16 @@ const Search = ({ navigation, currentUser }) => {
               color: "gray",
             }}
           >
-          {" "}<Text style={{
-              fontSize: responsiveSizes[height].screenTitle,
-              color: "#9370DB",
-            }}>/</Text>{" "}{item.artist_name}
+            {" "}
+            <Text
+              style={{
+                fontSize: responsiveSizes[height].screenTitle,
+                color: "#9370DB",
+              }}
+            >
+              /
+            </Text>{" "}
+            {item.artist_name}
           </Text>
         ) : null}
       </TouchableOpacity>
