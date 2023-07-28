@@ -12,13 +12,9 @@ import { connect } from "react-redux";
 import store from "../../redux/store";
 import { API_ROOT } from "../../constants/index";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import dateFormat from "dateformat";
 import { BlurView } from "expo-blur";
 import { responsiveSizes } from "../../constants/reusableFunctions";
 const { width, height } = Dimensions.get("window");
-const CARD_HEIGHT = 220;
-const CARD_WIDTH = width * 0.8;
-const SPACING_FOR_CARD_INSET = width * 0.1 - 10;
 
 const Map = ({
   displayedEvents,

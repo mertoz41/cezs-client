@@ -560,12 +560,7 @@ const Search = ({ navigation, currentUser }) => {
           value={searching}
         />
 
-        {loading ? (
-          <ActivityIndicator
-            style={{ position: "absolute", right: 10, top: 5 }}
-            size={"large"}
-          />
-        ) : searching.length ? (
+        {searching.length ? (
           <TouchableOpacity
             style={{
               position: "absolute",
@@ -650,9 +645,27 @@ const Search = ({ navigation, currentUser }) => {
         {renderMusicFilters()}
         {searchingFor === "posts" ||
         searchingFor === "users" ||
-        searchingFor === "bands"
-          ? renderPostResults()
-          : null}
+        searchingFor === "bands" ? (
+          <View>
+            <View
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+              }}
+            >
+              <Text style={responsiveSizes[height].sectionTitle}>
+                {selectedInstruments.length || selectedGenres.length
+                  ? "result"
+                  : "most recent"}
+              </Text>
+              {loading ? (
+                <ActivityIndicator style={{ marginRight: 10 }} size={"small"} />
+              ) : null}
+            </View>
+            {renderPostResults()}
+          </View>
+        ) : null}
         {searchingFor === "artists"
           ? displayNotFound
             ? renderNotFoundMessage()

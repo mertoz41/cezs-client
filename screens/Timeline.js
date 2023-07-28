@@ -138,6 +138,8 @@ class Timeline extends Component {
           timeline: updatedTimeline,
         });
         this.setState({ uploadingPerc: 0 });
+        // move timeline scroll to top
+        this.flatRef.scrollToOffset({ animated: true, offset: 0 });
         // this.kablo.current.unsubscribe();
       } else {
         this.setState({ uploadingPerc: parseInt(data * 100) });
@@ -156,6 +158,7 @@ class Timeline extends Component {
           // console.log("connected to channel" + id);
         },
         received(data) {
+          Toast.show({ type: "success", text1: "Your video is posted." });
           addToTimeline(data);
         },
         disconnected() {
