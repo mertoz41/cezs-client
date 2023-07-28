@@ -9,7 +9,8 @@ import {
   Dimensions,
   ActivityIndicator,
 } from "react-native";
-import { Avatar } from "react-native-elements";
+// import { Avatar } from "react-native-elements";
+import Avatar from "../components/reusables/Avatar";
 import { MaterialIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { API_ROOT } from "../constants/index";
@@ -23,24 +24,24 @@ const Search = ({ navigation, currentUser }) => {
   const [result, setResult] = useState([]);
   const [searchingFor, setSearchingFor] = useState("users");
   const [loading, setLoading] = useState(false);
-  const [instruments, setInstruments] = useState([]);
   const [postInstruments, setPostInstruments] = useState([]);
   const [postGenres, setPostGenres] = useState([]);
-  const [postCount, setPostCount] = useState(0);
-  const [userCount, setUserCount] = useState(0);
-  const [bandCount, setBandCount] = useState(0);
+  const [postCount, setPostCount] = useState("#");
+  const [userCount, setUserCount] = useState("#");
+  const [bandCount, setBandCount] = useState("#");
+  const [songCount, setSongCount] = useState("#");
+  const [lateUsers, setLateUsers] = useState([]);
+  const [lateBands, setLateBands] = useState([]);
+  const [latePosts, setLatePosts] = useState([]);
+  const [artistCount, setArtistCount] = useState("#");
   const [accountInstruments, setAccountInstruments] = useState([]);
   const [accountGenres, setAccountGenres] = useState([]);
-  const [genres, setGenres] = useState([]);
   const [selectedInstruments, setSelectedInstruments] = useState([]);
   const [selectedGenres, setSelectedGenres] = useState([]);
-
   const [displayNotFound, setDisplayNotFound] = useState("");
   const [artistViews, setArtistViews] = useState([]);
   const [songViews, setSongViews] = useState([]);
-
   const [dataLoading, setDataLoading] = useState(false);
-
   const [artistPosts, setArtistPosts] = useState([]);
   const [songPosts, setSongPosts] = useState([]);
   useEffect(() => {
@@ -62,19 +63,16 @@ const Search = ({ navigation, currentUser }) => {
 
         setAccountInstruments(resp.account_instrument_filters);
         setAccountGenres(resp.account_genre_filters);
+        setLateBands(resp.last_bands);
+        setLatePosts(resp.last_posts);
+        setLateUsers(resp.last_users);
+
         setPostCount(resp.post_count);
         setUserCount(resp.user_count);
         setBandCount(resp.band_count);
-        // let genreMapped = resp.genres.map((genre) => ({
-        //   name: genre.name,
-        //   id: genre.id,
-        // }));
-        // setGenres(genreMapped);
-        // let mapped = resp.instruments.map((inst) => ({
-        //   name: inst.name,
-        //   id: inst.id,
-        // }));
-        // setInstruments(mapped);
+        setSongCount(resp.song_count);
+        setArtistCount(resp.artist_count);
+        setResult(resp.last_users);
         setArtistViews(resp.artist_views);
         setSongViews(resp.song_views);
         setArtistPosts(resp.artist_posts);
@@ -199,9 +197,26 @@ const Search = ({ navigation, currentUser }) => {
 
   const searchCateg = (category) => {
     setSearchingFor(category);
+
+    if (category === "artists" || category === "songs") {
+      setResult([]);
+    } else {
+      let lateResult;
+      switch (category) {
+        case "posts":
+          lateResult = latePosts;
+          break;
+        case "bands":
+          lateResult = lateBands;
+          break;
+        case "users":
+          lateResult = lateUsers;
+          break;
+      }
+      setResult(lateResult);
+    }
     setSelectedInstruments([]);
     setSelectedGenres([]);
-    setResult([]);
     setDisplayNotFound("");
     setSearching("");
   };
@@ -247,6 +262,7 @@ const Search = ({ navigation, currentUser }) => {
         (instru) => instru.id !== inst.id
       );
       setSelectedInstruments(filtered);
+
       updateResult(selectedGenres, filtered);
     } else {
       let updated = [...selectedInstruments, inst];
@@ -266,7 +282,7 @@ const Search = ({ navigation, currentUser }) => {
           ) || person.genres.some((genr) => nameGenres.includes(genr.name))
         );
       });
-      setResult(updatedResult);
+      setResult(updatedResult.length ? updatedResult : lateUsers);
     } else if (searchingFor == "bands") {
       let updatedResult = result.filter((band) => {
         return (
@@ -274,7 +290,7 @@ const Search = ({ navigation, currentUser }) => {
           band.instruments.some((inst) => nameInstruments.includes(inst.name))
         );
       });
-      setResult(updatedResult);
+      setResult(updatedResult.length ? updatedResult : lateBands);
     } else {
       let updatedPosts = result.filter((post) => {
         return (
@@ -283,7 +299,7 @@ const Search = ({ navigation, currentUser }) => {
           ) || nameGenres.includes(post.genre.name)
         );
       });
-      setResult(updatedPosts);
+      setResult(updatedPosts.length ? updatedPosts : latePosts);
     }
   };
   const getFilterSearch = async (genres, instruments) => {
@@ -376,7 +392,7 @@ const Search = ({ navigation, currentUser }) => {
   };
 
   const renderHeader = () => {
-    const optionButton = (name) => {
+    const optionButton = (name, count) => {
       return (
         <TouchableOpacity
           style={styles.filterItem}
@@ -389,7 +405,7 @@ const Search = ({ navigation, currentUser }) => {
                 : styles.itemWriting
             }
           >
-            {name}
+            {count} {name}
           </Text>
         </TouchableOpacity>
       );
@@ -404,11 +420,11 @@ const Search = ({ navigation, currentUser }) => {
           alignItems: "flex-end",
         }}
       >
-        {optionButton(`${postCount} posts`)}
-        {optionButton(`${bandCount} bands`)}
-        {optionButton(`${userCount} users`)}
-        {optionButton("songs")}
-        {optionButton("artists")}
+        {optionButton(`posts`, postCount)}
+        {optionButton(`bands`, bandCount)}
+        {optionButton(`users`, userCount)}
+        {optionButton("songs", songCount)}
+        {optionButton("artists", artistCount)}
       </View>
     );
   };
@@ -604,15 +620,15 @@ const Search = ({ navigation, currentUser }) => {
             key={index}
           >
             <Avatar
-              source={{
-                uri:
-                  searchingFor === "users"
-                    ? item.avatar
-                    : searchingFor === "bands"
-                    ? item.picture
-                    : item.thumbnail,
-              }}
+              avatar={
+                searchingFor === "users"
+                  ? item.avatar
+                  : searchingFor === "bands"
+                  ? item.picture
+                  : item.thumbnail
+              }
               size={width / 4}
+              withRadius={false}
             />
           </TouchableOpacity>
         ))}
@@ -632,7 +648,7 @@ const Search = ({ navigation, currentUser }) => {
           />
         ) : null}
         {renderMusicFilters()}
-        {(result.length && searchingFor === "posts") ||
+        {searchingFor === "posts" ||
         searchingFor === "users" ||
         searchingFor === "bands"
           ? renderPostResults()

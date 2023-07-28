@@ -10,22 +10,23 @@ const Avatar = ({ avatar, size, withRadius }) => {
           source={{ uri: avatar }}
           placeholderStyle={{ backgroundColor: "rgba(147,112,219, .3)" }}
           size={size}
-          avatarStyle={{ borderRadius: withRadius ? 10 : 0}}
+          avatarStyle={{ borderRadius: withRadius ? 10 : 0 }}
           containerStyle={{
-
             alignSelf: "center",
           }}
         />
       ) : (
-        <Feather
-          name="user"
-          size={size}
-          color="gray"
-          style={{ alignSelf: "center" }}
-        />
+        <View style={{ height: size, width: size }}>
+          <Feather
+            name="user"
+            size={size}
+            color="gray"
+            style={{ alignSelf: "center" }}
+          />
+        </View>
       )}
     </View>
   );
 };
 
-export default Avatar;
+export default React.memo(Avatar);
