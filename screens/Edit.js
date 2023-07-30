@@ -6,8 +6,7 @@ import {
   KeyboardAvoidingView,
   Dimensions,
   Keyboard,
-  Modal,
-  StyleSheet,
+  TouchableWithoutFeedback,
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import InstrumentEdit from "../components/useredit/InstrumentGenreEdit";
@@ -419,49 +418,51 @@ const Edit = ({ navigation, currentUser, notificationChannel }) => {
         setDeleteModalVisible={setDeleteModalVisible}
       />
       <KeyboardAvoidingView behavior="padding">
-        <ScrollView keyboardShouldPersistTaps={"always"}>
-          <AvatarSection
-            openCameraPics={openCameraPics}
-            pic={currentUser.avatar}
-          />
-          <EditSection
-            label="location"
-            currentValue={location}
-            updateValue={getAddress}
-            result={result}
-            selectNewLocation={selectNewLocation}
-          />
-          <EditSection
-            label="username"
-            currentValue={userName}
-            updateValue={setUserName}
-          />
-          {renderPasswordSection()}
-          <EditSection
-            label={"name"}
-            currentValue={name}
-            updateValue={setName}
-          />
-          <EditSection
-            label="email"
-            currentValue={email}
-            updateValue={setEmail}
-          />
-          <EditSection label="bio" currentValue={bio} updateValue={setBio} />
-          <InstrumentEdit
-            setNewInstruments={setNewInstruments}
-            newInstruments={newInstruments}
-            setNewGenres={setNewGenres}
-            newGenres={newGenres}
-            setNewFavoriteArtists={setNewFavoriteArtists}
-            newFavoriteArtists={newFavoriteArtists}
-            setNewFavoriteSongs={setNewFavoriteSongs}
-            newFavoriteSongs={newFavoriteSongs}
-            toNewBandPage={toNewBand}
-            toBlockedUsers={toBlockedUsers}
-          />
-          <View style={{ height: 350 }}>{renderLogout()}</View>
-        </ScrollView>
+        <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+          <ScrollView keyboardShouldPersistTaps={"always"}>
+            <AvatarSection
+              openCameraPics={openCameraPics}
+              pic={currentUser.avatar}
+            />
+            <EditSection
+              label="location"
+              currentValue={location}
+              updateValue={getAddress}
+              result={result}
+              selectNewLocation={selectNewLocation}
+            />
+            <EditSection
+              label="username"
+              currentValue={userName}
+              updateValue={setUserName}
+            />
+            {renderPasswordSection()}
+            <EditSection
+              label={"name"}
+              currentValue={name}
+              updateValue={setName}
+            />
+            <EditSection
+              label="email"
+              currentValue={email}
+              updateValue={setEmail}
+            />
+            <EditSection label="bio" currentValue={bio} updateValue={setBio} />
+            <InstrumentEdit
+              setNewInstruments={setNewInstruments}
+              newInstruments={newInstruments}
+              setNewGenres={setNewGenres}
+              newGenres={newGenres}
+              setNewFavoriteArtists={setNewFavoriteArtists}
+              newFavoriteArtists={newFavoriteArtists}
+              setNewFavoriteSongs={setNewFavoriteSongs}
+              newFavoriteSongs={newFavoriteSongs}
+              toNewBandPage={toNewBand}
+              toBlockedUsers={toBlockedUsers}
+            />
+            <View style={{ height: 350 }}>{renderLogout()}</View>
+          </ScrollView>
+        </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
     </View>
   );

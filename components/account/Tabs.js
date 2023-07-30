@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, Dimensions } from "react-native";
 import { TabView, TabBar } from "react-native-tab-view";
-import { Entypo, Ionicons, MaterialIcons } from "@expo/vector-icons";
+import {
+  Entypo,
+  MaterialCommunityIcons,
+  MaterialIcons,
+} from "@expo/vector-icons";
 import SongsList from "./songslist";
 import ThumbnailPosts from "./thumbnailposts";
 import { responsiveSizes } from "../../constants/reusableFunctions";
@@ -33,10 +37,10 @@ const renderTabBar = (props) => (
             color={focused ? "#9370DB" : "darkgray"}
           />
         );
-      } else if (route.key === "second") {
+      } else if (route.key === "applauds") {
         return (
-          <Ionicons
-            name="ios-calendar-sharp"
+          <MaterialCommunityIcons
+            name="hand-clap"
             size={responsiveSizes[height].backwardIcon}
             color={focused ? "#9370DB" : "darkgray"}
           />
@@ -69,21 +73,35 @@ const Tabs = ({ toPostView, account, origin, toSongScreen }) => {
   const [index, setIndex] = useState(0);
   const [songs, setSongs] = useState([]);
   const [posts, setPosts] = useState([]);
+  const [applauds, setApplauds] = useState([]);
 
-  const [routes] = useState([
-    { key: "posts", title: "posts" },
-    { key: "covers", title: "covers" },
-  ]);
+  const [routes, setRoutes] = useState([]);
 
   useEffect(() => {
+    let availableRoutes = [];
     if (account.posts.length) {
-      let songPosts = account.posts.filter((post) => post.song_name);
-      setSongs(songPosts);
       let sorted = account.posts.sort((a, b) => {
         return new Date(b.created_at) - new Date(a.created_at);
       });
       setPosts(sorted);
+      availableRoutes = [{ key: "posts", title: "posts" }];
+      let songPosts = account.posts.filter((post) => post.song_name);
+      if (songPosts.length) {
+        setSongs(songPosts);
+        availableRoutes = [
+          ...availableRoutes,
+          { key: "covers", title: "covers" },
+        ];
+      }
     }
+    if (origin === "user" && account.applauds.length) {
+      setApplauds(account.applauds);
+      availableRoutes = [
+        ...availableRoutes,
+        { key: "applauds", title: "applauds" },
+      ];
+    }
+    setRoutes(availableRoutes);
   }, [account]);
 
   const renderScene = ({ route }) => {
@@ -100,6 +118,15 @@ const Tabs = ({ toPostView, account, origin, toSongScreen }) => {
       case "covers":
         return (
           <SongsList toSongPage={toSongScreen} lists={songs} origin={origin} />
+        );
+      case "applauds":
+        return (
+          <ThumbnailPosts
+            posts={applauds}
+            display="posts"
+            toPostView={toPostView}
+            account="user"
+          />
         );
       default:
         return null;

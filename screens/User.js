@@ -20,11 +20,11 @@ import { useIsFocused } from "@react-navigation/native";
 import { preparePostView } from "../constants/reusableFunctions";
 const User = ({ route, navigation, chatrooms, currentUser }) => {
   const isFocused = useIsFocused();
-
   const [theUser, setTheUser] = useState(null);
   const [loading, setLoading] = useState(false);
   const [upcomingEvent, setUpcomingEvent] = useState(null);
   const [follows, setFollows] = useState(false);
+  const [songs, setSongs] = useState([]);
   const translation = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -49,6 +49,7 @@ const User = ({ route, navigation, chatrooms, currentUser }) => {
       .then((resp) => {
         setFollows(resp.follows);
         setTheUser(resp.user);
+
         if (resp.user.upcoming_event) {
           setUpcomingEvent(resp.user.upcoming_event);
         }
@@ -105,8 +106,8 @@ const User = ({ route, navigation, chatrooms, currentUser }) => {
     }
   };
 
-  const toPostView = (item) => {
-    let obj = preparePostView(item, theUser.posts, theUser.username);
+  const toPostView = (item, posts) => {
+    let obj = preparePostView(item, posts, theUser.username);
     navigation.navigate("Posts", obj);
   };
 
@@ -132,7 +133,6 @@ const User = ({ route, navigation, chatrooms, currentUser }) => {
       {theUser ? (
         <ScrollView>
           <Card avatar={theUser.avatar} />
-
           <Info
             type="user"
             toMessageScreen={toMessageScreen}
@@ -142,23 +142,20 @@ const User = ({ route, navigation, chatrooms, currentUser }) => {
             toFollow={toFollow}
           />
           {upcomingEvent ? <UpcomingEvent gig={upcomingEvent} /> : null}
-
-          {theUser.bands.length || theUser.instruments.length ? (
-            <InstrumentSection
-              toBandPage={toBandPage}
-              theUser={theUser}
-              bands={theUser.bands}
-              instruments={theUser.instruments}
-              genres={theUser.genres}
-            />
-          ) : null}
-
-          {theUser.posts.length ? (
+          <InstrumentSection
+            toBandPage={toBandPage}
+            theUser={theUser}
+            bands={theUser.bands}
+            instruments={theUser.instruments}
+            genres={theUser.genres}
+          />
+          {theUser.posts.length || theUser.applauds.length ? (
             <UserTabs
               account={theUser}
               toCommentsScreen={toCommentsScreen}
               toArtistPageFromContent={toArtistPageFromContent}
               toPostView={toPostView}
+              songs={songs}
               toSongScreen={toSongScreen}
               origin={"user"}
             />

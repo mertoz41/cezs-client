@@ -16,7 +16,7 @@ const Avatar = ({ avatar, size, withRadius }) => {
           }}
         />
       ) : (
-        <View style={{ height: size, width: size }}>
+        <View style={{ height: size, width: size, alignSelf: "center" }}>
           <Feather
             name="user"
             size={size}

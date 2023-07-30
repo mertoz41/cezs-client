@@ -106,13 +106,26 @@ const Artist = ({ route, navigation, currentUser }) => {
     })
       .then((resp) => resp.json())
       .then((resp) => {
-        let sorted = resp.posts.sort((a, b) => {
-          return new Date(b.created_at) - new Date(a.created_at);
-        });
+        let availableRoutes = [];
+        if (resp.posts.length) {
+          let sorted = resp.posts.sort((a, b) => {
+            return new Date(b.created_at) - new Date(a.created_at);
+          });
 
-        setSongs(resp.songs);
-        setPosts(sorted);
-        setAllPosts(sorted);
+          setPosts(sorted);
+          setAllPosts(sorted);
+          availableRoutes = [{ key: "posts", title: "posts" }];
+        }
+
+        if (resp.songs.length) {
+          setSongs(resp.songs);
+          availableRoutes = [
+            ...availableRoutes,
+            { key: "songs", title: "songs" },
+          ];
+        }
+        setRoutes(availableRoutes);
+
         setTheArtist({ ...resp.artist });
         setUsersFavorite(resp.user_favorites);
         setFollows(resp.follows);
@@ -141,10 +154,7 @@ const Artist = ({ route, navigation, currentUser }) => {
     let obj = preparePostView(item, posts, theArtist.name);
     navigation.navigate("Posts", obj);
   };
-  const [routes] = useState([
-    { key: "posts", title: "posts" },
-    { key: "songs", title: "songs" },
-  ]);
+  const [routes, setRoutes] = useState([]);
 
   const renderScene = ({ route }) => {
     switch (route.key) {

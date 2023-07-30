@@ -9,7 +9,6 @@ import {
   Dimensions,
   ActivityIndicator,
 } from "react-native";
-// import { Avatar } from "react-native-elements";
 import Avatar from "../components/reusables/Avatar";
 import { MaterialIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -44,6 +43,7 @@ const Search = ({ navigation, currentUser }) => {
   const [dataLoading, setDataLoading] = useState(false);
   const [artistPosts, setArtistPosts] = useState([]);
   const [songPosts, setSongPosts] = useState([]);
+
   useEffect(() => {
     setDataLoading(true);
     getExploreData();
@@ -66,7 +66,6 @@ const Search = ({ navigation, currentUser }) => {
         setLateBands(resp.last_bands);
         setLatePosts(resp.last_posts);
         setLateUsers(resp.last_users);
-
         setPostCount(resp.post_count);
         setUserCount(resp.user_count);
         setBandCount(resp.band_count);
@@ -221,7 +220,7 @@ const Search = ({ navigation, currentUser }) => {
     setSearching("");
   };
   const emptyResults = () => {
-    setResult([]);
+    // setResult([]);
     setSearching("");
     setDisplayNotFound("");
     setLoading(false);
@@ -630,6 +629,7 @@ const Search = ({ navigation, currentUser }) => {
       </ScrollView>
     );
   };
+
   return (
     <View style={styles.container}>
       {renderHeader()}

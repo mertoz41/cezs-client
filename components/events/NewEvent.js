@@ -8,6 +8,7 @@ import {
   StyleSheet,
   Keyboard,
   ActivityIndicator,
+  TouchableWithoutFeedback,
   Animated,
   Dimensions,
 } from "react-native";
@@ -657,80 +658,82 @@ const NewEvent = ({
     );
   };
   return (
-    <Animated.View
-      style={{
-        height: "auto",
-        top: responsiveSizes[height].discoverEventFilterMargin,
-        width: "96%",
-        position: "absolute",
-        alignSelf: "center",
-        borderRadius: 10,
-        overflow: "hidden",
-        display: "flex",
-        justifyContent: "center",
-        zIndex: 1,
-        opacity: translation,
-      }}
-    >
-      <BlurView intensity={20} tint="dark">
-        <View style={styles.box}>
-          {renderAddress()}
-          {renderDescription()}
-          {renderMusicSection(
-            "instruments",
-            searching,
-            selectingInstrument,
-            searchInstruments,
-            instrumentResult,
-            eventInstruments,
-            removeInstrument
-          )}
-          {renderMusicSection(
-            "genres",
-            genreSearch,
-            selectingGenre,
-            searchGenres,
-            genreResult,
-            eventGenres,
-            removeGenre
-          )}
-          {renderDateTime()}
-        </View>
-        {renderPerformerOptions()}
-        {loading ? (
-          <ActivityIndicator
-            style={{
-              alignSelf: "flex-end",
-              margin: 10,
-              marginRight: 20,
-            }}
-            color="gray"
-            size="large"
-          />
-        ) : (
-          <TouchableOpacity
-            style={{
-              backgroundColor: "rgba(147,112,219, .4)",
-              alignSelf: "flex-end",
-              margin: 10,
-              padding: 10,
-              borderRadius: 10,
-            }}
-            onPress={() => saveEvent()}
-          >
-            <Text
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+      <Animated.View
+        style={{
+          height: "auto",
+          top: responsiveSizes[height].discoverEventFilterMargin,
+          width: "96%",
+          position: "absolute",
+          alignSelf: "center",
+          borderRadius: 10,
+          overflow: "hidden",
+          display: "flex",
+          justifyContent: "center",
+          zIndex: 1,
+          opacity: translation,
+        }}
+      >
+        <BlurView intensity={20} tint="dark">
+          <View style={styles.box}>
+            {renderAddress()}
+            {renderDescription()}
+            {renderMusicSection(
+              "instruments",
+              searching,
+              selectingInstrument,
+              searchInstruments,
+              instrumentResult,
+              eventInstruments,
+              removeInstrument
+            )}
+            {renderMusicSection(
+              "genres",
+              genreSearch,
+              selectingGenre,
+              searchGenres,
+              genreResult,
+              eventGenres,
+              removeGenre
+            )}
+            {renderDateTime()}
+          </View>
+          {renderPerformerOptions()}
+          {loading ? (
+            <ActivityIndicator
               style={{
-                fontSize: responsiveSizes[height].sliderItemFontSize,
-                fontWeight: "700",
-                color: "white",
+                alignSelf: "flex-end",
+                margin: 10,
+                marginRight: 20,
               }}
+              color="gray"
+              size="large"
+            />
+          ) : (
+            <TouchableOpacity
+              style={{
+                backgroundColor: "rgba(147,112,219, .4)",
+                alignSelf: "flex-end",
+                margin: 10,
+                padding: 10,
+                borderRadius: 10,
+              }}
+              onPress={() => saveEvent()}
             >
-              POST
-            </Text>
-          </TouchableOpacity>
-        )}
-      </BlurView>
-    </Animated.View>
+              <Text
+                style={{
+                  fontSize: responsiveSizes[height].sliderItemFontSize,
+                  fontWeight: "700",
+                  color: "white",
+                }}
+              >
+                POST
+              </Text>
+            </TouchableOpacity>
+          )}
+        </BlurView>
+      </Animated.View>
+    </TouchableWithoutFeedback>
   );
 };
 

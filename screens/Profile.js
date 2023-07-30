@@ -50,8 +50,8 @@ const Profile = ({ currentUser, navigation }) => {
     navigation.navigate("Band", band);
   };
 
-  const toPostView = (item) => {
-    let obj = preparePostView(item, currentUser.posts, currentUser.username);
+  const toPostView = (item, posts) => {
+    let obj = preparePostView(item, posts, currentUser.username);
     navigation.navigate("Posts", obj);
   };
   return (
@@ -86,18 +86,14 @@ const Profile = ({ currentUser, navigation }) => {
         {currentUser.upcoming_event ? (
           <UpcomingEvent gig={currentUser.upcoming_event} />
         ) : null}
-        {currentUser.instruments.length ||
-        currentUser.bands.length ||
-        currentUser.genres.length ? (
-          <InstrumentSection
-            toBandPage={toBandPage}
-            instruments={currentUser.instruments}
-            genres={currentUser.genres}
-            bands={currentUser.bands}
-            theUser={currentUser}
-          />
-        ) : null}
-        {currentUser.posts.length ? (
+        <InstrumentSection
+          toBandPage={toBandPage}
+          instruments={currentUser.instruments}
+          genres={currentUser.genres}
+          bands={currentUser.bands}
+          theUser={currentUser}
+        />
+        {currentUser.posts.length || currentUser.applauds.length ? (
           <Tabs
             account={currentUser}
             toPostView={toPostView}

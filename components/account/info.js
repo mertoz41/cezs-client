@@ -48,7 +48,7 @@ const Info = ({ account, toFollow, toPostView }) => {
               style={styles.numbers}
               onPress={
                 account.posts.length
-                  ? () => toPostView(account.posts[0], "posts")
+                  ? () => toPostView(account.posts[0], account.posts)
                   : null
               }
             >

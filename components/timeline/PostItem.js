@@ -181,6 +181,15 @@ class PostItem extends React.Component {
       applaudCount: this.state.applaudCount + 1,
       applauded: true,
     });
+    let updatedApplauds = [...this.props.currentUser.applauds, this.props.item];
+    let updatedCurrentUser = {
+      ...this.props.currentUser,
+      applauds: updatedApplauds,
+    };
+    store.dispatch({
+      type: "UPDATE_CURRENT_USER",
+      currentUser: updatedCurrentUser,
+    });
     let token = await AsyncStorage.getItem("jwt");
     fetch(`http://${API_ROOT}/applaudpost`, {
       method: "POST",
@@ -194,6 +203,7 @@ class PostItem extends React.Component {
         applaudCount: this.state.applaudCount - 1,
         applauded: false,
       });
+      // add item to currentUsers Applauds
       Toast.show({ type: "error", text1: err });
     });
   };
