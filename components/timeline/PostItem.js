@@ -265,7 +265,7 @@ class PostItem extends React.Component {
                     style={{
                       fontSize: responsiveSizes[height].postItemAccountFontSize,
                       fontWeight: "600",
-                      textAlign: "right",
+                      textAlign: "left",
                       color: "white",
                     }}
                   >

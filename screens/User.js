@@ -152,10 +152,7 @@ const User = ({ route, navigation, chatrooms, currentUser }) => {
           {theUser.posts.length || theUser.applauds.length ? (
             <UserTabs
               account={theUser}
-              toCommentsScreen={toCommentsScreen}
-              toArtistPageFromContent={toArtistPageFromContent}
               toPostView={toPostView}
-              songs={songs}
               toSongScreen={toSongScreen}
               origin={"user"}
             />

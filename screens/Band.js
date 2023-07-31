@@ -117,6 +117,7 @@ const Band = ({ route, navigation, currentUser }) => {
               <Info
                 setTheBand={setTheBand}
                 type="band"
+                toPostView={toPostView}
                 account={theBand}
                 toFollow={toFollow}
               />

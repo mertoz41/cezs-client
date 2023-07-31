@@ -138,8 +138,6 @@ class Timeline extends Component {
           timeline: updatedTimeline,
         });
         this.setState({ uploadingPerc: 0 });
-        // move timeline scroll to top
-        this.flatRef.scrollToOffset({ animated: true, offset: 0 });
         // this.kablo.current.unsubscribe();
       } else {
         this.setState({ uploadingPerc: parseInt(data * 100) });

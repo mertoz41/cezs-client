@@ -98,6 +98,7 @@ const Profile = ({ currentUser, navigation }) => {
             account={currentUser}
             toPostView={toPostView}
             toSongScreen={toSongScreen}
+            origin="user"
           />
         ) : null}
       </ScrollView>

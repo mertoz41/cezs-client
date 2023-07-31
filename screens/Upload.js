@@ -19,7 +19,8 @@ import { AntDesign } from "@expo/vector-icons";
 import * as VideoThumbnails from "expo-video-thumbnails";
 import { CommonActions } from "@react-navigation/native";
 import { connect } from "react-redux";
-import { ListItem, Avatar } from "react-native-elements";
+import { ListItem } from "react-native-elements";
+import Avatar from "../components/reusables/Avatar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import UploadHeader from "../components/upload/UploadHeader";
 import { API_ROOT } from "../constants/index";
@@ -220,8 +221,8 @@ const Upload = ({ navigation, currentUser, recordedVideo }) => {
           </View>
           <View style={{ flex: 5 }}>
             <TextInput
-              returnKeyType="search"
               placeholder={`search artists`}
+              returnKeyType="search"
               placeholderTextColor="gray"
               value={artistSearch}
               autoCapitalize="none"
@@ -631,25 +632,27 @@ const Upload = ({ navigation, currentUser, recordedVideo }) => {
       }
     };
     return (
-      <TouchableOpacity
-        activeOpacity={1}
-        onPress={() => handleVideoPlay(videoRef)}
-      >
-        <Video
-          source={{ uri: recordedVideo.uri }}
-          shouldPlay={true}
-          rate={1.0}
-          ref={videoRef}
-          volume={1}
-          isMuted={false}
-          resizeMode={"cover"}
-          isLooping={true}
-          style={{
-            height: responsiveSizes[height].postItemVideo,
-            width: width,
-          }}
-        />
-      </TouchableOpacity>
+      <View>
+        <TouchableOpacity
+          activeOpacity={1}
+          onPress={() => handleVideoPlay(videoRef)}
+        >
+          <Video
+            source={{ uri: recordedVideo.uri }}
+            shouldPlay={true}
+            rate={1.0}
+            ref={videoRef}
+            volume={1}
+            isMuted={false}
+            resizeMode={"cover"}
+            isLooping={true}
+            style={{
+              height: responsiveSizes[height].postItemVideo,
+              width: width,
+            }}
+          />
+        </TouchableOpacity>
+      </View>
     );
   };
 
