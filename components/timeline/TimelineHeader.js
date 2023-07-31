@@ -6,12 +6,15 @@ import {
   TouchableOpacity,
   Animated,
 } from "react-native";
-import { responsiveSizes } from "../../constants/reusableFunctions";
+import {
+  responsiveSizes,
+  getUnseenNotificationsNumber,
+  getUnseenMessagesNumber,
+} from "../../constants/reusableFunctions";
 import { FontAwesome5, MaterialIcons, Feather } from "@expo/vector-icons";
 import MusicActionButtons from "../reusables/MusicActionButtons";
 import { connect } from "react-redux";
 import { reusableStyles } from "../../themes";
-
 const { height } = Dimensions.get("window");
 
 const TimelineHeader = ({
@@ -29,8 +32,8 @@ const TimelineHeader = ({
   const [messageNumber, setMessageNumber] = useState(0);
 
   useEffect(() => {
-    setMessageNumber(getUnseenMessagesNumber());
-    setNotiNumber(getUnseenNotificationsNumber());
+    setMessageNumber(getUnseenMessagesNumber(chatrooms, currentUser));
+    setNotiNumber(getUnseenNotificationsNumber(notifications));
   }, [notifications, chatrooms]);
   const renderleftSide = () => {
     return (
@@ -74,20 +77,20 @@ const TimelineHeader = ({
       </View>
     );
   };
-  const getUnseenNotificationsNumber = () => {
-    let mapped = notifications.filter((noti) => !noti.seen);
-    return mapped.length;
-  };
+  // const getUnseenNotificationsNumber = () => {
+  //   let mapped = notifications.filter((noti) => !noti.seen);
+  //   return mapped.length;
+  // };
 
-  const getUnseenMessagesNumber = () => {
-    let filtered = chatrooms.filter(
-      (room) =>
-        room.last_message.user_id !== currentUser?.id && !room.last_message.seen
-      //  &&
-      // !room.last_message.seen
-    );
-    return filtered.length;
-  };
+  // const getUnseenMessagesNumber = () => {
+  //   let filtered = chatrooms.filter(
+  //     (room) =>
+  //       room.last_message.user_id !== currentUser?.id && !room.last_message.seen
+  //     //  &&
+  //     // !room.last_message.seen
+  //   );
+  //   return filtered.length;
+  // };
   const renderRightSide = () => {
     return title === "timeline" ? (
       <View

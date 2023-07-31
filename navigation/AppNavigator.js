@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, Fragment } from "react";
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import { ImageBackground, View, Dimensions } from "react-native";
+import { ImageBackground, View, Dimensions, Text } from "react-native";
 import consumer from "../consumer/consumer";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import {
@@ -41,7 +41,11 @@ import Discover from "../screens/Discover";
 // import * as Notifications from "expo-notifications";
 import BlockedUsers from "../screens/BlockedUsers";
 import { setUpChatrooms } from "../constants/reusableFunctions";
-import { responsiveSizes } from "../constants/reusableFunctions";
+import {
+  responsiveSizes,
+  getUnseenMessagesNumber,
+  getUnseenNotificationsNumber,
+} from "../constants/reusableFunctions";
 const { height } = Dimensions.get("window");
 const EntryStack = createStackNavigator();
 const EntryScreens = () => {
@@ -50,137 +54,6 @@ const EntryScreens = () => {
       <EntryStack.Screen name="Login" component={Login} />
       <EntryStack.Screen name="Register" component={Register} />
     </EntryStack.Navigator>
-  );
-};
-
-const Tabs = createBottomTabNavigator();
-const HomeScreens = () => {
-  return (
-    <Tabs.Navigator
-      screenOptions={({ route }) => ({
-        headerShown: false,
-        tabBarIcon: ({ focused, color, size }) => {
-          let iconName;
-          if (route.name === "Discover") {
-            return (
-              <SimpleLineIcons
-                name="globe"
-                size={responsiveSizes[height].backwardIcon}
-                color={color}
-              />
-            );
-          } else if (route.name === "Search") {
-            return (
-              <FontAwesome
-                name="search"
-                size={responsiveSizes[height].backwardIcon}
-                color={color}
-              />
-            );
-          } else if (route.name === "Social") {
-            return (
-              <MaterialCommunityIcons
-                name="playlist-music"
-                size={responsiveSizes[height].backwardIcon + 7}
-                color={color}
-              />
-            );
-          } else if (route.name === "Profile") {
-            return (
-              <FontAwesome
-                name="user-o"
-                size={responsiveSizes[height].backwardIcon}
-                color={color}
-              />
-            );
-          }
-        },
-        tabBarStyle: {
-          backgroundColor: "#2e2e2e",
-          height: responsiveSizes[height].bottomNavigatorHeight,
-          flexDirection: "column",
-        },
-        tabBarActiveTintColor: "#9370DB",
-        tabBarInactiveTintColor: "darkgray",
-      })}
-    >
-      <Tabs.Screen
-        name="Discover"
-        component={Discover}
-        options={({ route }) => ({
-          tabBarVisible: ((route) => {
-            const routeName = getFocusedRouteNameFromRoute(route) ?? "";
-            if (routeName === "Comment") {
-              return false;
-            } else if (routeName === "EventsMap") {
-              return false;
-            } else if (routeName === "Messages") {
-              return false;
-            } else if (routeName === "Message") {
-              return false;
-            } else if (routeName === "Discover") {
-              return false;
-            } else if (routeName === "Upload") {
-              return false;
-            }
-            return true;
-          })(route),
-        })}
-      />
-      <Tabs.Screen
-        name="Search"
-        component={SearchScreen}
-        options={({ route }) => ({
-          tabBarVisible: ((route) => {
-            const routeName = getFocusedRouteNameFromRoute(route) ?? "";
-            if (routeName === "EventsMap") {
-              return false;
-            } else if (routeName === "Comment") {
-              return false;
-            }
-            return true;
-          })(route),
-        })}
-      />
-      <Tabs.Screen
-        name="Social"
-        component={Timeline}
-        options={({ route }) => ({
-          tabBarVisible: ((route) => {
-            const routeName = getFocusedRouteNameFromRoute(route) ?? "";
-            if (routeName === "Edit") {
-              return false;
-            } else if (routeName === "NewBand") {
-              return false;
-            } else if (routeName === "EventsMap") {
-              return false;
-            } else if (routeName === "Comment") {
-              return false;
-            }
-            return true;
-          })(route),
-        })}
-      />
-      <Tabs.Screen
-        name="Profile"
-        component={ProfileScreen}
-        options={({ route }) => ({
-          tabBarVisible: ((route) => {
-            const routeName = getFocusedRouteNameFromRoute(route) ?? "";
-            if (routeName === "Edit") {
-              return false;
-            } else if (routeName === "NewBand") {
-              return false;
-            } else if (routeName === "EventsMap") {
-              return false;
-            } else if (routeName === "Comment") {
-              return false;
-            }
-            return true;
-          })(route),
-        })}
-      />
-    </Tabs.Navigator>
   );
 };
 
@@ -317,7 +190,160 @@ function AppNavigator({
     //   );
     //   Notifications.removeNotificationSubscription(responseListener.current);
     // };
-  }, [loggedIn]);
+  }, [loggedIn, notifications, chatrooms]);
+
+  const Tabs = createBottomTabNavigator();
+  const HomeScreens = () => {
+    return (
+      <Tabs.Navigator
+        screenOptions={({ route }) => ({
+          headerShown: false,
+          tabBarIcon: ({ focused, color, size }) => {
+            let iconName;
+            if (route.name === "Discover") {
+              return (
+                <SimpleLineIcons
+                  name="globe"
+                  size={responsiveSizes[height].backwardIcon}
+                  color={color}
+                />
+              );
+            } else if (route.name === "Search") {
+              return (
+                <FontAwesome
+                  name="search"
+                  size={responsiveSizes[height].backwardIcon}
+                  color={color}
+                />
+              );
+            } else if (route.name === "Social") {
+              return (
+                <View>
+                  {getUnseenMessagesNumber(chatrooms, currentUser) +
+                    getUnseenNotificationsNumber(notifications) >
+                  0 ? (
+                    <View
+                      style={{
+                        borderRadius: "50%",
+                        height: 15,
+                        width: 15,
+                        backgroundColor: "red",
+                        right: 0,
+                        position: "absolute",
+                        zIndex: 1,
+                      }}
+                    >
+                      <Text style={{ textAlign: "center", color: "white" }}>
+                        {getUnseenMessagesNumber(chatrooms, currentUser) +
+                          getUnseenNotificationsNumber(notifications)}
+                      </Text>
+                    </View>
+                  ) : null}
+                  <MaterialCommunityIcons
+                    name="playlist-music"
+                    size={responsiveSizes[height].backwardIcon + 7}
+                    color={color}
+                  />
+                </View>
+              );
+            } else if (route.name === "Profile") {
+              return (
+                <FontAwesome
+                  name="user-o"
+                  size={responsiveSizes[height].backwardIcon}
+                  color={color}
+                />
+              );
+            }
+          },
+          tabBarStyle: {
+            backgroundColor: "#2e2e2e",
+            height: responsiveSizes[height].bottomNavigatorHeight,
+            flexDirection: "column",
+          },
+          tabBarActiveTintColor: "#9370DB",
+          tabBarInactiveTintColor: "darkgray",
+        })}
+      >
+        <Tabs.Screen
+          name="Discover"
+          component={Discover}
+          options={({ route }) => ({
+            tabBarVisible: ((route) => {
+              const routeName = getFocusedRouteNameFromRoute(route) ?? "";
+              if (routeName === "Comment") {
+                return false;
+              } else if (routeName === "EventsMap") {
+                return false;
+              } else if (routeName === "Messages") {
+                return false;
+              } else if (routeName === "Message") {
+                return false;
+              } else if (routeName === "Discover") {
+                return false;
+              } else if (routeName === "Upload") {
+                return false;
+              }
+              return true;
+            })(route),
+          })}
+        />
+        <Tabs.Screen
+          name="Search"
+          component={SearchScreen}
+          options={({ route }) => ({
+            tabBarVisible: ((route) => {
+              const routeName = getFocusedRouteNameFromRoute(route) ?? "";
+              if (routeName === "EventsMap") {
+                return false;
+              } else if (routeName === "Comment") {
+                return false;
+              }
+              return true;
+            })(route),
+          })}
+        />
+        <Tabs.Screen
+          name="Social"
+          component={Timeline}
+          options={({ route }) => ({
+            tabBarVisible: ((route) => {
+              const routeName = getFocusedRouteNameFromRoute(route) ?? "";
+              if (routeName === "Edit") {
+                return false;
+              } else if (routeName === "NewBand") {
+                return false;
+              } else if (routeName === "EventsMap") {
+                return false;
+              } else if (routeName === "Comment") {
+                return false;
+              }
+              return true;
+            })(route),
+          })}
+        />
+        <Tabs.Screen
+          name="Profile"
+          component={ProfileScreen}
+          options={({ route }) => ({
+            tabBarVisible: ((route) => {
+              const routeName = getFocusedRouteNameFromRoute(route) ?? "";
+              if (routeName === "Edit") {
+                return false;
+              } else if (routeName === "NewBand") {
+                return false;
+              } else if (routeName === "EventsMap") {
+                return false;
+              } else if (routeName === "Comment") {
+                return false;
+              }
+              return true;
+            })(route),
+          })}
+        />
+      </Tabs.Navigator>
+    );
+  };
   const connectToCable = (id) => {
     let cable = consumer.subscriptions.create(
       { channel: "NotificationsChannel", user_id: id },

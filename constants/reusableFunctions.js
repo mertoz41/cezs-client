@@ -286,6 +286,20 @@ const getTiming = (created_at) => {
   }
 };
 
+const getUnseenMessagesNumber = (chatrooms, user) => {
+  let filtered = chatrooms.filter(
+    (room) => room.last_message.user_id !== user?.id && !room.last_message.seen
+    //  &&
+    // !room.last_message.seen
+  );
+  return filtered.length;
+};
+
+const getUnseenNotificationsNumber = (notifications) => {
+  let mapped = notifications.filter((noti) => !noti.seen);
+  return mapped.length;
+};
+
 const removePostsFromTimeline = (type, id) => {
   let filteredTimeline = [...store.getState().timeline].filter(
     (post) => post[type] && post[type] !== id
@@ -359,4 +373,6 @@ export {
   locationItemWidth,
   addPostsToTimeline,
   removePostsFromTimeline,
+  getUnseenMessagesNumber,
+  getUnseenNotificationsNumber,
 };
