@@ -27,7 +27,6 @@ class PostItem extends React.Component {
   state = {
     modalVisible: false,
     playing: true,
-    didFinish: false,
     viewed: false,
     viewCount: this.props.item.view_count,
     applaudCount: this.props.item.applaud_count,
@@ -139,9 +138,10 @@ class PostItem extends React.Component {
   playbackUpdate = async (status) => {
     if (status.positionMillis === 0) {
       // re-start video cycle
-      this.setState({ viewed: false, didFinish: false });
+      this.setState({ viewed: false });
     } else if (
       status.positionMillis > status.durationMillis / 2 &&
+      status.positionMillis !== status.durationMillis &&
       !this.state.viewed
     ) {
       this.setState({ viewed: true });
@@ -150,7 +150,6 @@ class PostItem extends React.Component {
         this.sendView(this.props.item.id);
       }
     } else if (status.didJustFinish) {
-      this.setState({ didFinish: true });
       if (!this.props.onLoop) {
         this.video.current.stopAsync();
         this.props.nextVideo();
