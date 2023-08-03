@@ -180,15 +180,15 @@ class PostItem extends React.Component {
       applaudCount: this.state.applaudCount + 1,
       applauded: true,
     });
-    let updatedApplauds = [...this.props.currentUser.applauds, this.props.item];
-    let updatedCurrentUser = {
-      ...this.props.currentUser,
-      applauds: updatedApplauds,
-    };
-    store.dispatch({
-      type: "UPDATE_CURRENT_USER",
-      currentUser: updatedCurrentUser,
-    });
+    // let updatedApplauds = [...this.props.currentUser.applauds, this.props.item];
+    // let updatedCurrentUser = {
+    //   ...this.props.currentUser,
+    //   applauds: updatedApplauds,
+    // };
+    // store.dispatch({
+    //   type: "UPDATE_CURRENT_USER",
+    //   currentUser: updatedCurrentUser,
+    // });
     let token = await AsyncStorage.getItem("jwt");
     fetch(`http://${API_ROOT}/applaudpost`, {
       method: "POST",
@@ -213,6 +213,18 @@ class PostItem extends React.Component {
       applauded: false,
     });
     let token = await AsyncStorage.getItem("jwt");
+    // let updatedApplauds = [...this.props.currentUser.applauds].filter(
+    //   (vid) => vid.id !== id
+    // );
+    // let updatedCurrentUser = {
+    //   ...this.props.currentUser,
+    //   applauds: updatedApplauds,
+    // };
+    // store.dispatch({
+    //   type: "UPDATE_CURRENT_USER",
+    //   currentUser: updatedCurrentUser,
+    // });
+
     fetch(`http://${API_ROOT}/unapplaudpost/${id}`, {
       method: "DELETE",
       headers: {
@@ -504,7 +516,6 @@ const styles = StyleSheet.create({
   },
 });
 const mapStateToProps = (state) => ({
-  playlists: state.playlists,
   currentUser: state.currentUser,
   timeline: state.timeline,
 });

@@ -41,6 +41,7 @@ class Timeline extends Component {
       this.createSubs(this.props.currentUser.id);
     }
   }
+  
   componentDidUpdate(prevProps) {
     if (
       this.props.route.params &&

@@ -70,6 +70,7 @@ function App(props) {
         .then(async (resp) => {
           if (resp.message && !resp.unauthorized) {
             await AsyncStorage.removeItem("jwt");
+            setLoading(false);
           } else {
             let user = { ...resp.user };
             let sortedNotis = user.notifications.sort((a, b) => {
