@@ -61,7 +61,7 @@ const Follow = ({ route, navigation, currentUser }) => {
 
   const getBandFollowers = async (id) => {
     let token = await AsyncStorage.getItem("jwt");
-    fetch(`http://${API_ROOT}/bandfollowers/${id}`, {
+    fetch(`http://${API_ROOT}/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

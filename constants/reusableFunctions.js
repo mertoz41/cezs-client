@@ -295,6 +295,13 @@ const getUnseenMessagesNumber = (chatrooms, user) => {
   return filtered.length;
 };
 
+const updateCurrentUser = (updatedUser) => {
+  store.dispatch({
+    type: "UPDATE_CURRENT_USER",
+    currentUser: updatedUser,
+  });
+};
+
 const getUnseenNotificationsNumber = (notifications) => {
   let mapped = notifications.filter((noti) => !noti.seen);
   return mapped.length;
@@ -375,4 +382,5 @@ export {
   removePostsFromTimeline,
   getUnseenMessagesNumber,
   getUnseenNotificationsNumber,
+  updateCurrentUser
 };

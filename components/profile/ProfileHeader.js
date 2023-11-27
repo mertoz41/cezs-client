@@ -11,6 +11,7 @@ import {
   responsiveSizes,
   addPostsToTimeline,
   removePostsFromTimeline,
+  updateCurrentUser,
 } from "../../constants/reusableFunctions";
 const { height } = Dimensions.get("window");
 const ProfileHeader = ({
@@ -19,14 +20,16 @@ const ProfileHeader = ({
   goBack,
   navigateMessages,
   navigateEdit,
-  getAccount,
   follows,
   setFollows,
+  setFollowerNumber,
 }) => {
   const unfollowAccount = async (account) => {
+    setFollows(false);
+    setFollowerNumber((prevState) => prevState - 1);
     let token = await AsyncStorage.getItem("jwt");
     fetch(
-      `http://${API_ROOT}/${account.username ? "" : "band"}unfollow/${
+      `http://${API_ROOT}/${account.username ? "" : "band"}follows/${
         account.id
       }`,
       {
@@ -39,7 +42,6 @@ const ProfileHeader = ({
     )
       .then((resp) => resp.json())
       .then((resp) => {
-        getAccount(account.id);
         removePostsFromTimeline(
           `${account.username ? "user" : "band"}_id`,
           account.id
@@ -48,44 +50,43 @@ const ProfileHeader = ({
           ...currentUser,
           follows_count: currentUser.follows_count - 1,
         };
-        setFollows(false);
-        store.dispatch({
-          type: "UPDATE_CURRENT_USER",
-          currentUser: updatedCurrentUser,
-        });
+        updateCurrentUser(updatedCurrentUser);
       })
-      .catch((err) => Toast.show({ type: "error", text1: err.message }));
+      .catch((err) => {
+        Toast.show({ type: "error", text1: err.message });
+        setFollows(true);
+        setFollowerNumber((prevState) => prevState + 1);
+      });
   };
 
   const followAccount = async (account) => {
+    setFollowerNumber((prevState) => prevState + 1);
+    setFollows(true);
+
     let token = await AsyncStorage.getItem("jwt");
-    fetch(
-      `http://${API_ROOT}/${account.username ? "" : "band"}follow/${
-        account.id
-      }`,
-      {
-        headers: {
-          "Content-type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    )
+    fetch(`http://${API_ROOT}/${account.username ? "" : "band"}follows`, {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ id: account.id }),
+    })
       .then((resp) => resp.json())
       .then((resp) => {
-        getAccount(account.id);
         addPostsToTimeline(account.posts.slice(0, 3));
 
-        setFollows(true);
         let updatedCurrentUser = {
           ...currentUser,
           follows_count: currentUser.follows_count + 1,
         };
-        store.dispatch({
-          type: "UPDATE_CURRENT_USER",
-          currentUser: updatedCurrentUser,
-        });
+        updateCurrentUser(updatedCurrentUser);
       })
-      .catch((err) => Toast.show({ type: "error", text1: err.message }));
+      .catch((err) => {
+        setFollows(false);
+        Toast.show({ type: "error", text1: err.message });
+        setFollowerNumber((prevState) => prevState - 1);
+      });
   };
   const renderFollowButton = (account) => {
     return (
@@ -136,7 +137,7 @@ const ProfileHeader = ({
     let blockObj = {};
     blockObj[acct.username ? "blocked_user_id" : "blocked_band_id"] = acct.id;
     let token = await AsyncStorage.getItem("jwt");
-    fetch(`http://${API_ROOT}/block_account`, {
+    fetch(`http://${API_ROOT}/userblocks`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,

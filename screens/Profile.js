@@ -63,6 +63,7 @@ const Profile = ({ currentUser, navigation }) => {
           account={currentUser}
           toFollow={toFollow}
           toPostView={toPostView}
+          followerNumber={currentUser.followers_count}
         />
         {!currentUser.avatar ? (
           <View style={{ marginVertical: 30 }}>
@@ -99,6 +100,7 @@ const Profile = ({ currentUser, navigation }) => {
             toPostView={toPostView}
             toSongScreen={toSongScreen}
             origin="user"
+            applauds={currentUser.applauds}
           />
         ) : null}
       </ScrollView>

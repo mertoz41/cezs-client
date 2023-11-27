@@ -41,7 +41,7 @@ class Timeline extends Component {
       this.createSubs(this.props.currentUser.id);
     }
   }
-  
+
   componentDidUpdate(prevProps) {
     if (
       this.props.route.params &&
@@ -139,6 +139,8 @@ class Timeline extends Component {
           timeline: updatedTimeline,
         });
         this.setState({ uploadingPerc: 0 });
+        Toast.show({ type: "success", text1: "Your video is posted." });
+
         // this.kablo.current.unsubscribe();
       } else {
         this.setState({ uploadingPerc: parseInt(data * 100) });
@@ -154,10 +156,8 @@ class Timeline extends Component {
       { channel: "VideoConversionChannel", user_id: id },
       {
         connected() {
-          // console.log("connected to channel" + id);
         },
         received(data) {
-          Toast.show({ type: "success", text1: "Your video is posted." });
           addToTimeline(data);
         },
         disconnected() {
@@ -295,6 +295,26 @@ class Timeline extends Component {
           />
         }
       />
+      // <FlashList
+      //   ref={(ref) => {
+      //     this.flatRef = ref;
+      //   }}
+      //   data={this.props.timeline}
+      //   renderItem={this.renderItem}
+      //   keyExtractor={(item, index) => "key" + index}
+      //   // style={styles.scroll}
+      //   estimatedItemSize={200}
+      //   // initialNumToRender={5}
+      //   viewabilityConfig={this.viewabilityConfig}
+      //   onViewableItemsChanged={this.viewableItemChanged}
+      //   refreshControl={
+      //     <RefreshControl
+      //       tintColor="white"
+      //       refreshing={this.state.refreshing}
+      //       onRefresh={this.onRefresh}
+      //     />
+      //   }
+      // />
     );
   };
 

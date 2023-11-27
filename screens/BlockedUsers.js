@@ -26,7 +26,7 @@ const BlockedUsers = ({ currentUser, navigation }) => {
 
   getBlockedAccounts = async () => {
     let token = await AsyncStorage.getItem("jwt");
-    fetch(`http://${API_ROOT}/blockedaccounts`, {
+    fetch(`http://${API_ROOT}/userblocks`, {
       headers: {
         "Content-type": "application/json",
         Authorization: `Bearer ${token}`,

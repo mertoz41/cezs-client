@@ -347,7 +347,7 @@ const Message = ({ navigation, route, currentUser, chatrooms }) => {
     <View style={styles.container}>
       {renderHeader()}
       <View style={{ flex: 1 }}>
-        {!selectedUser && !deletedUser? (
+        {!selectedUser && !deletedUser ? (
           <View style={{ flexDirection: "row" }}>
             <View style={{ flex: 1 }}>
               <TextInput

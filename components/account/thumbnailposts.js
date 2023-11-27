@@ -1,6 +1,9 @@
 import React from "react";
-import { View, StyleSheet, Text, ScrollView } from "react-native";
+import { View, StyleSheet, Text, ScrollView, Dimensions } from "react-native";
+import { responsiveSizes } from "../../constants/reusableFunctions";
 import Thumbnail from "../artist/Thumbnail";
+const { height } = Dimensions.get("window");
+
 const ThumbnailPosts = ({ posts, display, account, toPostView }) => {
   toPostPage = (item) => {
     toPostView(item, posts);
@@ -22,7 +25,7 @@ const ThumbnailPosts = ({ posts, display, account, toPostView }) => {
       ) : (
         <Text
           style={{
-            fontSize: 24,
+            fontSize: responsiveSizes[height].sliderItemFontSize,
             fontWeight: "300",
             textAlign: "center",
             marginTop: 25,

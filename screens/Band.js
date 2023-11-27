@@ -1,12 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import {
-  View,
-  StyleSheet,
-  ScrollView,
-  ActivityIndicator,
-  Text,
-  Animated,
-} from "react-native";
+import { View, ScrollView, ActivityIndicator, Animated } from "react-native";
 import { API_ROOT } from "../constants/index";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import UpcomingEvent from "../components/account/upcomingevent";
@@ -17,25 +10,22 @@ import ProfileHeader from "../components/profile/ProfileHeader";
 import InstrumentSection from "../components/profile/instrumentsection";
 import Toast from "react-native-toast-message";
 import Tabs from "../components/account/Tabs";
-import { useIsFocused } from "@react-navigation/native";
 import { preparePostView } from "../constants/reusableFunctions";
-const Band = ({ route, navigation, currentUser }) => {
-  const isFocused = useIsFocused();
+const Band = ({ route, navigation }) => {
   const [theBand, setTheBand] = useState(null);
   const [loading, setLoading] = useState(false);
   const [upcomingGig, setUpcomingGig] = useState(null);
   const [follows, setFollows] = useState(false);
+  const [followerNumber, setFollowerNumber] = useState(null);
   const translation = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    if (isFocused && !theBand) {
-      setLoading(true);
-      getBand(route.params.id);
-    }
+    setLoading(true);
+    getBand(route.params.id);
     return () => {
       setTheBand(null);
     };
-  }, [isFocused]);
+  }, []);
   const getBand = async (id) => {
     let token = await AsyncStorage.getItem("jwt");
 
@@ -47,6 +37,7 @@ const Band = ({ route, navigation, currentUser }) => {
       .then((resp) => resp.json())
       .then((resp) => {
         setTheBand(resp.band);
+        setFollowerNumber(resp.band.followers_count);
         setFollows(resp.follows);
         if (resp.band.upcoming_event) {
           setUpcomingGig(resp.band.upcoming_event);
@@ -106,20 +97,19 @@ const Band = ({ route, navigation, currentUser }) => {
           navigateEdit={toEditBand}
           account={theBand}
           follows={follows}
-          getAccount={getBand}
           setFollows={setFollows}
           goBack={backTo}
+          setFollowerNumber={setFollowerNumber}
         />
         <ScrollView>
           {theBand ? (
             <>
               <Card avatar={theBand.picture} />
               <Info
-                setTheBand={setTheBand}
-                type="band"
                 toPostView={toPostView}
                 account={theBand}
                 toFollow={toFollow}
+                followerNumber={followerNumber}
               />
               {upcomingGig ? <UpcomingEvent gig={upcomingGig} /> : null}
 
@@ -136,6 +126,7 @@ const Band = ({ route, navigation, currentUser }) => {
                   toPostView={toPostView}
                   toSongScreen={toSongScreen}
                   origin={"band"}
+                  applauds={[]}
                 />
               ) : null}
             </>

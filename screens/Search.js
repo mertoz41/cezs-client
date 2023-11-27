@@ -18,7 +18,7 @@ import Toast from "react-native-toast-message";
 import { responsiveSizes } from "../constants/reusableFunctions";
 const { width, height } = Dimensions.get("window");
 
-const Search = ({ navigation, currentUser }) => {
+const Search = ({ navigation, loggedIn, currentUser }) => {
   const [searching, setSearching] = useState("");
   const [result, setResult] = useState([]);
   const [searchingFor, setSearchingFor] = useState("users");
@@ -140,8 +140,8 @@ const Search = ({ navigation, currentUser }) => {
           setDisplayNotFound(`Couldn't find '${searching}'`);
         } else {
           if (type === "user") {
-            let filtered = resp?.filter((user) => user.id !== currentUser.id);
-            setResult(filtered);
+            // let filtered = resp?.filter((user) => user.id !== currentUser.id);
+            setResult(resp);
           } else {
             setResult(resp.bands);
           }
@@ -404,7 +404,7 @@ const Search = ({ navigation, currentUser }) => {
                 : styles.itemWriting
             }
           >
-            {count} {name}
+             {name}
           </Text>
         </TouchableOpacity>
       );
@@ -757,6 +757,9 @@ const styles = StyleSheet.create({
 });
 const mapStateToProps = (state) => ({
   currentUser: state.currentUser,
+  loggedIn: state.loggedIn,
 });
 
 export default connect(mapStateToProps)(Search);
+
+//

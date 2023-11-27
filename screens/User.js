@@ -1,11 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import {
-  StyleSheet,
-  View,
-  ActivityIndicator,
-  ScrollView,
-  Animated,
-} from "react-native";
+import { ActivityIndicator, ScrollView, Animated } from "react-native";
 import ProfileHeader from "../components/profile/ProfileHeader";
 import InstrumentSection from "../components/profile/instrumentsection";
 import { API_ROOT } from "../constants/index";
@@ -16,27 +10,21 @@ import Card from "../components/account/card";
 import UserTabs from "../components/account/Tabs";
 import { connect } from "react-redux";
 import Toast from "react-native-toast-message";
-import { useIsFocused } from "@react-navigation/native";
 import { preparePostView } from "../constants/reusableFunctions";
-const User = ({ route, navigation, chatrooms, currentUser }) => {
-  const isFocused = useIsFocused();
+const User = ({ route, navigation, chatrooms }) => {
   const [theUser, setTheUser] = useState(null);
   const [loading, setLoading] = useState(false);
   const [upcomingEvent, setUpcomingEvent] = useState(null);
   const [follows, setFollows] = useState(false);
-  const [songs, setSongs] = useState([]);
+  const [followerNumber, setFollowerNumber] = useState(null);
   const translation = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    if (isFocused && !theUser) {
-      setLoading(true);
-      getUser(route.params.id);
-    }
-
+    getUser(route.params.id);
     return () => {
       setTheUser(null);
     };
-  }, [isFocused]);
+  }, []);
 
   const getUser = async (id) => {
     let token = await AsyncStorage.getItem("jwt");
@@ -49,7 +37,7 @@ const User = ({ route, navigation, chatrooms, currentUser }) => {
       .then((resp) => {
         setFollows(resp.follows);
         setTheUser(resp.user);
-
+        setFollowerNumber(resp.user.followers_count);
         if (resp.user.upcoming_event) {
           setUpcomingEvent(resp.user.upcoming_event);
         }
@@ -85,12 +73,6 @@ const User = ({ route, navigation, chatrooms, currentUser }) => {
   const toSettingsScreen = () => {
     navigation.navigate("Edit");
   };
-  const toCommentsScreen = (comments) => {
-    navigation.navigate("Comment", comments);
-  };
-  const toArtistPageFromContent = (artis) => {
-    navigation.navigate("Artist", artis);
-  };
 
   const toBandPage = (band) => {
     navigation.push("Band", { ...band, bandname: band.name });
@@ -117,10 +99,10 @@ const User = ({ route, navigation, chatrooms, currentUser }) => {
         account={theUser}
         goBack={navigation.goBack}
         navigateMessages={toMessageScreen}
-        getAccount={getUser}
         follows={follows}
         setFollows={setFollows}
         navigateEdit={toSettingsScreen}
+        setFollowerNumber={setFollowerNumber}
       />
       {loading ? (
         <ActivityIndicator
@@ -134,12 +116,10 @@ const User = ({ route, navigation, chatrooms, currentUser }) => {
         <ScrollView>
           <Card avatar={theUser.avatar} />
           <Info
-            type="user"
-            toMessageScreen={toMessageScreen}
-            setTheUser={setTheUser}
             toPostView={toPostView}
             account={theUser}
             toFollow={toFollow}
+            followerNumber={followerNumber}
           />
           {upcomingEvent ? <UpcomingEvent gig={upcomingEvent} /> : null}
           <InstrumentSection
@@ -155,6 +135,7 @@ const User = ({ route, navigation, chatrooms, currentUser }) => {
               toPostView={toPostView}
               toSongScreen={toSongScreen}
               origin={"user"}
+              applauds={theUser.applauds}
             />
           ) : null}
         </ScrollView>
@@ -163,26 +144,8 @@ const User = ({ route, navigation, chatrooms, currentUser }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  writing: {
-    textAlign: "center",
-    fontSize: 30,
-  },
-
-  title: {
-    fontSize: 24,
-    fontWeight: "600",
-    color: "royalblue",
-    padding: 10,
-  },
-});
-
 const mapStateToProps = (state) => ({
   chatrooms: state.chatrooms,
-  currentUser: state.currentUser,
 });
 
 export default connect(mapStateToProps)(User);

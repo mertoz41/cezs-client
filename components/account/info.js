@@ -13,7 +13,7 @@ import { connect } from "react-redux";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { responsiveSizes } from "../../constants/reusableFunctions";
 const { height } = Dimensions.get("window");
-const Info = ({ account, toFollow, toPostView }) => {
+const Info = ({ account, toFollow, toPostView, followerNumber }) => {
   const [viewCount, setViewCount] = useState(0);
   useEffect(() => {
     let postsCount = 0;
@@ -28,9 +28,6 @@ const Info = ({ account, toFollow, toPostView }) => {
     return month + year;
   };
 
-  const uniqueArray = (array) => {
-    return [...new Map(array.map((item) => [item["id"], item])).values()];
-  };
   return (
     <View style={styles.container}>
       <View style={{ flex: 1, justifyContent: "flex-end" }}>
@@ -74,11 +71,9 @@ const Info = ({ account, toFollow, toPostView }) => {
 
             <TouchableOpacity
               style={styles.numbers}
-              onPress={
-                account.followers_count > 0 ? () => toFollow("followers") : null
-              }
+              onPress={followerNumber > 0 ? () => toFollow("followers") : null}
             >
-              <Text style={styles.boxNumber}>{account.followers_count}</Text>
+              <Text style={styles.boxNumber}>{followerNumber}</Text>
               <Text style={styles.boxWritings}>followers</Text>
             </TouchableOpacity>
           </View>

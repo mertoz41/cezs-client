@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { responsiveSizes } from "../../constants/reusableFunctions";
 const { height } = Dimensions.get("window");
-const SongsList = ({ lists, toSongPage }) => {
+const SongsList = ({ lists, toSongPage, origin }) => {
   return (
     <View style={styles.container}>
       {lists.length ? (
@@ -99,7 +99,7 @@ const SongsList = ({ lists, toSongPage }) => {
             color: "white",
           }}
         >
-          user has no covers.
+          {origin} has no covers.
         </Text>
       )}
     </View>
@@ -108,15 +108,6 @@ const SongsList = ({ lists, toSongPage }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 6,
-  },
-  songItem: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    height: "auto",
-    borderBottomWidth: 1,
-    // marginHorizontal: 10,
-    borderBottomColor: "gray",
-    padding: 10,
   },
 });
 

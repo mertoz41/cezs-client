@@ -9,7 +9,6 @@ import {
 import SongsList from "./songslist";
 import ThumbnailPosts from "./thumbnailposts";
 import { responsiveSizes } from "../../constants/reusableFunctions";
-import { connect } from "react-redux";
 const initialLayout = { width: Dimensions.get("window").width };
 const { height } = Dimensions.get("window");
 
@@ -69,39 +68,24 @@ const renderTabBar = (props) => (
   />
 );
 
-const Tabs = ({ toPostView, account, origin, toSongScreen }) => {
+const Tabs = ({ toPostView, account, origin, toSongScreen, applauds }) => {
   const [index, setIndex] = useState(0);
   const [songs, setSongs] = useState([]);
-  const [posts, setPosts] = useState([]);
-  const [applauds, setApplauds] = useState([]);
-
-  const [routes, setRoutes] = useState([]);
+  const [routes, setRoutes] = useState([
+    { key: "posts", title: "posts" },
+    { key: "covers", title: "covers" },
+  ]);
 
   useEffect(() => {
-    let availableRoutes = [];
     if (account.posts.length) {
-      let sorted = account.posts.sort((a, b) => {
-        return new Date(b.created_at) - new Date(a.created_at);
-      });
-      setPosts(sorted);
-      availableRoutes = [{ key: "posts", title: "posts" }];
       let songPosts = account.posts.filter((post) => post.song_name);
       if (songPosts.length) {
         setSongs(songPosts);
-        availableRoutes = [
-          ...availableRoutes,
-          { key: "covers", title: "covers" },
-        ];
       }
     }
-    if (origin === "user" && account.applauds.length) {
-      setApplauds(account.applauds);
-      availableRoutes = [
-        ...availableRoutes,
-        { key: "applauds", title: "applauds" },
-      ];
+    if (origin === "user") {
+      setRoutes([...routes, { key: "applauds", title: "applauds" }]);
     }
-    setRoutes(availableRoutes);
   }, [account]);
 
   const renderScene = ({ route }) => {
@@ -109,7 +93,7 @@ const Tabs = ({ toPostView, account, origin, toSongScreen }) => {
       case "posts":
         return (
           <ThumbnailPosts
-            posts={posts}
+            posts={account.posts}
             display="posts"
             toPostView={toPostView}
             account="user"
@@ -123,7 +107,7 @@ const Tabs = ({ toPostView, account, origin, toSongScreen }) => {
         return (
           <ThumbnailPosts
             posts={applauds}
-            display="posts"
+            display="applauds"
             toPostView={toPostView}
             account="user"
           />
@@ -153,10 +137,6 @@ const styles = StyleSheet.create({
     flex: 1,
     width: "100%",
   },
-  scene: {
-    flex: 1,
-  },
 });
 
-const mapStateToProps = (state) => ({ currentUser: state.currentUser });
-export default connect(mapStateToProps)(Tabs);
+export default Tabs;

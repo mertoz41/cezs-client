@@ -190,7 +190,7 @@ class PostItem extends React.Component {
     //   currentUser: updatedCurrentUser,
     // });
     let token = await AsyncStorage.getItem("jwt");
-    fetch(`http://${API_ROOT}/applaudpost`, {
+    fetch(`http://${API_ROOT}/applauds`, {
       method: "POST",
       headers: {
         "Content-type": "application/json",
@@ -225,7 +225,7 @@ class PostItem extends React.Component {
     //   currentUser: updatedCurrentUser,
     // });
 
-    fetch(`http://${API_ROOT}/unapplaudpost/${id}`, {
+    fetch(`http://${API_ROOT}/applauds/${id}`, {
       method: "DELETE",
       headers: {
         "Content-type": "application/json",
@@ -437,6 +437,7 @@ class PostItem extends React.Component {
     );
   };
   checkShouldPlay = () => {
+    // console.log("WE HEREEE", this.props.index, this.props.viewingIndex);
     if (this.props.index === this.props.viewingIndex) {
       return true;
     }

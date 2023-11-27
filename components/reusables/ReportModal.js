@@ -33,13 +33,13 @@ const ReportModal = ({
   ];
   const reportItem = async (id, type) => {
     let token = await AsyncStorage.getItem("jwt");
-    fetch(`http://${API_ROOT}/report${type}/${id}`, {
+    fetch(`http://${API_ROOT}/reports/`, {
       method: "POST",
       headers: {
         "Content-type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ description: selectedPrompt }),
+      body: JSON.stringify({ description: selectedPrompt, type: type, id: id,}),
     })
       .then((resp) => resp.json())
       .then((resp) => {
