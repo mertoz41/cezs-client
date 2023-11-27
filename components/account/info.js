@@ -8,11 +8,15 @@ import {
   Dimensions,
 } from "react-native";
 import dateFormat from "dateformat";
+import { BlurView } from "expo-blur";
+
 import { Ionicons } from "@expo/vector-icons";
 import { connect } from "react-redux";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { responsiveSizes } from "../../constants/reusableFunctions";
 const { height } = Dimensions.get("window");
+import BlurryBubble from "../reusables/BlurryBubble";
+
 const Info = ({ account, toFollow, toPostView, followerNumber }) => {
   const [viewCount, setViewCount] = useState(0);
   useEffect(() => {
@@ -28,17 +32,9 @@ const Info = ({ account, toFollow, toPostView, followerNumber }) => {
     return month + year;
   };
 
-  return (
-    <View style={styles.container}>
-      <View style={{ flex: 1, justifyContent: "flex-end" }}>
-        <Text style={responsiveSizes[height].sectionTitle}>about</Text>
-      </View>
-      <ScrollView horizontal={true}>
-        {account && account.bio ? (
-          <View style={styles.bioItem}>
-            <Text style={styles.descriptionWriting}>{account.bio}</Text>
-          </View>
-        ) : null}
+  const renderStats = () => {
+    return (
+      <BlurryBubble radius={20}>
         <View style={styles.item}>
           <View style={{ flexDirection: "row" }}>
             <TouchableOpacity
@@ -78,6 +74,13 @@ const Info = ({ account, toFollow, toPostView, followerNumber }) => {
             </TouchableOpacity>
           </View>
         </View>
+      </BlurryBubble>
+    );
+  };
+
+  const renderOrigin = () => {
+    return (
+      <BlurryBubble radius={20}>
         <View style={styles.item}>
           {account && account.location ? (
             <View style={{ height: "auto", flexDirection: "row" }}>
@@ -111,6 +114,24 @@ const Info = ({ account, toFollow, toPostView, followerNumber }) => {
             </View>
           </View>
         </View>
+      </BlurryBubble>
+    );
+  };
+  return (
+    <View style={styles.container}>
+      <View style={{ flex: 1, justifyContent: "flex-end" }}>
+        <Text style={responsiveSizes[height].sectionTitle}>about</Text>
+      </View>
+      <ScrollView horizontal={true}>
+        {account && account.bio ? (
+          <BlurryBubble radius={20}>
+            <View style={styles.bioItem}>
+              <Text style={styles.descriptionWriting}>{account.bio}</Text>
+            </View>
+          </BlurryBubble>
+        ) : null}
+        {renderStats()}
+        {renderOrigin()}
       </ScrollView>
     </View>
   );
@@ -120,8 +141,6 @@ const styles = StyleSheet.create({
   container: {
     height: "auto",
     marginBottom: 5,
-    // backgroundColor: "#2e2e2e",
-    // paddingBottom: 5,
   },
   numbers: {
     height: "auto",
@@ -149,25 +168,22 @@ const styles = StyleSheet.create({
     color: "white",
   },
   item: {
-    // backgroundColor: 'darkgray',
+    flex: 1,
     borderWidth: 1,
     borderColor: "gray",
-    marginLeft: 10,
+    // marginLeft: 10,
     justifyContent: "center",
-    // alignSelf: 'center',
     minHeight: 40,
     maxWidth: 400,
     borderRadius: 20,
     padding: 5,
   },
   bioItem: {
-    // backgroundColor: "#9370DB",
+    flex: 1,
     borderWidth: responsiveSizes[height].borderWidth,
     borderColor: "#9370DB",
-    marginLeft: 15,
+    // marginLeft: 15,
     justifyContent: "center",
-    // alignSelf: 'center',
-    // minHeight: 40,
     maxWidth: responsiveSizes[height].bioMaxWidth,
     borderRadius: 20,
     padding: 5,

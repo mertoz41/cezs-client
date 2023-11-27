@@ -72,8 +72,8 @@ const ipadSizes = {
     fontWeight: "500",
     borderWidth: 2,
     borderColor: "gray",
-    borderRadius: 10,
-    padding: 5,
+    // borderRadius: 10,
+    // padding: 5,
   },
 
   screenTitle: 34,
@@ -166,9 +166,10 @@ const iphoneSizes = {
   sliderItem: {
     fontSize: 18,
     color: "white",
-    textAlign: "center",
+    // textAlign: "center",
     borderWidth: 1,
     borderColor: "gray",
+    // marginLeft: 10,
     borderRadius: 10,
     padding: 5,
   },

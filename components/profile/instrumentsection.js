@@ -12,6 +12,7 @@ import { connect } from "react-redux";
 import Favorites from "./Favorites";
 const { height } = Dimensions.get("window");
 import { responsiveSizes } from "../../constants/reusableFunctions";
+import BlurryBubble from "../reusables/BlurryBubble";
 const InstrumentSection = ({
   toBandPage,
   toUserPage,
@@ -19,7 +20,6 @@ const InstrumentSection = ({
   genres,
   bands,
   members,
-  currentUser,
   theUser,
 }) => {
   renderTitle = (title, items) => {
@@ -30,14 +30,16 @@ const InstrumentSection = ({
             <Text style={responsiveSizes[height].sectionTitle}>{title}</Text>
           </View>
           <View style={{ flex: 3 }}>
-            <ScrollView style={styles.instrumentsBox} horizontal={true}>
+            <ScrollView horizontal={true}>
               {items.map((item, index) => {
                 return (
-                  <View style={styles.instrumentItem} key={index}>
-                    <Text style={responsiveSizes[height].sliderItem}>
-                      {item.name}
-                    </Text>
-                  </View>
+                  <BlurryBubble radius={10}>
+                    <View style={styles.instrumentItem} key={index}>
+                      <Text style={responsiveSizes[height].sliderItem}>
+                        {item.name}
+                      </Text>
+                    </View>
+                  </BlurryBubble>
                 );
               })}
             </ScrollView>
@@ -129,8 +131,8 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   instrumentItem: {
-    marginBottom: 5,
-    marginLeft: 10,
+    // marginBottom: 5,
+    // marginLeft: 10,
   },
   itemBottom: {
     alignSelf: "center",

@@ -10,6 +10,7 @@ import {
 import { connect } from "react-redux";
 const { height } = Dimensions.get("window");
 import { responsiveSizes } from "../../constants/reusableFunctions";
+import BlurryBubble from "../reusables/BlurryBubble";
 const Favorites = ({ currentUser, theUser, toMusicPage }) => {
   const [likedArtists, setLikedArtists] = useState([]);
   const [likedSongs, setLikedSongs] = useState([]);
@@ -21,30 +22,32 @@ const Favorites = ({ currentUser, theUser, toMusicPage }) => {
   const renderFavorites = (type, items) => {
     const renderFavoriteItem = (item) => {
       return (
-        <TouchableOpacity
-          style={styles.item}
-          key={item.id}
-          onPress={() => toMusicPage(item)}
-        >
-          <Text style={styles.mainWriting}>
-            {item.name}
-            {item.artist_name && (
-              <Text style={styles.secondaryWriting}>
-                <Text
-                  style={{
-                    fontSize: responsiveSizes[height].sliderItemFontSize,
-                    color: "#9370DB",
-                    textAlign: "left",
-                  }}
-                >
-                  {" "}
-                  /{" "}
+        <BlurryBubble radius={10}>
+          <TouchableOpacity
+            style={styles.item}
+            key={item.id}
+            onPress={() => toMusicPage(item)}
+          >
+            <Text style={styles.mainWriting}>
+              {item.name}
+              {item.artist_name && (
+                <Text style={styles.secondaryWriting}>
+                  <Text
+                    style={{
+                      fontSize: responsiveSizes[height].sliderItemFontSize,
+                      color: "#9370DB",
+                      textAlign: "left",
+                    }}
+                  >
+                    {" "}
+                    /{" "}
+                  </Text>
+                  {item.artist_name}
                 </Text>
-                {item.artist_name}
-              </Text>
-            )}
-          </Text>
-        </TouchableOpacity>
+              )}
+            </Text>
+          </TouchableOpacity>
+        </BlurryBubble>
       );
     };
     return (
@@ -78,9 +81,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#9370DB",
     flexDirection: "row",
-    marginLeft: 10,
+    // marginLeft: 10,
     borderRadius: 10,
-    marginBottom: 10,
+    // marginBottom: 10,
     padding: 5,
   },
 
