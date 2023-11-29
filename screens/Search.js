@@ -404,7 +404,7 @@ const Search = ({ navigation, loggedIn, currentUser }) => {
                 : styles.itemWriting
             }
           >
-             {name}
+            {name}
           </Text>
         </TouchableOpacity>
       );

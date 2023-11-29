@@ -33,7 +33,7 @@ const InstrumentSection = ({
             <ScrollView horizontal={true}>
               {items.map((item, index) => {
                 return (
-                  <BlurryBubble radius={10}>
+                  <BlurryBubble radius={10} marginLeft={10}>
                     <View style={styles.instrumentItem} key={index}>
                       <Text style={responsiveSizes[height].sliderItem}>
                         {item.name}
@@ -58,39 +58,42 @@ const InstrumentSection = ({
           <View style={{ flex: 1, justifyContent: "flex-end" }}>
             <Text style={responsiveSizes[height].sectionTitle}>{title}</Text>
           </View>
+
           <View style={{ flex: 3 }}>
             <ScrollView horizontal={true}>
               {items.map((item, index) => (
-                <TouchableOpacity
-                  key={index}
-                  style={styles.instrumentItem}
-                  onPress={() =>
-                    isBand() ? toBandPage(item) : toUserPage(item)
-                  }
-                >
-                  <View style={styles.itemTop}>
-                    <Avatar
-                      avatar={isBand() ? item.picture : item.avatar}
-                      size={responsiveSizes[height].bandMemberAvatar}
-                      withRadius={true}
-                    />
-                  </View>
-                  <View style={styles.itemBottom}>
-                    <Text
-                      style={{
-                        fontSize: responsiveSizes[height].sliderItemFontSize,
-                        color: "white",
-                        textAlign: "center",
-                        borderWidth: responsiveSizes[height].borderWidth,
-                        borderColor: "gray",
-                        borderRadius: 10,
-                        padding: 5,
-                      }}
-                    >
-                      {isBand() ? item.name : item.username}
-                    </Text>
-                  </View>
-                </TouchableOpacity>
+                <BlurryBubble radius={10} marginLeft={10}>
+                  <TouchableOpacity
+                    key={index}
+                    style={styles.instrumentItem}
+                    onPress={() =>
+                      isBand() ? toBandPage(item) : toUserPage(item)
+                    }
+                  >
+                    <View style={styles.itemTop}>
+                      <Avatar
+                        avatar={isBand() ? item.picture : item.avatar}
+                        size={responsiveSizes[height].bandMemberAvatar}
+                        withRadius={true}
+                      />
+                    </View>
+                    <View style={styles.itemBottom}>
+                      <Text
+                        style={{
+                          fontSize: responsiveSizes[height].sliderItemFontSize,
+                          color: "white",
+                          textAlign: "center",
+                          borderWidth: responsiveSizes[height].borderWidth,
+                          borderColor: "gray",
+                          borderRadius: 10,
+                          padding: 5,
+                        }}
+                      >
+                        {isBand() ? item.name : item.username}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                </BlurryBubble>
               ))}
             </ScrollView>
           </View>
@@ -131,11 +134,10 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   instrumentItem: {
-    // marginBottom: 5,
-    // marginLeft: 10,
+    marginLeft: 5,
   },
   itemBottom: {
-    alignSelf: "center",
+    // alignSelf: "center",
   },
 
   section: {

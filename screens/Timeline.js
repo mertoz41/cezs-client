@@ -5,7 +5,7 @@ import {
   View,
   Text,
   FlatList,
-  TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { connect } from "react-redux";
@@ -30,13 +30,19 @@ class Timeline extends Component {
   }
   state = {
     viewingIndex: 0,
+    loading: true,
     refreshing: false,
     filterPosts: [],
+    timeline: [],
     uploadingPerc: 0,
     onLoop: false,
     noPostLeftToShow: false,
   };
   componentDidMount() {
+    // request timeline
+    this.getTimeline();
+
+    // eventually display a couple content through cache right away
     if (this.props.route.params && this.props.route.params.newPost) {
       this.createSubs(this.props.currentUser.id);
     }
@@ -51,7 +57,7 @@ class Timeline extends Component {
       this.createSubs(this.props.currentUser.id);
     }
     if (
-      this.props.timeline.length == this.state.viewingIndex + 1 &&
+      this.state.timeline.length == this.state.viewingIndex + 1 &&
       !this.state.noPostLeftToShow
     ) {
       this.getOlderPosts();
@@ -65,10 +71,25 @@ class Timeline extends Component {
     // this.createSubs(this.props.currentUser.id);
   }
 
+  getTimeline = async () => {
+    let token = await AsyncStorage.getItem("jwt");
+    fetch(`http://${API_ROOT}/timeline`, {
+      method: "GET",
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((resp) => resp.json())
+      .then((resp) => {
+        this.setState({ timeline: resp.timeline, loading: false });
+      });
+  };
+
   getOlderPosts = async () => {
     let token = await AsyncStorage.getItem("jwt");
 
-    let lastItem = this.props.timeline[this.props.timeline.length - 1];
+    let lastItem = this.state.timeline[this.state.timeline.length - 1];
     fetch(`http://${API_ROOT}/olderposts`, {
       method: "POST",
       headers: {
@@ -82,7 +103,7 @@ class Timeline extends Component {
         if (resp.message) {
           this.setState({ noPostLeftToShow: true });
         } else {
-          let updatedTimeline = [...this.props.timeline, ...resp.older_posts];
+          let updatedTimeline = [...this.state.timeline, ...resp.older_posts];
           store.dispatch({
             type: "UPDATE_TIMELINE",
             timeline: updatedTimeline,
@@ -125,7 +146,7 @@ class Timeline extends Component {
     // );
     const addToTimeline = (data) => {
       if (data.clip) {
-        let updatedTimeline = [data, ...this.props.timeline];
+        let updatedTimeline = [data, ...this.state.timeline];
         let updatedCurrentUser = {
           ...this.props.currentUser,
           posts: [...this.props.currentUser.posts, data],
@@ -155,8 +176,7 @@ class Timeline extends Component {
     let cable = consumer.subscriptions.create(
       { channel: "VideoConversionChannel", user_id: id },
       {
-        connected() {
-        },
+        connected() {},
         received(data) {
           addToTimeline(data);
         },
@@ -201,7 +221,7 @@ class Timeline extends Component {
   };
 
   renderItem = ({ item, index }) => {
-    return this.props.timeline.length ? (
+    return this.state.timeline.length ? (
       <PostItem
         origin="timeline"
         isFocused={this.props.isFocused}
@@ -221,7 +241,7 @@ class Timeline extends Component {
     );
   };
   nextVideo = () => {
-    if (this.state.viewingIndex + 1 !== this.props.timeline.length) {
+    if (this.state.viewingIndex + 1 !== this.state.timeline.length) {
       this.setState({ viewingIndex: this.state.viewingIndex + 1 });
       this.flatRef.scrollToIndex({
         animated: true,
@@ -241,7 +261,7 @@ class Timeline extends Component {
   };
   onRefresh = async () => {
     let token = await AsyncStorage.getItem("jwt");
-    let lasts = { last_post: this.props.timeline[0].id };
+    let lasts = { last_post: this.state.timeline[0].id };
     // add new followed posts ids to get videos
     if (this.props.newFollowedPosts.length) {
       lasts.newPostIds = this.props.newFollowedPosts;
@@ -262,7 +282,7 @@ class Timeline extends Component {
       .then((resp) => resp.json())
       .then((resp) => {
         if (resp.timeline.length) {
-          let updatedTimeline = resp.timeline.concat(this.props.timeline);
+          let updatedTimeline = resp.timeline.concat(this.state.timeline);
           let sortedTimeline = updatedTimeline.sort(
             (a, b) => new Date(b.created_at) - new Date(a.created_at)
           );
@@ -280,7 +300,7 @@ class Timeline extends Component {
         ref={(ref) => {
           this.flatRef = ref;
         }}
-        data={this.props.timeline}
+        data={this.state.timeline}
         renderItem={this.renderItem}
         keyExtractor={(item, index) => "key" + index}
         style={styles.scroll}
@@ -299,7 +319,7 @@ class Timeline extends Component {
       //   ref={(ref) => {
       //     this.flatRef = ref;
       //   }}
-      //   data={this.props.timeline}
+      //   data={this.state.timeline}
       //   renderItem={this.renderItem}
       //   keyExtractor={(item, index) => "key" + index}
       //   // style={styles.scroll}
@@ -415,9 +435,10 @@ class Timeline extends Component {
             </Text>
           </View>
         ) : null}
-        {this.props.timeline.length
-          ? this.renderFlatList()
-          : this.renderEmptyMessage()}
+        {this.state.loading ? (
+          <ActivityIndicator color="gray" size="large" />
+        ) : null}
+        {this.renderFlatList()}
       </View>
     );
   }

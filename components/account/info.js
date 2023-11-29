@@ -34,7 +34,7 @@ const Info = ({ account, toFollow, toPostView, followerNumber }) => {
 
   const renderStats = () => {
     return (
-      <BlurryBubble radius={20}>
+      <BlurryBubble marginLeft={10} radius={20}>
         <View style={styles.item}>
           <View style={{ flexDirection: "row" }}>
             <TouchableOpacity
@@ -80,7 +80,7 @@ const Info = ({ account, toFollow, toPostView, followerNumber }) => {
 
   const renderOrigin = () => {
     return (
-      <BlurryBubble radius={20}>
+      <BlurryBubble marginLeft={10} radius={20}>
         <View style={styles.item}>
           {account && account.location ? (
             <View style={{ height: "auto", flexDirection: "row" }}>
@@ -124,7 +124,7 @@ const Info = ({ account, toFollow, toPostView, followerNumber }) => {
       </View>
       <ScrollView horizontal={true}>
         {account && account.bio ? (
-          <BlurryBubble radius={20}>
+          <BlurryBubble marginLeft={10} radius={20}>
             <View style={styles.bioItem}>
               <Text style={styles.descriptionWriting}>{account.bio}</Text>
             </View>
@@ -173,8 +173,8 @@ const styles = StyleSheet.create({
     borderColor: "gray",
     // marginLeft: 10,
     justifyContent: "center",
-    minHeight: 40,
-    maxWidth: 400,
+    // minHeight: 40,
+    maxWidth: responsiveSizes[height].bioMaxWidth,
     borderRadius: 20,
     padding: 5,
   },
@@ -182,7 +182,8 @@ const styles = StyleSheet.create({
     flex: 1,
     borderWidth: responsiveSizes[height].borderWidth,
     borderColor: "#9370DB",
-    // marginLeft: 15,
+    // marginLeft: 15,    
+
     justifyContent: "center",
     maxWidth: responsiveSizes[height].bioMaxWidth,
     borderRadius: 20,
