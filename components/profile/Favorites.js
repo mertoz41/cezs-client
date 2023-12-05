@@ -22,10 +22,9 @@ const Favorites = ({ currentUser, theUser, toMusicPage }) => {
   const renderFavorites = (type, items) => {
     const renderFavoriteItem = (item) => {
       return (
-        <BlurryBubble marginLeft={10} radius={10}>
+        <BlurryBubble key={item.id} marginLeft={10} radius={10}>
           <TouchableOpacity
             style={styles.item}
-            key={item.id}
             onPress={() => toMusicPage(item)}
           >
             <Text style={styles.mainWriting}>

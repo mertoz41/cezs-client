@@ -2,6 +2,7 @@ import React from "react";
 import { View } from "react-native";
 import { Avatar as Avi } from "react-native-elements";
 import { Feather } from "@expo/vector-icons";
+import BlurryBubble from "./BlurryBubble";
 const Avatar = ({ avatar, size, withRadius }) => {
   return (
     <View>
@@ -13,17 +14,20 @@ const Avatar = ({ avatar, size, withRadius }) => {
           avatarStyle={{ borderRadius: withRadius ? 10 : 0 }}
           containerStyle={{
             alignSelf: "center",
+
           }}
         />
       ) : (
-        <View style={{ height: size, width: size, alignSelf: "center" }}>
-          <Feather
-            name="user"
-            size={size}
-            color="gray"
-            style={{ alignSelf: "center" }}
-          />
-        </View>
+        <BlurryBubble radius={0}>
+          <View style={{ height: size, width: size, alignSelf: "center" }}>
+            <Feather
+              name="user"
+              size={size}
+              color="gray"
+              style={{ alignSelf: "center" }}
+            />
+          </View>
+        </BlurryBubble>
       )}
     </View>
   );

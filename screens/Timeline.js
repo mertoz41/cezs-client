@@ -271,7 +271,7 @@ class Timeline extends Component {
       });
     }
     // get timeline
-    fetch(`http://${API_ROOT}/timeline`, {
+    fetch(`http://${API_ROOT}/refreshtimeline`, {
       method: "POST",
       headers: {
         "Content-type": "application/json",
@@ -286,7 +286,8 @@ class Timeline extends Component {
           let sortedTimeline = updatedTimeline.sort(
             (a, b) => new Date(b.created_at) - new Date(a.created_at)
           );
-          store.dispatch({ type: "UPDATE_TIMELINE", timeline: sortedTimeline });
+          this.setState({ timeline: sortedTimeline });
+          // store.dispatch({ type: "UPDATE_TIMELINE", timeline: sortedTimeline });
         }
       })
       .catch((err) => Toast.show({ type: "error", text1: err.message }));

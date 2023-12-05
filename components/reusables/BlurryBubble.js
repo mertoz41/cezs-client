@@ -15,6 +15,7 @@ const BlurryBubble = (props) => {
         tint="dark"
         style={{
           flex: 1,
+          backgroundColor: "rgba(147,112,219, .1)"
         }}
       >
         {props.children}

@@ -32,6 +32,8 @@ const InstrumentEdit = ({
   currentUser,
   toNewBandPage,
   toBlockedUsers,
+  setRemovedGenres,
+  setRemovedInstruments,
 }) => {
   const [searching, setSearching] = useState("");
   const [result, setResult] = useState([]);
@@ -66,67 +68,71 @@ const InstrumentEdit = ({
         .catch((err) => console.log(err));
     }
   };
-  const deleteGenre = async (genre) => {
-    let token = await AsyncStorage.getItem("jwt");
+
+  const removeGenre = async (genre) => {
+    // let token = await AsyncStorage.getItem("jwt");
     let filteredGenres = newGenres.filter((genr) => genr.id !== genre.id);
     setNewGenres(filteredGenres);
-    let updatedCurrentUser = { ...currentUser, genres: filteredGenres };
-    store.dispatch({
-      type: "UPDATE_CURRENT_USER",
-      currentUser: updatedCurrentUser,
-    });
-    let obj = {
-      user_id: currentUser.id,
-      genre_id: genre.id,
-    };
-    fetch(`http://${API_ROOT}/deleteusergenre`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(obj),
-    })
-      .then((resp) => resp.json())
-      .then((resp) => {
-        showToast(genre.name);
-      })
-      .catch((err) => console.log(err));
+    setRemovedGenres((prevState) => [...prevState, genre.id]);
+    // let updatedCurrentUser = { ...currentUser, genres: filteredGenres };
+    // store.dispatch({
+    //   type: "UPDATE_CURRENT_USER",
+    //   currentUser: updatedCurrentUser,
+    // });
+    // let obj = {
+    //   user_id: currentUser.id,
+    //   genre_id: genre.id,
+    // };
+    // fetch(`http://${API_ROOT}/deleteusergenre`, {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //     Authorization: `Bearer ${token}`,
+    //   },
+    //   body: JSON.stringify(obj),
+    // })
+    //   .then((resp) => resp.json())
+    //   .then((resp) => {
+    //     showToast(genre.name);
+    //   })
+    //   .catch((err) => console.log(err));
   };
 
   const deleteInstrument = async (inst) => {
-    let token = await AsyncStorage.getItem("jwt");
+    // let token = await AsyncStorage.getItem("jwt");
     let filteredInstruments = newInstruments.filter(
       (instru) => instru.id !== inst.id
     );
     setNewInstruments(filteredInstruments);
-    let updatedCurrentUser = {
-      ...currentUser,
-      instruments: filteredInstruments,
-    };
-    store.dispatch({
-      type: "UPDATE_CURRENT_USER",
-      currentUser: updatedCurrentUser,
-    });
+    setRemovedInstruments((prevState) => [...prevState, inst.id]);
+    // let updatedCurrentUser = {
+    //   ...currentUser,
+    //   instruments: filteredInstruments,
+    // };
+    // store.dispatch({
+    //   type: "UPDATE_CURRENT_USER",
+    //   currentUser: updatedCurrentUser,
+    // });
 
-    let obj = {
-      user_id: currentUser.id,
-      instrument_id: inst.id,
-    };
-    fetch(`http://${API_ROOT}/deleteuserinstrument`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(obj),
-    })
-      .then((resp) => resp.json())
-      .then((resp) => {
-        showToast(inst.name);
-      })
-      .catch((err) => console.log(err));
+    // let obj = {
+    //   user_id: currentUser.id,
+    //   instrument_id: inst.id,
+    // };
+    // fetch(`http://${API_ROOT}/deleteuserinstrument`, {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //     Authorization: `Bearer ${token}`,
+    //   },
+    //   body: JSON.stringify(obj),
+    // })
+    //   .then((resp) => resp.json())
+    //   .then((resp) => {
+    //     showToast(inst.name);
+    //   })
+    //   .catch((err) => console.log(err));
   };
+
   const showToast = (name) => {
     Toast.show({
       type: "success",
@@ -185,7 +191,7 @@ const InstrumentEdit = ({
       setArtistSearch(text);
     }
     if (text.length) {
-    let token = await AsyncStorage.getItem("jwt");
+      let token = await AsyncStorage.getItem("jwt");
       fetch(`http://${API_ROOT}/artistsearch`, {
         method: "POST",
         headers: {
@@ -207,7 +213,7 @@ const InstrumentEdit = ({
   const searchSongs = async (text) => {
     setSongSearch(text);
     if (text.length) {
-    let token = await AsyncStorage.getItem("jwt");
+      let token = await AsyncStorage.getItem("jwt");
       fetch(`http://${API_ROOT}/songsearch`, {
         method: "POST",
         headers: {
@@ -549,7 +555,7 @@ const InstrumentEdit = ({
         search={searchGenres}
         searching={genreSearching}
         select={selectNewGenre}
-        remove={deleteGenre}
+        remove={removeGenre}
         selected={newGenres}
         searchResult={genreResult}
         clearSearchResult={clearGenreResult}

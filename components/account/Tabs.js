@@ -9,6 +9,7 @@ import {
 import SongsList from "./songslist";
 import ThumbnailPosts from "./thumbnailposts";
 import { responsiveSizes } from "../../constants/reusableFunctions";
+import BlurryBubble from "../reusables/BlurryBubble";
 const initialLayout = { width: Dimensions.get("window").width };
 const { height } = Dimensions.get("window");
 
@@ -59,7 +60,8 @@ const renderTabBar = (props) => (
         style={{
           fontSize: 15,
           color: focused ? "#9370DB" : "darkgray",
-          fontWeight: focused ? "600" : "300",
+          fontWeight: "300",
+          zIndex: 0,
         }}
       >
         {route.title}

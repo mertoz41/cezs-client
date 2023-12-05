@@ -33,8 +33,8 @@ const InstrumentSection = ({
             <ScrollView horizontal={true}>
               {items.map((item, index) => {
                 return (
-                  <BlurryBubble radius={10} marginLeft={10}>
-                    <View style={styles.instrumentItem} key={index}>
+                  <BlurryBubble radius={10} key={index} marginLeft={10}>
+                    <View style={styles.instrumentItem}>
                       <Text style={responsiveSizes[height].sliderItem}>
                         {item.name}
                       </Text>
@@ -62,9 +62,8 @@ const InstrumentSection = ({
           <View style={{ flex: 3 }}>
             <ScrollView horizontal={true}>
               {items.map((item, index) => (
-                <BlurryBubble radius={10} marginLeft={10}>
+                <BlurryBubble key={index} radius={10} marginLeft={10}>
                   <TouchableOpacity
-                    key={index}
                     style={styles.instrumentItem}
                     onPress={() =>
                       isBand() ? toBandPage(item) : toUserPage(item)
@@ -134,7 +133,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   instrumentItem: {
-    marginLeft: 5,
+    // marginLeft: 5,
   },
   itemBottom: {
     // alignSelf: "center",

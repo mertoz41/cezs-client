@@ -42,10 +42,10 @@ const ProfileHeader = ({
     )
       .then((resp) => resp.json())
       .then((resp) => {
-        removePostsFromTimeline(
-          `${account.username ? "user" : "band"}_id`,
-          account.id
-        );
+        // removePostsFromTimeline(
+        //   `${account.username ? "user" : "band"}_id`,
+        //   account.id
+        // );
         let updatedCurrentUser = {
           ...currentUser,
           follows_count: currentUser.follows_count - 1,
@@ -74,7 +74,7 @@ const ProfileHeader = ({
     })
       .then((resp) => resp.json())
       .then((resp) => {
-        addPostsToTimeline(account.posts.slice(0, 3));
+        // addPostsToTimeline(account.posts.slice(0, 3));
 
         let updatedCurrentUser = {
           ...currentUser,
