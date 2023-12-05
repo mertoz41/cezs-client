@@ -220,6 +220,17 @@ class Timeline extends Component {
     this.props.navigation.push("Song", song);
   };
 
+  updateList = (item_id) => {
+    let timelineIds = this.state.timeline.map((post) => post.id);
+    if (timelineIds.includes(item_id)) {
+      let filtered = [...this.state.timeline].filter(
+        (tlItem) => tlItem.id !== item_id
+      );
+      this.setState({ timeline: filtered });
+      // store.dispatch({ type: "UPDATE_TIMELINE", timeline: filtered });
+    }
+  };
+
   renderItem = ({ item, index }) => {
     return this.state.timeline.length ? (
       <PostItem
@@ -235,6 +246,7 @@ class Timeline extends Component {
         artistPage={this.artistPage}
         songPage={this.songPage}
         onLoop={this.state.onLoop}
+        updateList={this.updateList}
       />
     ) : (
       this.renderEmptyMessage()

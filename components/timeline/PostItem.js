@@ -54,17 +54,7 @@ class PostItem extends React.Component {
     })
       .then((resp) => resp.json())
       .then((resp) => {
-        // show toast delete video
-        let timelineIds = this.props.timeline.map((post) => post.id);
-        if (timelineIds.includes(item.id)) {
-          let filtered = [...this.props.timeline].filter(
-            (tlItem) => tlItem.id !== item.id
-          );
-          store.dispatch({ type: "UPDATE_TIMELINE", timeline: filtered });
-        }
-        if (this.props.origin === "posts") {
-          this.props.updatePosts(item.id);
-        }
+        this.props.updateList(item.id);
         let filteredPosts = this.props.currentUser.posts.filter(
           (post) => post.id !== item.id
         );

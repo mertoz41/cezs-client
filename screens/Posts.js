@@ -175,7 +175,7 @@ class Posts extends Component {
     return (
       <PostItem
         origin="posts"
-        updatePosts={this.updatePosts}
+        updateList={this.updatePosts}
         item={item}
         key={item.id}
         index={index}
