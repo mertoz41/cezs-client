@@ -9,7 +9,6 @@ import {
 import SongsList from "./songslist";
 import ThumbnailPosts from "./thumbnailposts";
 import { responsiveSizes } from "../../constants/reusableFunctions";
-import BlurryBubble from "../reusables/BlurryBubble";
 const initialLayout = { width: Dimensions.get("window").width };
 const { height } = Dimensions.get("window");
 

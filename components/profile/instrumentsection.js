@@ -66,12 +66,12 @@ const InstrumentSection = ({
                   <TouchableOpacity
                     style={styles.instrumentItem}
                     onPress={() =>
-                      isBand() ? toBandPage(item) : toUserPage(item)
+                      item.username ? toUserPage(item) : toBandPage(item)
                     }
                   >
                     <View style={styles.itemTop}>
                       <Avatar
-                        avatar={isBand() ? item.picture : item.avatar}
+                        avatar={item.picture ? item.picture : item.avatar}
                         size={responsiveSizes[height].bandMemberAvatar}
                         withRadius={true}
                       />
@@ -88,7 +88,7 @@ const InstrumentSection = ({
                           padding: 5,
                         }}
                       >
-                        {isBand() ? item.name : item.username}
+                        {item.username ? item.username : item.name}
                       </Text>
                     </View>
                   </TouchableOpacity>
@@ -131,12 +131,15 @@ const styles = StyleSheet.create({
   itemTop: {
     height: "auto",
     alignSelf: "center",
+    zIndex: 1
   },
   instrumentItem: {
     // marginLeft: 5,
   },
   itemBottom: {
+    // backgroundColor: "yellow",
     // alignSelf: "center",
+    zIndex: 5
   },
 
   section: {

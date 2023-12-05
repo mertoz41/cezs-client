@@ -44,9 +44,7 @@ const Login = ({ navigation, currentUser }) => {
             // callback function to set usertoken in app.js
 
             let user = { ...resp.user };
-            let sorted = resp.timeline.sort((a, b) => {
-              return new Date(b.created_at) - new Date(a.created_at);
-            });
+
             let sortedNotis = user.notifications.sort((a, b) => {
               return new Date(b.created_at) - new Date(a.created_at);
             });
@@ -56,7 +54,6 @@ const Login = ({ navigation, currentUser }) => {
             });
             // SETUP NOTIFICATIONS
             setUpChatrooms(resp.chatrooms, resp.user.id);
-            store.dispatch({ type: "UPDATE_TIMELINE", timeline: sorted });
             store.dispatch({ type: "UPDATE_CURRENT_USER", currentUser: user });
             store.dispatch({ type: "UPDATE_LOGGED_IN", loggedIn: true });
           } catch (err) {
@@ -75,7 +72,7 @@ const Login = ({ navigation, currentUser }) => {
           fontWeight: "600",
           textAlign: "center",
           color: "white",
-          marginTop: 10
+          marginTop: 10,
         }}
       >
         Sign in

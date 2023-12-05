@@ -6,6 +6,7 @@ const { height } = Dimensions.get("window");
 
 const ThumbnailPosts = ({ posts, display, account, toPostView }) => {
   toPostPage = (item) => {
+    // console.log(item)
     toPostView(item, posts);
   };
   return (
