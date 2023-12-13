@@ -11,7 +11,12 @@ import {
   getUnseenNotificationsNumber,
   getUnseenMessagesNumber,
 } from "../../constants/reusableFunctions";
-import { FontAwesome5, MaterialIcons, Feather } from "@expo/vector-icons";
+import {
+  FontAwesome5,
+  MaterialIcons,
+  Feather,
+  MaterialCommunityIcons,
+} from "@expo/vector-icons";
 import MusicActionButtons from "../reusables/MusicActionButtons";
 import { connect } from "react-redux";
 import { reusableStyles } from "../../themes";
@@ -21,6 +26,7 @@ const TimelineHeader = ({
   title,
   goBack,
   toMessages,
+  toUpload,
   currentUser,
   chatrooms,
   toNotifications,
@@ -102,6 +108,14 @@ const TimelineHeader = ({
           alignSelf: "flex-end",
         }}
       >
+        <TouchableOpacity onPress={() => toUpload()}>
+          <MaterialCommunityIcons
+            name="video-plus-outline"
+            size={responsiveSizes[height].iconSize + 2}
+            color="#9370DB"
+          />
+        </TouchableOpacity>
+
         <TouchableOpacity onPress={() => toNotifications()}>
           <MaterialIcons
             name="notifications-none"

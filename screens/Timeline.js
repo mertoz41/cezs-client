@@ -16,7 +16,7 @@ import TimelineHeader from "../components/timeline/TimelineHeader";
 import { API_ROOT } from "../constants/index";
 import { useIsFocused } from "@react-navigation/native";
 import Toast from "react-native-toast-message";
-
+import Skeleton from "../components/timeline/Skeleton";
 class Timeline extends Component {
   constructor(props) {
     super(props);
@@ -196,6 +196,9 @@ class Timeline extends Component {
     this.props.navigation.navigate("Comment", item);
   };
 
+  toUpload = () => {
+    this.props.navigation.navigate("Camera");
+  };
   toMessages = () => {
     this.props.navigation.navigate("Messages");
   };
@@ -405,6 +408,7 @@ class Timeline extends Component {
           toNotifications={this.toNotifications}
           loopHandle={this.loopHandle}
           onLoop={this.state.onLoop}
+          toUpload={this.toUpload}
         />
 
         {this.state.uploadingPerc > 1 ? (
@@ -448,20 +452,8 @@ class Timeline extends Component {
             </Text>
           </View>
         ) : null}
-        {/* <Skeleton /> */}
-        {/* <SkeletonContent
-          containerStyle={{ flex: 1, width: 300 }}
-          animationDirection="horizontalLeft"
-          isLoading={true}
-          // layout={[
-          //   { key: "someId", width: 220, height: 20, marginBottom: 6 },
-          //   { key: "someOtherId", width: 180, height: 20, marginBottom: 6 },
-          // ]}
-        /> */}
-        {this.state.loading ? (
-          <ActivityIndicator color="gray" size="large" />
-        ) : null}
-        {this.renderFlatList()}
+
+        {this.state.loading ? <Skeleton /> : this.renderFlatList()}
       </View>
     );
   }
