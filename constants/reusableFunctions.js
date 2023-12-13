@@ -9,6 +9,8 @@ const ipadSizes = {
   sliderItemFontSize: 28,
   borderWidth: 2,
   iconSize: 40,
+  searchOptionFont: 25,
+
   settingsIcon: 40,
   bottomNavigatorHeight: 85,
   displayLabels: false,
@@ -105,10 +107,10 @@ const iphoneSizes = {
   logoHeight: 40,
   logoWidth: 105,
   sliderItemFontSize: 18,
-  borderWidth: 1,
+  borderWidth: 1.4,
   iconSize: 27,
   discoverEventFilterMargin: 80,
-
+  searchOptionFont: 30,
   settingsIcon: 30,
   bottomNavigatorHeight: 80,
   displayLabels: true,
@@ -178,8 +180,8 @@ const iphoneSizes = {
   sectionTitle: {
     color: "white",
     marginLeft: 10,
-    fontSize: 20,
-    fontWeight: "600",
+    fontSize: 22,
+    fontWeight: "300",
     textDecorationLine: "underline",
     textDecorationColor: "#9370DB",
     marginBottom: 5,
@@ -383,5 +385,5 @@ export {
   removePostsFromTimeline,
   getUnseenMessagesNumber,
   getUnseenNotificationsNumber,
-  updateCurrentUser
+  updateCurrentUser,
 };

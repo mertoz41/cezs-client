@@ -17,11 +17,10 @@ import { connect } from "react-redux";
 import Toast from "react-native-toast-message";
 import { responsiveSizes } from "../constants/reusableFunctions";
 const { width, height } = Dimensions.get("window");
-
 const Search = ({ navigation, loggedIn, currentUser }) => {
   const [searching, setSearching] = useState("");
   const [result, setResult] = useState([]);
-  const [searchingFor, setSearchingFor] = useState("users");
+  const [searchingFor, setSearchingFor] = useState("posts");
   const [loading, setLoading] = useState(false);
   const [postInstruments, setPostInstruments] = useState([]);
   const [postGenres, setPostGenres] = useState([]);
@@ -394,7 +393,11 @@ const Search = ({ navigation, loggedIn, currentUser }) => {
     const optionButton = (name, count) => {
       return (
         <TouchableOpacity
-          style={styles.filterItem}
+          style={
+            searchingFor === name
+              ? styles.selectedFilterItem
+              : styles.filterItem
+          }
           onPress={() => searchCateg(name)}
         >
           <Text
@@ -449,21 +452,42 @@ const Search = ({ navigation, loggedIn, currentUser }) => {
       <View style={{ marginTop: 0 }}>
         {musicInstruments?.length ? (
           <View>
-            <Text style={responsiveSizes[height].sectionTitle}>
-              instruments
-            </Text>
+            <View style={{ marginTop: 5 }}>
+              <Text style={responsiveSizes[height].sectionTitle}>
+                instruments
+              </Text>
+            </View>
             <ScrollView horizontal={true}>
               {musicInstruments.map((inst, i) => (
                 <TouchableOpacity
                   key={i}
-                  style={styles.filterItem}
+                  style={{
+                    height: "auto",
+                    width: "auto",
+                    marginLeft: 10,
+
+                    borderColor: selectedInstruments.includes(inst)
+                      ? "#9370DB"
+                      : "gray",
+                    borderRadius: 10,
+                    borderWidth: responsiveSizes[height].borderWidth,
+                    paddingHorizontal: 4,
+                  }}
                   onPress={() => selectInstrument(inst)}
                 >
                   <Text
                     style={
                       selectedInstruments.includes(inst)
-                        ? styles.selectedItemWriting
-                        : styles.itemWriting
+                        ? {
+                            fontSize: 22,
+                            fontWeight: "300",
+                            color: "#9370DB",
+                          }
+                        : {
+                            fontSize: 22,
+                            fontWeight: "300",
+                            color: "silver",
+                          }
                     }
                   >
                     {inst.name}
@@ -475,19 +499,40 @@ const Search = ({ navigation, loggedIn, currentUser }) => {
         ) : null}
         {musicGenres?.length ? (
           <View>
-            <Text style={responsiveSizes[height].sectionTitle}>genres</Text>
+            <View style={{ marginTop: 5 }}>
+              <Text style={responsiveSizes[height].sectionTitle}>genres</Text>
+            </View>
             <ScrollView horizontal={true}>
               {musicGenres.map((genr, i) => (
                 <TouchableOpacity
-                  style={styles.filterItem}
+                  style={{
+                    height: "auto",
+                    width: "auto",
+                    marginLeft: 10,
+
+                    borderColor: selectedGenres.includes(genr)
+                      ? "#9370DB"
+                      : "gray",
+                    borderRadius: 10,
+                    borderWidth: responsiveSizes[height].borderWidth,
+                    paddingHorizontal: 4,
+                  }}
                   key={i}
                   onPress={() => selectGenre(genr)}
                 >
                   <Text
                     style={
                       selectedGenres.includes(genr)
-                        ? styles.selectedItemWriting
-                        : styles.itemWriting
+                        ? {
+                            fontSize: 22,
+                            fontWeight: "300",
+                            color: "#9370DB",
+                          }
+                        : {
+                            fontSize: 22,
+                            fontWeight: "300",
+                            color: "silver",
+                          }
                     }
                   >
                     {genr.name}
@@ -584,7 +629,7 @@ const Search = ({ navigation, loggedIn, currentUser }) => {
           color: "red",
           textAlign: "center",
           margin: 10,
-          fontWeight: "500",
+          fontWeight: "300",
           width: "100%",
         }}
       >
@@ -632,9 +677,14 @@ const Search = ({ navigation, loggedIn, currentUser }) => {
 
   return (
     <View style={styles.container}>
+      {/* <SearchFilters /> */}
+      {/* <SearchResults /> */}
+
       {renderHeader()}
+      {renderMusicFilters()}
+      {searchingFor !== "posts" ? renderInputSection() : null}
+
       <ScrollView>
-        {searchingFor !== "posts" ? renderInputSection() : null}
         {dataLoading ? (
           <ActivityIndicator
             color="gray"
@@ -642,7 +692,7 @@ const Search = ({ navigation, loggedIn, currentUser }) => {
             style={{ marginTop: 10 }}
           />
         ) : null}
-        {renderMusicFilters()}
+
         {searchingFor === "posts" ||
         searchingFor === "users" ||
         searchingFor === "bands" ? (
@@ -700,29 +750,40 @@ const styles = StyleSheet.create({
     alignSelf: "flex-end",
     padding: 5,
   },
+
+  sectionItem: {
+    fontSize: 22,
+    fontWeight: "300",
+    color: "silver",
+  },
   filterItem: {
     height: "auto",
     width: "auto",
-    padding: 5,
-    marginRight: 4,
-  },
-  itemWriting: {
-    fontSize: responsiveSizes[height].sliderItemFontSize,
-    color: "white",
-    textAlign: "center",
-    borderWidth: responsiveSizes[height].borderWidth,
+
     borderColor: "gray",
     borderRadius: 10,
-    padding: 5,
-  },
-  selectedItemWriting: {
-    fontSize: responsiveSizes[height].sliderItemFontSize,
-    color: "white",
-    textAlign: "center",
     borderWidth: responsiveSizes[height].borderWidth,
+    paddingHorizontal: 4,
+  },
+  selectedFilterItem: {
+    height: "auto",
+    width: "auto",
+
     borderColor: "#9370DB",
     borderRadius: 10,
-    padding: 5,
+    borderWidth: responsiveSizes[height].borderWidth,
+
+    paddingHorizontal: 4,
+  },
+  itemWriting: {
+    fontSize: responsiveSizes[height].searchOptionFont,
+    color: "silver",
+    fontWeight: "300",
+  },
+  selectedItemWriting: {
+    fontSize: responsiveSizes[height].searchOptionFont,
+    color: "#9370DB",
+    fontWeight: "300",
   },
 
   header: {

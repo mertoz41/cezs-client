@@ -266,28 +266,25 @@ function AppNavigator({
         })}
       >
         <Tabs.Screen
-          name="Discover"
-          component={Discover}
+          name="Social"
+          component={Timeline}
           options={({ route }) => ({
             tabBarVisible: ((route) => {
               const routeName = getFocusedRouteNameFromRoute(route) ?? "";
-              if (routeName === "Comment") {
+              if (routeName === "Edit") {
+                return false;
+              } else if (routeName === "NewBand") {
                 return false;
               } else if (routeName === "EventsMap") {
                 return false;
-              } else if (routeName === "Messages") {
-                return false;
-              } else if (routeName === "Message") {
-                return false;
-              } else if (routeName === "Discover") {
-                return false;
-              } else if (routeName === "Upload") {
+              } else if (routeName === "Comment") {
                 return false;
               }
               return true;
             })(route),
           })}
         />
+
         <Tabs.Screen
           name="Search"
           component={SearchScreen}
@@ -304,18 +301,22 @@ function AppNavigator({
           })}
         />
         <Tabs.Screen
-          name="Social"
-          component={Timeline}
+          name="Discover"
+          component={Discover}
           options={({ route }) => ({
             tabBarVisible: ((route) => {
               const routeName = getFocusedRouteNameFromRoute(route) ?? "";
-              if (routeName === "Edit") {
-                return false;
-              } else if (routeName === "NewBand") {
+              if (routeName === "Comment") {
                 return false;
               } else if (routeName === "EventsMap") {
                 return false;
-              } else if (routeName === "Comment") {
+              } else if (routeName === "Messages") {
+                return false;
+              } else if (routeName === "Message") {
+                return false;
+              } else if (routeName === "Discover") {
+                return false;
+              } else if (routeName === "Upload") {
                 return false;
               }
               return true;

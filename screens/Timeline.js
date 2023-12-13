@@ -448,6 +448,16 @@ class Timeline extends Component {
             </Text>
           </View>
         ) : null}
+        {/* <Skeleton /> */}
+        {/* <SkeletonContent
+          containerStyle={{ flex: 1, width: 300 }}
+          animationDirection="horizontalLeft"
+          isLoading={true}
+          // layout={[
+          //   { key: "someId", width: 220, height: 20, marginBottom: 6 },
+          //   { key: "someOtherId", width: 180, height: 20, marginBottom: 6 },
+          // ]}
+        /> */}
         {this.state.loading ? (
           <ActivityIndicator color="gray" size="large" />
         ) : null}
