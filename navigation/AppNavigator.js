@@ -266,6 +266,29 @@ function AppNavigator({
         })}
       >
         <Tabs.Screen
+          name="Discover"
+          component={Discover}
+          options={({ route }) => ({
+            tabBarVisible: ((route) => {
+              const routeName = getFocusedRouteNameFromRoute(route) ?? "";
+              if (routeName === "Comment") {
+                return false;
+              } else if (routeName === "EventsMap") {
+                return false;
+              } else if (routeName === "Messages") {
+                return false;
+              } else if (routeName === "Message") {
+                return false;
+              } else if (routeName === "Discover") {
+                return false;
+              } else if (routeName === "Upload") {
+                return false;
+              }
+              return true;
+            })(route),
+          })}
+        />
+        <Tabs.Screen
           name="Social"
           component={Timeline}
           options={({ route }) => ({
@@ -300,29 +323,8 @@ function AppNavigator({
             })(route),
           })}
         />
-        <Tabs.Screen
-          name="Discover"
-          component={Discover}
-          options={({ route }) => ({
-            tabBarVisible: ((route) => {
-              const routeName = getFocusedRouteNameFromRoute(route) ?? "";
-              if (routeName === "Comment") {
-                return false;
-              } else if (routeName === "EventsMap") {
-                return false;
-              } else if (routeName === "Messages") {
-                return false;
-              } else if (routeName === "Message") {
-                return false;
-              } else if (routeName === "Discover") {
-                return false;
-              } else if (routeName === "Upload") {
-                return false;
-              }
-              return true;
-            })(route),
-          })}
-        />
+
+        
         <Tabs.Screen
           name="Profile"
           component={ProfileScreen}

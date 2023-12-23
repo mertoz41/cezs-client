@@ -70,7 +70,7 @@ const Search = ({ navigation, loggedIn, currentUser }) => {
         setBandCount(resp.band_count);
         setSongCount(resp.song_count);
         setArtistCount(resp.artist_count);
-        setResult(resp.last_users);
+        setResult(resp.last_posts);
         setArtistViews(resp.artist_views);
         setSongViews(resp.song_views);
         setArtistPosts(resp.artist_posts);

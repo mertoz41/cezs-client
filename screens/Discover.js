@@ -22,7 +22,7 @@ const Discover = ({
 }) => {
   // user first time sharing location
 
-  const [sectionDisplay, setSectionDisplay] = useState("musicians");
+  const [sectionDisplay, setSectionDisplay] = useState("all");
   // const [displayUsers, setDisplayUsers] = useState(true);
   const [instruments, setInstruments] = useState([]);
   const [genres, setGenres] = useState([]);
@@ -80,15 +80,24 @@ const Discover = ({
   };
 
   const changeSection = (section) => {
+    let dispatchObject;
     if (section == "gigs") {
       setDisplayedEvents(allGigs);
-      setSectionDisplay(section);
-    } else if (section === "auditions") {
-      setDisplayedEvents(allAuditions);
-      setSectionDisplay(section);
+
+      dispatchObject = {
+        type: "SELECT_MARKER",
+        selectedMarker: null,
+        markerAccounts: [],
+        markerPosts: [],
+      };
     } else {
-      setSectionDisplay(section);
+      dispatchObject = {
+        type: "SELECT_EVENT",
+        selectedEvent: null,
+      };
     }
+    store.dispatch(dispatchObject);
+    setSectionDisplay(section);
   };
 
   const getEvents = async () => {
@@ -276,7 +285,7 @@ const Discover = ({
   const renderOverlayComponents = () => {
     return (
       <>
-        {!newEvent && selectedMarker && sectionDisplay == "musicians" ? (
+        {!newEvent && selectedMarker && sectionDisplay !== "gigs" ? (
           <MusiciansFilter
             toUserPage={toUserPage}
             instruments={instruments}
@@ -286,18 +295,7 @@ const Discover = ({
             navigation={navigation}
           />
         ) : null}
-        {(!selectedEvent &&
-          !newEvent &&
-          !newAudition &&
-          sectionDisplay !== "musicians" &&
-          sectionDisplay == "gigs" &&
-          gigCount > 0) ||
-        (!selectedEvent &&
-          !newEvent &&
-          !newAudition &&
-          sectionDisplay !== "musicians" &&
-          sectionDisplay == "auditions" &&
-          auditionCount > 0) ? (
+        {sectionDisplay === "gigs" && !selectedEvent ? (
           <EventFilters
             sectionDisplay={sectionDisplay}
             allGigs={allGigs}
@@ -305,17 +303,30 @@ const Discover = ({
             setDisplayedEvents={setDisplayedEvents}
           />
         ) : null}
-        {(selectedEvent &&
-          !selectedEvent.is_audition &&
-          sectionDisplay === "gigs") ||
-        (selectedEvent &&
-          selectedEvent.is_audition &&
-          sectionDisplay === "auditions") ? (
+        {selectedEvent && sectionDisplay !== "musicians" ? (
           <Event
             updateAllEvents={updateAllEvents}
             navigateToPerformer={navigateToPerformer}
           />
         ) : null}
+        {/* {(!selectedEvent &&
+          !newEvent &&
+          sectionDisplay !== "musicians" &&
+          sectionDisplay == "gigs" &&
+          gigCount > 0) ||
+        (!selectedEvent &&
+          !newEvent &&
+          sectionDisplay !== "musicians") ? (
+         
+        ) : null} */}
+        {/* {(selectedEvent &&
+          !selectedEvent.is_audition &&
+          sectionDisplay === "gigs") ||
+        (selectedEvent &&
+          selectedEvent.is_audition &&
+          sectionDisplay === "auditions") ? (
+         
+        ) : null} */}
       </>
     );
   };

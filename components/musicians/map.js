@@ -45,17 +45,17 @@ const Map = ({
     // }
   }, []);
 
-  const toSelectedAddress = (address) => {
-    _map.current.animateToRegion(
-      {
-        latitude: address.latitude + 0.0,
-        longitude: address.longitude,
-        latitudeDelta: 0.01,
-        longitudeDelta: 0.01,
-      },
-      5000
-    );
-  };
+  // const toSelectedAddress = (address) => {
+  //   _map.current.animateToRegion(
+  //     {
+  //       latitude: address.latitude + 0.0,
+  //       longitude: address.longitude,
+  //       latitudeDelta: 0.01,
+  //       longitudeDelta: 0.01,
+  //     },
+  //     5000
+  //   );
+  // };
   const fetchMarker = async (marker) => {
     setLoading(true);
     let token = await AsyncStorage.getItem("jwt");
@@ -124,6 +124,56 @@ const Map = ({
       ></Marker>
     );
   };
+  const renderLocationMarkers = () => {
+    return (
+      <>
+        {locationMarkers.map((mark, i) => {
+          return (
+            <Marker
+              key={i}
+              coordinate={{
+                latitude: mark.latitude,
+                longitude: mark.longitude,
+              }}
+              onPress={() => fetchMarker(mark)}
+            >
+              <View
+                style={{
+                  overflow: "hidden",
+                  borderRadius: "50%",
+                }}
+              >
+                <BlurView
+                  intensity={20}
+                  tint="dark"
+                  style={{
+                    height: responsiveSizes[height].locationButtonHeight,
+                    width: responsiveSizes[height].locationButtonWidth,
+                    backgroundColor: "rgba(147,112,219, .3)",
+                    justifyContent: "center",
+                  }}
+                >
+                  {loading ? (
+                    <ActivityIndicator size="large" />
+                  ) : (
+                    <Text style={styles.markerWriting}>
+                      {mark.musician_count}
+                    </Text>
+                  )}
+                </BlurView>
+              </View>
+            </Marker>
+          );
+        })}
+      </>
+    );
+  };
+
+  const renderEventPins = () => {
+    return displayedEvents.map((audition, index) =>
+      markerDisplay(audition, index)
+    );
+  };
   return (
     <View style={styles.map}>
       <MapView
@@ -136,59 +186,12 @@ const Map = ({
           longitudeDelta: 0.05,
         }}
       >
-        {sectionDisplay == "musicians" && !newEvent
-          ? locationMarkers.map((mark, i) => {
-              return (
-                <Marker
-                  key={i}
-                  coordinate={{
-                    latitude: mark.latitude,
-                    longitude: mark.longitude,
-                  }}
-                  onPress={() => fetchMarker(mark)}
-                >
-                  <View
-                    style={{
-                      overflow: "hidden",
-                      borderRadius: "50%",
-                    }}
-                  >
-                    <BlurView
-                      intensity={20}
-                      tint="dark"
-                      style={{
-                        height: responsiveSizes[height].locationButtonHeight,
-                        width: responsiveSizes[height].locationButtonWidth,
-                        backgroundColor: "rgba(147,112,219, .3)",
-                        justifyContent: "center",
-                      }}
-                    >
-                      {loading ? (
-                        <ActivityIndicator size="large" />
-                      ) : (
-                        <Text style={styles.markerWriting}>
-                          {mark.musician_count}
-                        </Text>
-                      )}
-                    </BlurView>
-                  </View>
-                </Marker>
-              );
-            })
-          : null}
-        {!newEvent && !newAudition && sectionDisplay !== "musicians"
+        {sectionDisplay !== "musicians"
           ? displayedEvents.map((audition, index) =>
               markerDisplay(audition, index)
             )
           : null}
-        {selectedAddress ? (
-          <Marker
-            coordinate={{
-              latitude: selectedAddress.latitude,
-              longitude: selectedAddress.longitude,
-            }}
-          />
-        ) : null}
+        {sectionDisplay !== "gigs" ? renderLocationMarkers() : null}
       </MapView>
     </View>
   );

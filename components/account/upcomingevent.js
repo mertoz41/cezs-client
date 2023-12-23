@@ -13,7 +13,7 @@ const UpcomingEvent = ({ gig }) => {
       <Text style={responsiveSizes[height].sectionTitle}>
         upcoming {gig.is_audition ? "audition" : "gig"}
       </Text>
-      <View style={{ marginHorizontal: 10 }}>
+      <View style={{ marginHorizontal: 10}}>
         <BlurryBubble radius={20} marginLeft={0}>
           <View style={styles.item}>
             <Text style={styles.description}>{gig.description}</Text>
@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
     borderWidth: responsiveSizes[height].borderWidth,
     borderColor: "#9370DB",
     borderRadius: 20,
-    padding: 5,
+    padding: 10,
   },
   description: {
     fontSize: responsiveSizes[height].sliderItemFontSize,
