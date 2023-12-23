@@ -33,7 +33,7 @@ const InstrumentSection = ({
             <ScrollView horizontal={true}>
               {items.map((item, index) => {
                 return (
-                  <BlurryBubble radius={10} key={index} marginLeft={10}>
+                  <BlurryBubble marginRight={0} radius={10} key={index} marginLeft={10}>
                     <View style={styles.instrumentItem}>
                       <Text style={responsiveSizes[height].sliderItem}>
                         {item.name}
@@ -62,7 +62,7 @@ const InstrumentSection = ({
           <View style={{ flex: 3 }}>
             <ScrollView horizontal={true}>
               {items.map((item, index) => (
-                <BlurryBubble key={index} radius={10} marginLeft={10}>
+                <BlurryBubble marginRight={0} key={index} radius={10} marginLeft={10}>
                   <TouchableOpacity
                     style={styles.instrumentItem}
                     onPress={() =>

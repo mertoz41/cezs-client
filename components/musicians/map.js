@@ -19,14 +19,9 @@ const { width, height } = Dimensions.get("window");
 const Map = ({
   displayedEvents,
   currentUser,
-  newAudition,
   locationMarkers,
   sectionDisplay,
-  navigateToPerformer,
-  notiEvent,
-  selectedAddress,
   newEvent,
-  selectedMarker,
   _map,
 }) => {
   const [loading, setLoading] = useState(false);
@@ -169,11 +164,6 @@ const Map = ({
     );
   };
 
-  const renderEventPins = () => {
-    return displayedEvents.map((audition, index) =>
-      markerDisplay(audition, index)
-    );
-  };
   return (
     <View style={styles.map}>
       <MapView
@@ -186,8 +176,8 @@ const Map = ({
           longitudeDelta: 0.05,
         }}
       >
-        {sectionDisplay !== "musicians"
-          ? displayedEvents.map((audition, index) =>
+        {sectionDisplay !== "musicians" && !newEvent
+          ? displayedEvents?.map((audition, index) =>
               markerDisplay(audition, index)
             )
           : null}
@@ -211,6 +201,5 @@ const styles = StyleSheet.create({
 });
 const mapStateToProps = (state) => ({
   currentUser: state.currentUser,
-  selectedMarker: state.selectedMarker,
 });
 export default connect(mapStateToProps)(Map);

@@ -5,6 +5,7 @@ import {
   Text,
   Animated,
   TouchableOpacity,
+  Dimensions,
 } from "react-native";
 import Avatar from "../reusables/Avatar";
 import { BlurView } from "expo-blur";
@@ -15,8 +16,10 @@ import { API_ROOT } from "../../constants";
 import store from "../../redux/store";
 import OptionsButton from "../reusables/OptionsButton";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
+import { responsiveSizes } from "../../constants/reusableFunctions";
 import Toast from "react-native-toast-message";
+const { height } = Dimensions.get("window");
+import BlurryBubble from "../reusables/BlurryBubble";
 const Event = ({
   selectedEvent,
   updateAllEvents,
@@ -39,30 +42,31 @@ const Event = ({
     return (
       <ScrollView
         horizontal
-        contentContainerStyle={{ flexGrow: 1, justifyContent: "flex-end" }}
+        contentContainerStyle={{
+          flexGrow: 1,
+          justifyContent: "flex-end",
+          alignSelf: "center",
+        }}
       >
         {types.map((type) => (
-          <View
+          <BlurryBubble
+            marginRight={10}
             key={type.id}
-            style={{
-              padding: 2,
-              justifyContent: "center",
-              marginRight: 4,
-            }}
+            marginLeft={0}
+            radius={10}
           >
-            <Text
-              style={{
-                fontSize: 18,
-                textAlign: "center",
-                borderWidth: 1,
-                borderColor: "#9370DB",
-                borderRadius: 10,
-                padding: 5,
-              }}
-            >
-              {type.name}
-            </Text>
-          </View>
+            <View>
+              <Text
+                style={{
+                  fontSize: 20,
+
+                  padding: 5,
+                }}
+              >
+                {type.name}
+              </Text>
+            </View>
+          </BlurryBubble>
         ))}
       </ScrollView>
     );
@@ -95,7 +99,7 @@ const Event = ({
   const renderHeader = () => {
     return (
       <View style={{ justifyContent: "center" }}>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           onPress={() =>
             navigateToPerformer(
               selectedEvent.user ? selectedEvent.user : selectedEvent.band
@@ -116,53 +120,23 @@ const Event = ({
               ? selectedEvent.user.username
               : selectedEvent.band.name}
           </Text>
-        </TouchableOpacity>
-        <View style={{ position: "absolute", right: 0 }}>
-          <OptionsButton
-            deleteAction={deleteEvent}
-            item={selectedEvent}
-            update={updateAllEvents}
-            usage="event"
-            color="gray"
-          />
-        </View>
+        </TouchableOpacity> */}
+        <View style={{ position: "absolute", right: 0 }}></View>
       </View>
     );
   };
 
   const renderInstrumentsGenres = () => {
     return (
-      <View>
+      <View style={{marginLeft: 10, marginTop: 10}}>
         <View style={{ flex: 1, flexDirection: "row" }}>
-          <Text
-            style={{
-              fontSize: 20,
-              fontWeight: "600",
-              textAlign: "left",
-              textDecorationLine: "underline",
-              textDecorationColor: "#9370DB",
-              margin: 10,
-              alignSelf: "center",
-            }}
-          >
+          <Text style={responsiveSizes[height].sectionTitleDark}>
             instruments
           </Text>
           {renderMusicTypes(selectedEvent.instruments)}
         </View>
-        <View style={{ flex: 1, flexDirection: "row" }}>
-          <Text
-            style={{
-              fontSize: 20,
-              fontWeight: "600",
-              alignSelf: "center",
-              textAlign: "left",
-              textDecorationLine: "underline",
-              textDecorationColor: "#9370DB",
-              margin: 10,
-            }}
-          >
-            genres
-          </Text>
+        <View style={{ flex: 1, flexDirection: "row", marginTop: 10 }}>
+          <Text style={responsiveSizes[height].sectionTitleDark}>genres</Text>
           {renderMusicTypes(selectedEvent.genres)}
         </View>
       </View>
@@ -178,42 +152,35 @@ const Event = ({
             marginBottom: 10,
           }}
         >
-          <Text
-            style={{
-              fontSize: 20,
-              fontWeight: "600",
-              textDecorationLine: "underline",
-              textDecorationColor: "#9370DB",
-            }}
-          >
-            address
-          </Text>
+          <Text style={responsiveSizes[height].sectionTitleDark}>address</Text>
           <ScrollView
-            contentContainerStyle={{ flexGrow: 1, justifyContent: "flex-end" }}
+            contentContainerStyle={{
+              flexGrow: 1,
+              justifyContent: "flex-end",
+            }}
             horizontal
           >
-            <Text style={{ fontSize: 19 }}>{selectedEvent.address}</Text>
+            <BlurryBubble marginRight={0} marginLeft={10} radius={10}>
+              <Text style={{ fontSize: 19, padding: 5 }}>
+                {selectedEvent.address}
+              </Text>
+            </BlurryBubble>
           </ScrollView>
         </View>
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-          <Text
-            style={{
-              fontSize: 20,
-              fontWeight: "600",
-              textDecorationLine: "underline",
-              textDecorationColor: "#9370DB",
-            }}
-          >
+          <Text style={responsiveSizes[height].sectionTitleDark}>
             time & date
           </Text>
-          <View style={{ flexDirection: "row" }}>
-            <Text style={{ fontSize: 19 }}>
-              {selectedEvent.event_time} {""}
-            </Text>
-            <Text style={{ fontSize: 19 }}>
-              {getDate(selectedEvent.event_date)}
-            </Text>
-          </View>
+          <BlurryBubble marginRight={0} marginLeft={10} radius={10}>
+            <View style={{ flexDirection: "row" }}>
+              <Text style={{ fontSize: 19, padding: 5 }}>
+                {selectedEvent.event_time} {""}
+              </Text>
+              <Text style={{ fontSize: 19, padding: 5 }}>
+                {getDate(selectedEvent.event_date)}
+              </Text>
+            </View>
+          </BlurryBubble>
         </View>
       </View>
     );
@@ -223,7 +190,7 @@ const Event = ({
     <Animated.View
       style={{
         top: 80,
-        width: "96%",
+        width: "97%",
         alignSelf: "center",
         position: "absolute",
         overflow: "hidden",
@@ -240,31 +207,57 @@ const Event = ({
             flex: 1,
           }}
         >
-          {renderHeader()}
-          <View style={{ flexDirection: "row", padding: 10 }}>
-            <Avatar
-              size={100}
-              avatar={
-                selectedEvent.user
-                  ? selectedEvent.user.avatar
-                  : selectedEvent.band.picture
-              }
-              withRadius={true}
-            />
-            <Text
+          <View style={{ paddingTop: 20 }}>
+            <View
               style={{
-                fontSize: 23,
-                width: "100%",
-                flex: 1,
-                flexWrap: "wrap",
-                marginLeft: 10,
+                position: "absolute",
+                alignSelf: "flex-end",
+                right: 6,
+                // marginRight: 10,
               }}
             >
-              {selectedEvent.description}
-            </Text>
+              <OptionsButton
+                deleteAction={deleteEvent}
+                item={selectedEvent}
+                update={updateAllEvents}
+                usage="event"
+                color="gray"
+              />
+            </View>
+
+            <TouchableOpacity
+              onPress={() =>
+                navigateToPerformer(
+                  selectedEvent.user ? selectedEvent.user : selectedEvent.band
+                )
+              }
+            >
+              <Avatar
+                size={responsiveSizes[height].avatar}
+                avatar={
+                  selectedEvent.user
+                    ? selectedEvent.user.avatar
+                    : selectedEvent.band.picture
+                }
+                withRadius={true}
+              />
+            </TouchableOpacity>
+            <View style={{ height: 10 }}></View>
+            <BlurryBubble marginRight={10} marginLeft={10} radius={20}>
+              <Text
+                style={{
+                  fontSize: 23,
+                  fontWeight: 600,
+                  margin: 10,
+                  flexWrap: "wrap",
+                }}
+              >
+                {selectedEvent.description}
+              </Text>
+            </BlurryBubble>
+            {renderInstrumentsGenres()}
+            {renderTimePlace()}
           </View>
-          {renderInstrumentsGenres()}
-          {renderTimePlace()}
         </View>
       </BlurView>
     </Animated.View>

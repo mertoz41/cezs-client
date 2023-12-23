@@ -14,11 +14,10 @@ const Avatar = ({ avatar, size, withRadius }) => {
           avatarStyle={{ borderRadius: withRadius ? 10 : 0 }}
           containerStyle={{
             alignSelf: "center",
-
           }}
         />
       ) : (
-        <BlurryBubble radius={0}>
+        <BlurryBubble marginRight={0} radius={0}>
           <View style={{ height: size, width: size, alignSelf: "center" }}>
             <Feather
               name="user"

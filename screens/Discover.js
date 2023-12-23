@@ -133,11 +133,11 @@ const Discover = ({
             musicGigs.push(allEvents[i]);
           }
         }
-        setAllAuditions(auditions);
+        // setAllAuditions(auditions);
         setAllGigs(musicGigs);
         setGigCount(musicGigs.length);
-        setAuditionCount(auditions.length);
-        setDisplayedEvents(auditions);
+        // setAuditionCount(auditions.length);
+        setDisplayedEvents(musicGigs);
         setLoading(false);
       })
       .catch((err) => Toast.show({ type: "error", text1: err.message }));
@@ -256,15 +256,12 @@ const Discover = ({
   const renderMap = () => {
     return (
       <Map
-        newAudition={newAudition}
         _map={_map}
         locationMarkers={locationMarkers}
         sectionDisplay={sectionDisplay}
-        notiEvent={route.params}
         newEvent={newEvent}
         selectedAddress={selectedAddress}
         displayedEvents={displayedEvents}
-        navigateToPerformer={navigateToPerformer}
       />
     );
   };
@@ -295,7 +292,7 @@ const Discover = ({
             navigation={navigation}
           />
         ) : null}
-        {sectionDisplay === "gigs" && !selectedEvent ? (
+        {sectionDisplay === "gigs" && !selectedEvent && !newEvent ? (
           <EventFilters
             sectionDisplay={sectionDisplay}
             allGigs={allGigs}

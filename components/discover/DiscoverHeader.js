@@ -93,10 +93,10 @@ const EventsHeader = ({
                 alignSelf: "center",
               }}
             >
-              {type !== "all" && !newEvent && !selectedMarker
+              {type !== "all" && !newEvent && !selectedMarker && !selectedEvent
                 ? `${count} `
                 : null}
-              {type}
+              {`${type}${selectedEvent ? `'s upcoming gig` : ""}`}
             </Text>
           </BlurView>
         </View>
@@ -199,7 +199,6 @@ const EventsHeader = ({
         </TouchableOpacity>
       );
     };
-
     return (
       <View
         style={{ width: "100%", display: "flex", justifyContent: "center" }}
@@ -226,7 +225,15 @@ const EventsHeader = ({
             >
               {newEvent ? singleOption("0", "new gig") : null}
               {selectedMarker ? singleOption("0", selectedMarker.city) : null}
-              {newEvent || selectedMarker ? null : (
+              {selectedEvent
+                ? singleOption(
+                    "0",
+                    selectedEvent.user
+                      ? selectedEvent.user.username
+                      : selectedEvent.band.name
+                  )
+                : null}
+              {newEvent || selectedMarker || selectedEvent ? null : (
                 <>
                   {singleOption("0", "all")}
                   {singleOption(population, "musicians")}

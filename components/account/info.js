@@ -34,7 +34,7 @@ const Info = ({ account, toFollow, toPostView, followerNumber }) => {
 
   const renderStats = () => {
     return (
-      <BlurryBubble marginLeft={10} radius={20}>
+      <BlurryBubble marginRight={0} marginLeft={10} radius={20}>
         <View style={styles.item}>
           <View style={{ flexDirection: "row" }}>
             <TouchableOpacity
@@ -80,7 +80,7 @@ const Info = ({ account, toFollow, toPostView, followerNumber }) => {
 
   const renderOrigin = () => {
     return (
-      <BlurryBubble marginLeft={10} radius={20}>
+      <BlurryBubble marginRight={0} marginLeft={10} radius={20}>
         <View style={styles.item}>
           {account && account.location ? (
             <View style={{ height: "auto", flexDirection: "row" }}>
@@ -124,7 +124,7 @@ const Info = ({ account, toFollow, toPostView, followerNumber }) => {
       </View>
       <ScrollView horizontal={true}>
         {account && account.bio ? (
-          <BlurryBubble marginLeft={10} radius={20}>
+          <BlurryBubble marginRight={0} marginLeft={10} radius={20}>
             <View style={styles.bioItem}>
               <Text style={styles.descriptionWriting}>{account.bio}</Text>
             </View>

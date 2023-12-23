@@ -14,7 +14,7 @@ const UpcomingEvent = ({ gig }) => {
         upcoming {gig.is_audition ? "audition" : "gig"}
       </Text>
       <View style={{ marginHorizontal: 10}}>
-        <BlurryBubble radius={20} marginLeft={0}>
+        <BlurryBubble marginRight={0} radius={20} marginLeft={0}>
           <View style={styles.item}>
             <Text style={styles.description}>{gig.description}</Text>
             <Text style={styles.address}>{gig.address}</Text>

@@ -8,6 +8,7 @@ const BlurryBubble = (props) => {
         overflow: "hidden",
         borderRadius: props.radius,
         marginLeft: props.marginLeft,
+        marginRight: props.marginRight
       }}
     >
       <BlurView
