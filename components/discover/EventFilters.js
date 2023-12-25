@@ -11,6 +11,7 @@ import { reusableStyles } from "../../themes";
 import { BlurView } from "expo-blur";
 import { responsiveSizes } from "../../constants/reusableFunctions";
 const { height } = Dimensions.get("window");
+import BlurryBubble from "../reusables/BlurryBubble";
 const EventFilters = ({
   sectionDisplay,
   setDisplayedEvents,
@@ -97,55 +98,90 @@ const EventFilters = ({
     isDate,
     usage
   ) => {
-    return filterOptions.map((item, index) => (
-      <TouchableOpacity
-        key={index}
-        onPress={() => func(item, filterSelections, usage)}
-        style={{ padding: 5 }}
-      >
-        <View
-          style={
-            filterSelections.includes(item)
-              ? responsiveSizes[height].selectedItem
-              : responsiveSizes[height].regularItem
-          }
+    return filterOptions.map((item, index) =>
+      filterSelections.includes(item) ? (
+        <TouchableOpacity
+          key={index}
+          onPress={() => func(item, filterSelections, usage)}
+          style={{ padding: 5 }}
+        >
+          <BlurryBubble marginRight={0} marginLeft={0} radius={10}>
+            <Text
+              style={{
+                fontSize: 21,
+                fontWeight: 600,
+                padding: 5,
+                color: "white",
+                flexWrap: "wrap",
+              }}
+            >
+              {isDate ? today(item) : item}
+            </Text>
+          </BlurryBubble>
+        </TouchableOpacity>
+      ) : (
+        <TouchableOpacity
+          key={index}
+          onPress={() => func(item, filterSelections, usage)}
+          style={{ padding: 5 }}
         >
           <Text
-            style={
-              filterSelections.includes(item)
-                ? responsiveSizes[height].selectedItemWriting
-                : responsiveSizes[height].itemWriting
-            }
+            style={{
+              fontSize: 21,
+              fontWeight: 600,
+              padding: 4,
+              color: "black",
+              borderRadius: 10,
+              borderWidth: 1,
+              borderColor: "gray",
+              flexWrap: "wrap",
+            }}
           >
             {isDate ? today(item) : item}
           </Text>
-        </View>
-      </TouchableOpacity>
-    ));
+        </TouchableOpacity>
+      )
+    );
   };
   renderFilterType = (type) => {
-    return (
+    return display === type ? (
       <TouchableOpacity
         onPress={() => setDisplay(type)}
         style={{ marginRight: 5 }}
       >
-        <View
-          style={
-            display === type
-              ? responsiveSizes[height].selectedItem
-              : responsiveSizes[height].regularItem
-          }
-        >
+        <BlurryBubble marginRight={0} marginLeft={0} radius={10}>
           <Text
-            style={
-              display === type
-                ? responsiveSizes[height].selectedItemWriting
-                : responsiveSizes[height].itemWriting
-            }
+            style={{
+              fontSize: 21,
+              fontWeight: 600,
+              padding: 5,
+              color: "white",
+              flexWrap: "wrap",
+            }}
           >
             {type}
           </Text>
-        </View>
+        </BlurryBubble>
+      </TouchableOpacity>
+    ) : (
+      <TouchableOpacity
+        onPress={() => setDisplay(type)}
+        style={{ marginRight: 5 }}
+      >
+        <Text
+          style={{
+            fontSize: 21,
+            fontWeight: 600,
+            padding: 4,
+            color: "black",
+            borderRadius: 10,
+            borderWidth: 1,
+            borderColor: "gray",
+            flexWrap: "wrap",
+          }}
+        >
+          {type}
+        </Text>
       </TouchableOpacity>
     );
   };

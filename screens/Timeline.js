@@ -149,7 +149,7 @@ class Timeline extends Component {
         let updatedTimeline = [data, ...this.state.timeline];
         let updatedCurrentUser = {
           ...this.props.currentUser,
-          posts: [...this.props.currentUser.posts, data],
+          posts: [data, ...this.props.currentUser.posts],
         };
         store.dispatch({
           type: "UPDATE_CURRENT_USER",

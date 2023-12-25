@@ -13,10 +13,8 @@ import Event from "../components/discover/Event";
 import Toast from "react-native-toast-message";
 import ShareLocation from "../components/discover/ShareLocation";
 const Discover = ({
-  route,
   navigation,
   selectedMarker,
-  markerPosts,
   currentUser,
   selectedEvent,
 }) => {
@@ -24,8 +22,6 @@ const Discover = ({
 
   const [sectionDisplay, setSectionDisplay] = useState("all");
   // const [displayUsers, setDisplayUsers] = useState(true);
-  const [instruments, setInstruments] = useState([]);
-  const [genres, setGenres] = useState([]);
 
   const [population, setPopulation] = useState(888);
   const [selectedAddress, setSelectedAddress] = useState(null);
@@ -72,8 +68,6 @@ const Discover = ({
         setPopulation(resp.users_number);
         let filtered = resp.locations.filter((loc) => !loc.musician_count == 0);
         setLocationMarkers(filtered);
-        setInstruments(resp.instruments);
-        setGenres(resp.genres);
         setLoading(false);
       })
       .catch((err) => Toast.show({ type: "error", text1: err.message }));
@@ -285,9 +279,6 @@ const Discover = ({
         {!newEvent && selectedMarker && sectionDisplay !== "gigs" ? (
           <MusiciansFilter
             toUserPage={toUserPage}
-            instruments={instruments}
-            sectionDisplay={sectionDisplay}
-            genres={genres}
             toBandPage={toBandPage}
             navigation={navigation}
           />

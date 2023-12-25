@@ -10,6 +10,7 @@ import {
 import { connect } from "react-redux";
 import Avatar from "../reusables/Avatar";
 const { width, height } = Dimensions.get("window");
+import BlurryBubble from "../reusables/BlurryBubble";
 import { BlurView } from "expo-blur";
 import {
   preparePostView,
@@ -19,20 +20,28 @@ const MusiciansFilter = ({
   selectedMarker,
   toUserPage,
   toBandPage,
-  instruments,
   markerAccounts,
   navigation,
   markerPosts,
-  genres,
 }) => {
   const [display, setDisplay] = useState("instruments");
   const [contentDisplay, setContentDisplay] = useState("users");
   const [filterUsers, setFilterUsers] = useState([]);
+  const [accountInstruments, setAccountInstruments] = useState([]);
+  const [accountGenres, setAccountGenres] = useState([]);
+  const [postInstruments, setPostInstruments] = useState([]);
+  const [postGenres, setPostGenres] = useState([]);
+
   const [selectedGenres, setSelectedGenres] = useState([]);
   const [filterPosts, setFilterPosts] = useState([]);
   const [selectedInstruments, setSelectedInstruments] = useState([]);
   const translation = useRef(new Animated.Value(0)).current;
   useEffect(() => {
+    setAccountInstruments(getUniqueFilters(markerAccounts).instruments);
+    setAccountGenres(getUniqueFilters(markerAccounts).genres);
+    setPostGenres(getUniqueFilters(markerPosts).genres);
+    setPostInstruments(getUniqueFilters(markerPosts).instruments);
+
     Animated.timing(translation, {
       toValue: 1,
       useNativeDriver: true,
@@ -40,9 +49,33 @@ const MusiciansFilter = ({
 
     return () => {};
   }, []);
-  //
-  // ADD LOCATION CARD INTO HEADER, DISPLAY LOCATION BELOW, DISPLAY LOCATION NAME AT VERY TOP, REPLACE ADD BUTTON WITH CLOSE WHEN LOCATION IS SELECTED TO CLOSE LOCATION
 
+  const getUniqueFilters = (list) => {
+    let allInstruments = [];
+    let allGenres = [];
+    for (let i = 0; i < list.length; i++) {
+      if (list[i].instruments?.length) {
+        allInstruments.push(...list[i].instruments);
+      }
+      if (list[i].genres?.length) {
+        allGenres.push(...list[i].genres);
+      } else if (list[i].genre) {
+        allGenres.push(list[i].genre);
+      }
+    }
+    const uniquify = (list) => {
+      return list.filter(
+        (elem, index) => list.findIndex((obj) => obj.id === elem.id) === index
+      );
+    };
+    let uniqueInstruments = uniquify(allInstruments);
+    let uniqueGenres = uniquify(allGenres);
+
+    return {
+      instruments: uniqueInstruments,
+      genres: uniqueGenres,
+    };
+  };
   const toPostsPage = (item) => {
     let posts =
       selectedGenres.length || selectedInstruments.length
@@ -58,41 +91,35 @@ const MusiciansFilter = ({
       // deselection
       let filteredGenres = selectedGenres.filter((genr) => genr !== item.id);
       setSelectedGenres(filteredGenres);
-      updateMarker(filteredGenres, selectedInstruments);
+      updateFilterResults(filteredGenres, selectedInstruments);
     } else {
       // selection
       let updatedSelectGenres = [...selectedGenres, item.id];
       setSelectedGenres(updatedSelectGenres);
-      updateMarker(updatedSelectGenres, selectedInstruments);
+      updateFilterResults(updatedSelectGenres, selectedInstruments);
     }
   };
 
   const instrumentFunc = (item) => {
     // function that filters users and posts
-    if (item == "all") {
-      setSelectedInstruments([]);
-      setSelectedGenres([]);
-      setFilterUsers([]);
-      setFilterPosts([]);
-    } else {
-      if (selectedInstruments.includes(item.id)) {
-        // deselecting an option
-        let filteredSelectedInst = selectedInstruments.filter(
-          (it) => it !== item.id
-        );
-        setSelectedInstruments(filteredSelectedInst);
-        updateMarker(selectedGenres, filteredSelectedInst);
-      } else {
-        // selecting an option
-        let selectedIns = [...selectedInstruments, item.id];
-        setSelectedInstruments(selectedIns);
-        updateMarker(selectedGenres, selectedIns);
 
-        // selectItem(item)
-      }
+    if (selectedInstruments.includes(item.id)) {
+      // deselecting an option
+      let filteredSelectedInst = selectedInstruments.filter(
+        (it) => it !== item.id
+      );
+      setSelectedInstruments(filteredSelectedInst);
+      updateFilterResults(selectedGenres, filteredSelectedInst);
+    } else {
+      // selecting an option
+      let selectedIns = [...selectedInstruments, item.id];
+      setSelectedInstruments(selectedIns);
+      updateFilterResults(selectedGenres, selectedIns);
+
+      // selectItem(item)
     }
   };
-  const updateMarker = (genres, instruments) => {
+  const updateFilterResults = (genres, instruments) => {
     let updatedUsers = markerAccounts.filter((account) => {
       return (
         account.instruments.some((inst) => instruments.includes(inst.id)) ||
@@ -117,37 +144,15 @@ const MusiciansFilter = ({
       toUserPage(account);
     }
   };
-  const renderBottom = () => {
-    return (
-      <View
-        style={{
-          flexDirection: "row",
-          margin: 5,
-          justifyContent: "center",
-        }}
-      >
-        <Text
-          style={{
-            fontWeight: "600",
-            fontSize: responsiveSizes[height].sliderItemFontSize,
-            textDecorationLine: "underline",
-            textDecorationColor: "#9370DB",
-          }}
-        >
-          {selectedMarker?.city}
-        </Text>
-      </View>
-    );
-  };
 
+  changeContent = (content) => {
+    setFilterUsers([]);
+    setSelectedGenres([]);
+    setSelectedInstruments([]);
+    setFilterPosts([]);
+    setContentDisplay(content);
+  };
   const renderHeader = () => {
-    changeContent = (content) => {
-      setFilterUsers([]);
-      setSelectedGenres([]);
-      setSelectedInstruments([]);
-      setFilterPosts([]);
-      setContentDisplay(content);
-    };
     return (
       <View style={{ flex: 1 }}>
         {renderOptions()}
@@ -167,7 +172,6 @@ const MusiciansFilter = ({
             {renderContent()}
           </ScrollView>
         </View>
-        {renderBottom()}
       </View>
     );
   };
@@ -203,143 +207,143 @@ const MusiciansFilter = ({
       : renderLocationContent(markerPosts);
   };
   const renderMusicItem = (item, action, selected) => {
-    return (
+    return selected.includes(item.id) ? (
       <TouchableOpacity
         key={item.id}
         style={{ marginRight: 5 }}
         onPress={() => action(item)}
       >
-        <View
-          style={
-            selected.includes(item.id)
-              ? responsiveSizes[height].selectedItem
-              : responsiveSizes[height].regularItem
-          }
-        >
+        <BlurryBubble marginRight={0} marginLeft={0} radius={10}>
           <Text
-            style={
-              selected.includes(item.id)
-                ? responsiveSizes[height].selectedItemWriting
-                : responsiveSizes[height].itemWriting
-            }
+            style={{
+              fontSize: 21,
+              fontWeight: 600,
+              padding: 5,
+              color: "white",
+              flexWrap: "wrap",
+            }}
           >
             {item.name}
           </Text>
-        </View>
+        </BlurryBubble>
+      </TouchableOpacity>
+    ) : (
+      <TouchableOpacity
+        key={item.id}
+        style={{ marginRight: 5 }}
+        onPress={() => action(item)}
+      >
+        <Text
+          style={{
+            fontSize: 21,
+            fontWeight: 600,
+            padding: 4,
+            color: "black",
+            borderRadius: 10,
+            borderWidth: 1,
+            borderColor: "gray",
+            flexWrap: "wrap",
+          }}
+        >
+          {item.name}
+        </Text>
       </TouchableOpacity>
     );
   };
+
+  const filterButton = (comparison, type, func) => {
+    return comparison === type ? (
+      <TouchableOpacity onPress={() => func(type)}>
+        <BlurryBubble marginRight={0} marginLeft={0} radius={10}>
+          <Text
+            style={{
+              fontSize: 21,
+              fontWeight: 600,
+              padding: 5,
+              color: "white",
+              flexWrap: "wrap",
+            }}
+          >
+            {type}
+          </Text>
+        </BlurryBubble>
+      </TouchableOpacity>
+    ) : (
+      <TouchableOpacity onPress={() => func(type)}>
+        <Text
+          style={{
+            fontSize: 21,
+            borderRadius: 10,
+            borderWidth: 1,
+            marginRight: 0,
+            borderColor: "gray",
+            fontWeight: 600,
+            padding: 4,
+            flexWrap: "wrap",
+          }}
+        >
+          {type}
+        </Text>
+      </TouchableOpacity>
+    );
+  };
+
   const renderOptions = () => {
     return (
       <View>
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
           <View style={{ flexDirection: "row", margin: 5 }}>
-            {instruments.length ? (
-              <TouchableOpacity
-                style={{ marginRight: 5 }}
-                onPress={() => setDisplay("instruments")}
-              >
-                <View
-                  style={
-                    display == "instruments"
-                      ? responsiveSizes[height].selectedItem
-                      : responsiveSizes[height].regularItem
-                  }
-                >
-                  <Text
-                    style={
-                      display == "instruments"
-                        ? responsiveSizes[height].selectedItemWriting
-                        : responsiveSizes[height].itemWriting
-                    }
-                  >
-                    instruments
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            ) : null}
-            {genres.length ? (
-              <TouchableOpacity
-                style={
-                  display == "genres"
-                    ? responsiveSizes[height].selectedItem
-                    : responsiveSizes[height].regularItem
-                }
-                onPress={() => setDisplay("genres")}
-              >
-                <Text
-                  style={
-                    display == "genres"
-                      ? responsiveSizes[height].selectedItemWriting
-                      : responsiveSizes[height].itemWriting
-                  }
-                >
-                  genres
-                </Text>
-              </TouchableOpacity>
-            ) : null}
+            <View style={{ marginRight: 10 }}>
+              {filterButton(contentDisplay, "users", changeContent)}
+            </View>
+            {markerPosts.length
+              ? filterButton(
+                  contentDisplay,
+                  `${markerPosts.length} posts`,
+                  changeContent
+                )
+              : null}
           </View>
-
           <View style={{ flexDirection: "row", margin: 5 }}>
-            <TouchableOpacity onPress={() => changeContent("users")}>
-              <View
-                style={
-                  contentDisplay == "users"
-                    ? responsiveSizes[height].selectedItem
-                    : responsiveSizes[height].regularItem
-                }
-              >
-                <Text
-                  style={
-                    contentDisplay == "users"
-                      ? responsiveSizes[height].selectedItemWriting
-                      : responsiveSizes[height].itemWriting
-                  }
-                >
-                  users
-                </Text>
-              </View>
-            </TouchableOpacity>
-            {markerPosts.length ? (
-              <TouchableOpacity
-                style={{ marginLeft: 5 }}
-                onPress={() => changeContent("posts")}
-              >
-                <View
-                  style={
-                    contentDisplay == "posts"
-                      ? responsiveSizes[height].selectedItem
-                      : responsiveSizes[height].regularItem
-                  }
-                >
-                  <Text
-                    style={
-                      contentDisplay == "posts"
-                        ? responsiveSizes[height].selectedItemWriting
-                        : responsiveSizes[height].itemWriting
-                    }
-                  >
-                    {markerPosts.length} posts
-                  </Text>
+            {contentDisplay === "users" ? (
+              accountInstruments.length ? (
+                <View style={{ marginRight: 10 }}>
+                  {filterButton(display, "instruments", setDisplay)}
                 </View>
-              </TouchableOpacity>
+              ) : null
+            ) : postInstruments.length ? (
+              <View style={{ marginRight: 10 }}>
+                {filterButton(display, "instruments", setDisplay)}
+              </View>
             ) : null}
+            {contentDisplay === "users"
+              ? accountGenres.length
+                ? filterButton(display, "genres", setDisplay)
+                : null
+              : postGenres.length
+              ? filterButton(display, "genres", setDisplay)
+              : null}
           </View>
         </View>
         <ScrollView
           horizontal={true}
           style={{ marginBottom: 5, marginLeft: 5 }}
         >
-          {display == "instruments"
-            ? instruments.map((inst, i) =>
-                renderMusicItem(inst, instrumentFunc, selectedInstruments)
+          {display === "instruments"
+            ? contentDisplay === "users"
+              ? accountInstruments.map((inst, i) =>
+                  renderMusicItem(inst, instrumentFunc, selectedInstruments)
+                )
+              : postInstruments.map((inst, i) =>
+                  renderMusicItem(inst, instrumentFunc, selectedInstruments)
+                )
+            : contentDisplay === "users"
+            ? accountGenres.map((inst, i) =>
+                renderMusicItem(inst, genreFunc, selectedGenres)
               )
-            : null}
-          {display == "genres"
-            ? genres.map((genr) =>
-                renderMusicItem(genr, genreFunc, selectedGenres)
-              )
-            : null}
+            : postGenres.map((inst, i) =>
+                renderMusicItem(inst, genreFunc, selectedGenres)
+              )}
         </ScrollView>
       </View>
     );
@@ -348,7 +352,6 @@ const MusiciansFilter = ({
   return (
     <Animated.View
       style={{
-        // height: "auto",
         display: "flex",
         top: responsiveSizes[height].discoverEventFilterMargin,
         width: "96%",

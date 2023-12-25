@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React from "react";
 import {
   View,
   Text,
@@ -26,8 +26,6 @@ const EventsHeader = ({
   currentUser,
   selectedEvent,
 }) => {
-  const displayRef = useRef(null);
-
   const clearState = () => {
     if (selectedMarker) {
       store.dispatch({
@@ -152,6 +150,50 @@ const EventsHeader = ({
       );
     };
 
+    const mapSelectionHeader = (title) => {
+      return (
+        <View
+          style={{
+            borderRadius: 10,
+            marginLeft: 5,
+          }}
+        >
+          <View
+            style={{
+              overflow: "hidden",
+              borderRadius: 10,
+            }}
+          >
+            <BlurView
+              intensity={30}
+              tint="dark"
+              style={{
+                display: "flex",
+                backgroundColor: "transparent",
+
+                flexDirection: "row",
+                justifyContent: "space-between",
+                width: "100%",
+                padding: 3,
+              }}
+            >
+              <Text
+                style={{
+                  fontWeight: "500",
+                  fontSize: 23,
+                  color: "black",
+                  paddingHorizontal: 5,
+                  alignSelf: "center",
+                }}
+              >
+                {title}
+              </Text>
+            </BlurView>
+          </View>
+        </View>
+      );
+    };
+
     const renderCloseButton = () => {
       return (
         <TouchableOpacity
@@ -223,14 +265,13 @@ const EventsHeader = ({
                 flexDirection: "row",
               }}
             >
-              {newEvent ? singleOption("0", "new gig") : null}
-              {selectedMarker ? singleOption("0", selectedMarker.city) : null}
+              {newEvent ? mapSelectionHeader("new gig") : null}
+              {selectedMarker ? mapSelectionHeader(selectedMarker.city) : null}
               {selectedEvent
-                ? singleOption(
-                    "0",
+                ? mapSelectionHeader(`${
                     selectedEvent.user
                       ? selectedEvent.user.username
-                      : selectedEvent.band.name
+                      : selectedEvent.band.name}'s upcoming gig`
                   )
                 : null}
               {newEvent || selectedMarker || selectedEvent ? null : (
