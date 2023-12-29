@@ -221,10 +221,10 @@ const responsiveSizes = {
   // 9th gen, 8th gen, 7th gen,
   1024: ipadSizes,
   // mini,
-  926: iphoneSizes,
-  // 14 plus, 13 pro max, 12 pro max,
   932: { ...iphoneSizes, header: 90, discoverEventFilterMargin: 95 },
   // 14 pro max,
+  926: iphoneSizes,
+  // 14 plus, 13 pro max, 12 pro max,
   896: iphoneSizes,
   // 11 pro max
   852: iphoneSizes,

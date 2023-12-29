@@ -14,7 +14,6 @@ import { API_ROOT } from "../../constants/index";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { connect } from "react-redux";
 import SliderSection from "./SliderSection";
-import Toast from "react-native-toast-message";
 const { height } = Dimensions.get("window");
 import { ListItem } from "react-native-elements";
 import { AntDesign } from "@expo/vector-icons";
@@ -34,6 +33,8 @@ const InstrumentEdit = ({
   toBlockedUsers,
   setRemovedGenres,
   setRemovedInstruments,
+  setRemovedArtists,
+  setRemovedSongs,
 }) => {
   const [searching, setSearching] = useState("");
   const [result, setResult] = useState([]);
@@ -69,77 +70,31 @@ const InstrumentEdit = ({
     }
   };
 
-  const removeGenre = async (genre) => {
-    // let token = await AsyncStorage.getItem("jwt");
-    let filteredGenres = newGenres.filter((genr) => genr.id !== genre.id);
-    setNewGenres(filteredGenres);
+  const filterList = (list, id) => {
+    let filtered = list.filter((item) => item.id !== id);
+    return filtered;
+  };
+
+  const removeGenre = (genre) => {
+    setNewGenres(filterList(newGenres, genre.id));
     setRemovedGenres((prevState) => [...prevState, genre.id]);
-    // let updatedCurrentUser = { ...currentUser, genres: filteredGenres };
-    // store.dispatch({
-    //   type: "UPDATE_CURRENT_USER",
-    //   currentUser: updatedCurrentUser,
-    // });
-    // let obj = {
-    //   user_id: currentUser.id,
-    //   genre_id: genre.id,
-    // };
-    // fetch(`http://${API_ROOT}/deleteusergenre`, {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //     Authorization: `Bearer ${token}`,
-    //   },
-    //   body: JSON.stringify(obj),
-    // })
-    //   .then((resp) => resp.json())
-    //   .then((resp) => {
-    //     showToast(genre.name);
-    //   })
-    //   .catch((err) => console.log(err));
   };
 
-  const deleteInstrument = async (inst) => {
-    // let token = await AsyncStorage.getItem("jwt");
-    let filteredInstruments = newInstruments.filter(
-      (instru) => instru.id !== inst.id
-    );
-    setNewInstruments(filteredInstruments);
+  const deleteInstrument = (inst) => {
+    setNewInstruments(filterList(newInstruments, inst.id));
     setRemovedInstruments((prevState) => [...prevState, inst.id]);
-    // let updatedCurrentUser = {
-    //   ...currentUser,
-    //   instruments: filteredInstruments,
-    // };
-    // store.dispatch({
-    //   type: "UPDATE_CURRENT_USER",
-    //   currentUser: updatedCurrentUser,
-    // });
-
-    // let obj = {
-    //   user_id: currentUser.id,
-    //   instrument_id: inst.id,
-    // };
-    // fetch(`http://${API_ROOT}/deleteuserinstrument`, {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //     Authorization: `Bearer ${token}`,
-    //   },
-    //   body: JSON.stringify(obj),
-    // })
-    //   .then((resp) => resp.json())
-    //   .then((resp) => {
-    //     showToast(inst.name);
-    //   })
-    //   .catch((err) => console.log(err));
   };
 
-  const showToast = (name) => {
-    Toast.show({
-      type: "success",
-      text1: "success",
-      text2: `${name} is deleted`,
-    });
+  const deleteFavArtist = (item) => {
+    setNewFavoriteArtists(filterList(newFavoriteArtists, item.id));
+    setRemovedArtists((prevState) => [...prevState, item.id]);
   };
+
+  const deleteFavSong = (item) => {
+    setNewFavoriteSongs(filterList(newFavoriteSongs, item.id));
+    setRemovedSongs((prevState) => [...prevState, item.id]);
+  };
+
   const searchGenres = async (text) => {
     setGenreSearching(text);
     if (text.length) {
@@ -339,54 +294,6 @@ const InstrumentEdit = ({
     setSongSearch("");
   };
 
-  const deleteFavArtist = async (item) => {
-    let token = await AsyncStorage.getItem("jwt");
-
-    fetch(`http://${API_ROOT}/deleteuserartist`, {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ artist_id: item.id }),
-    })
-      .then((resp) => resp.json())
-      .then((resp) => {
-        let filtered = [...newFavoriteArtists].filter(
-          (artis) => artis.id !== item.id
-        );
-        let updatedCurrentUser = { ...currentUser, favoriteartists: filtered };
-        store.dispatch({
-          type: "UPDATE_CURRENT_USER",
-          currentUser: updatedCurrentUser,
-        });
-        setNewFavoriteArtists(filtered);
-      });
-  };
-
-  const deleteFavSong = async (song) => {
-    let token = await AsyncStorage.getItem("jwt");
-    fetch(`http://${API_ROOT}/deleteusersong`, {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ song_id: song.id }),
-    })
-      .then((resp) => resp.json())
-      .then((resp) => {
-        let filtered = [...newFavoriteSongs].filter(
-          (sng) => sng.id !== song.id
-        );
-        let updatedCurrentUser = { ...currentUser, favoritesongs: filtered };
-        store.dispatch({
-          type: "UPDATE_CURRENT_USER",
-          currentUser: updatedCurrentUser,
-        });
-        setNewFavoriteSongs(filtered);
-      });
-  };
   const renderFavoriteSongsSection = () => {
     return (
       <View style={styles.section}>

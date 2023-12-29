@@ -48,7 +48,7 @@ const EditHeader = ({
             </TouchableOpacity>
           )}
         </View>
-        <View style={{ display: "flex", flex: 4 }}>
+        <View style={{ display: "flex", flex: 4, justifyContent: "flex-end" }}>
           <Text
             style={{
               fontSize: responsiveSizes[height].screenTitle,

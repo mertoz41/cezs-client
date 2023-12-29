@@ -46,6 +46,8 @@ const EditField = ({ currentUser, navigation }) => {
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [removedGenres, setRemovedGenres] = useState([]);
   const [removedInstruments, setRemovedInstruments] = useState([]);
+  const [removedArtists, setRemovedArtists] = useState([]);
+  const [removedSongs, setRemovedSongs] = useState([]);
 
   //   useEffect(() => {
   //     checkSaveButton();
@@ -248,7 +250,11 @@ const EditField = ({ currentUser, navigation }) => {
       checkInstrumentsAndGenres(currentUser.genres, newGenres) ||
       checkInstrumentsAndGenres(currentUser.instruments, newInstruments) ||
       checkFavorites(currentUser.favoriteartists, newFavoriteArtists) ||
-      checkSongFavorite(currentUser.favoritesongs, newFavoriteSongs)
+      checkSongFavorite(currentUser.favoritesongs, newFavoriteSongs) ||
+      removedInstruments.length ||
+      removedGenres.length ||
+      removedArtists.length ||
+      removedSongs.length
     ) {
       return true;
     }
@@ -294,8 +300,7 @@ const EditField = ({ currentUser, navigation }) => {
     navigation.navigate("BlockedUsers");
   };
 
-  const updateUser = async () => {
-    Keyboard.dismiss();
+  const prepareUpdatedObj = () => {
     let updatedObj = {};
 
     if (currentUser.username !== userName) {
@@ -369,6 +374,25 @@ const EditField = ({ currentUser, navigation }) => {
         }
       }
     }
+    if (removedGenres.length) {
+      updatedObj.removedGenres = removedGenres;
+    }
+    if (removedInstruments.length) {
+      updatedObj.removedInstruments = removedInstruments;
+    }
+    if (removedArtists.length) {
+      updatedObj.removedArtists = removedArtists;
+    }
+    if (removedSongs.length) {
+      updatedObj.removedSongs = removedSongs;
+    }
+    return updatedObj;
+  };
+
+  const updateUser = async () => {
+    Keyboard.dismiss();
+    let updatedUser = prepareUpdatedObj();
+
     setLoading(true);
     let token = await AsyncStorage.getItem("jwt");
     fetch(`http://${API_ROOT}/users/${currentUser.id}`, {
@@ -377,7 +401,7 @@ const EditField = ({ currentUser, navigation }) => {
         "Content-type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(updatedObj),
+      body: JSON.stringify(updatedUser),
     })
       .then((resp) => resp.json())
       .then((resp) => {
@@ -387,6 +411,10 @@ const EditField = ({ currentUser, navigation }) => {
           type: "UPDATE_CURRENT_USER",
           currentUser: resp.user,
         });
+        setRemovedGenres([]);
+        setRemovedArtists([]);
+        setRemovedInstruments([]);
+        setRemovedSongs([]);
         showToast("success", "Profile updated.");
         setLoading(false);
       })
@@ -459,6 +487,8 @@ const EditField = ({ currentUser, navigation }) => {
               newGenres={newGenres}
               setRemovedGenres={setRemovedGenres}
               setRemovedInstruments={setRemovedInstruments}
+              setRemovedArtists={setRemovedArtists}
+              setRemovedSongs={setRemovedSongs}
               setNewFavoriteArtists={setNewFavoriteArtists}
               newFavoriteArtists={newFavoriteArtists}
               setNewFavoriteSongs={setNewFavoriteSongs}

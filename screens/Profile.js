@@ -65,7 +65,11 @@ const Profile = ({ currentUser, navigation }) => {
           toPostView={toPostView}
           followerNumber={currentUser.followers_count}
         />
-        {!currentUser.avatar ? (
+        {currentUser.avatar ||
+        currentUser.bio ||
+        currentUser.instruments.length ||
+        currentUser.genres.length ||
+        currentUser.favoritesongs.length ? null : (
           <View style={{ marginVertical: 30 }}>
             <Text style={{ fontSize: 25, color: "white", textAlign: "center" }}>
               Customize your profile in{" "}
@@ -83,7 +87,7 @@ const Profile = ({ currentUser, navigation }) => {
               </Text>
             </Text>
           </View>
-        ) : null}
+        )}
         {currentUser.upcoming_event ? (
           <UpcomingEvent gig={currentUser.upcoming_event} />
         ) : null}
@@ -116,7 +120,7 @@ const styles = StyleSheet.create({
 
   scroll: {
     flex: 1,
-    width: "100%"
+    width: "100%",
   },
 });
 const mapStateToProps = (state) => ({ currentUser: state.currentUser });
