@@ -281,10 +281,14 @@ const getTiming = (created_at) => {
     }
   } else {
     let result = Math.floor((utcnow - utcitem) / _MS_PER_DAY);
-    if (result == 1) {
-      return `${result} day ago`;
+    if (result >= 30) {
+      return `${Math.floor(result / 30)} months ago`;
     } else {
-      return `${result} days ago`;
+      if (result == 1) {
+        return `${result} day ago`;
+      } else {
+        return `${result} days ago`;
+      }
     }
   }
 };

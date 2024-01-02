@@ -35,7 +35,7 @@ const Skeleton = () => {
                 style={{
                   width: 40,
                   height: 40,
-                  backgroundColor: "rgba(147,112,219, .1)",
+                  backgroundColor: "rgba(147,112,219, .3)",
                   borderRadius: 10,
                 }}
               />
@@ -45,14 +45,14 @@ const Skeleton = () => {
                   style={{
                     height: 20,
                     width: 130,
-                    backgroundColor: "rgba(147,112,219, .1)",
+                    backgroundColor: "rgba(147,112,219, .3)",
                   }}
                 />
                 <View
                   style={{
                     height: 10,
                     width: 80,
-                    backgroundColor: "rgba(147,112,219, .1)",
+                    backgroundColor: "rgba(147,112,219, .3)",
                   }}
                 />
               </View>
@@ -73,7 +73,7 @@ const Skeleton = () => {
               height: 20,
               width: 150,
               alignSelf: "flex-end",
-              backgroundColor: "rgba(147,112,219, .1)",
+              backgroundColor: "rgba(147,112,219, .3)",
             }}
           />
 
@@ -81,7 +81,7 @@ const Skeleton = () => {
             style={{
               height: 15,
               width: 100,
-              backgroundColor: "rgba(147,112,219, .1)",
+              backgroundColor: "rgba(147,112,219, .3)",
             }}
           />
         </View>
@@ -94,7 +94,7 @@ const Skeleton = () => {
         style={{
           height: responsiveSizes[height].postItemVideo,
           width: width,
-          backgroundColor: "rgba(147,112,219, .1)",
+          backgroundColor: "rgba(147,112,219, .3)",
         }}
       />
     );

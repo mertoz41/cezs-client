@@ -39,7 +39,7 @@ const Search = ({ navigation, loggedIn, currentUser }) => {
   const [displayNotFound, setDisplayNotFound] = useState("");
   const [artistViews, setArtistViews] = useState([]);
   const [songViews, setSongViews] = useState([]);
-  const [dataLoading, setDataLoading] = useState(false);
+  const [dataLoading, setDataLoading] = useState(true);
   const [artistPosts, setArtistPosts] = useState([]);
   const [songPosts, setSongPosts] = useState([]);
 
@@ -448,100 +448,108 @@ const Search = ({ navigation, loggedIn, currentUser }) => {
         break;
     }
 
+    const filterItem = (item, list, action, i) => {
+      return (
+        <TouchableOpacity
+          key={i}
+          style={{
+            height: "auto",
+            width: "auto",
+            marginLeft: 10,
+
+            borderColor: list.includes(item) ? "#9370DB" : "gray",
+            borderRadius: 10,
+            borderWidth: responsiveSizes[height].borderWidth,
+            paddingHorizontal: 4,
+          }}
+          onPress={() => action(item)}
+        >
+          <Text
+            style={
+              list.includes(item)
+                ? {
+                    fontSize: 22,
+                    fontWeight: "300",
+                    color: "#9370DB",
+                  }
+                : {
+                    fontSize: 22,
+                    fontWeight: "300",
+                    color: "silver",
+                  }
+            }
+          >
+            {item.name}
+          </Text>
+        </TouchableOpacity>
+      );
+    };
+
+    const renderPlaceholder = (i) => {
+      return (
+        <TouchableOpacity
+          key={i}
+          style={{
+            height: "auto",
+            width: "auto",
+            marginLeft: 10,
+            backgroundColor: "rgba(147,112,219, .3)",
+            borderColor: "transparent",
+            borderRadius: 10,
+            borderWidth: responsiveSizes[height].borderWidth,
+            paddingHorizontal: 4,
+          }}
+          // onPress={() => action(item)}
+        >
+          <Text
+            style={{
+              fontSize: 22,
+              fontWeight: "300",
+              color: "transparent",
+            }}
+          >
+            bass guitar
+          </Text>
+        </TouchableOpacity>
+      );
+    };
+
+    const renderFilterSection = (
+      title,
+      allItems,
+      selectedItems,
+      selectAction
+    ) => {
+      return (
+        <View>
+          <View style={{ marginTop: 5 }}>
+            <Text style={responsiveSizes[height].sectionTitle}>{title}</Text>
+          </View>
+          <ScrollView horizontal={true}>
+            {allItems?.length
+              ? allItems.map((inst, i) =>
+                  filterItem(inst, selectedItems, selectAction, i)
+                )
+              : [1, 2, 3, 4, 5].map((i) => renderPlaceholder(i))}
+          </ScrollView>
+        </View>
+      );
+    };
+
     return (
       <View style={{ marginTop: 0 }}>
-        {musicInstruments?.length ? (
-          <View>
-            <View style={{ marginTop: 5 }}>
-              <Text style={responsiveSizes[height].sectionTitle}>
-                instruments
-              </Text>
-            </View>
-            <ScrollView horizontal={true}>
-              {musicInstruments.map((inst, i) => (
-                <TouchableOpacity
-                  key={i}
-                  style={{
-                    height: "auto",
-                    width: "auto",
-                    marginLeft: 10,
-
-                    borderColor: selectedInstruments.includes(inst)
-                      ? "#9370DB"
-                      : "gray",
-                    borderRadius: 10,
-                    borderWidth: responsiveSizes[height].borderWidth,
-                    paddingHorizontal: 4,
-                  }}
-                  onPress={() => selectInstrument(inst)}
-                >
-                  <Text
-                    style={
-                      selectedInstruments.includes(inst)
-                        ? {
-                            fontSize: 22,
-                            fontWeight: "300",
-                            color: "#9370DB",
-                          }
-                        : {
-                            fontSize: 22,
-                            fontWeight: "300",
-                            color: "silver",
-                          }
-                    }
-                  >
-                    {inst.name}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
-          </View>
-        ) : null}
-        {musicGenres?.length ? (
-          <View>
-            <View style={{ marginTop: 5 }}>
-              <Text style={responsiveSizes[height].sectionTitle}>genres</Text>
-            </View>
-            <ScrollView horizontal={true}>
-              {musicGenres.map((genr, i) => (
-                <TouchableOpacity
-                  style={{
-                    height: "auto",
-                    width: "auto",
-                    marginLeft: 10,
-
-                    borderColor: selectedGenres.includes(genr)
-                      ? "#9370DB"
-                      : "gray",
-                    borderRadius: 10,
-                    borderWidth: responsiveSizes[height].borderWidth,
-                    paddingHorizontal: 4,
-                  }}
-                  key={i}
-                  onPress={() => selectGenre(genr)}
-                >
-                  <Text
-                    style={
-                      selectedGenres.includes(genr)
-                        ? {
-                            fontSize: 22,
-                            fontWeight: "300",
-                            color: "#9370DB",
-                          }
-                        : {
-                            fontSize: 22,
-                            fontWeight: "300",
-                            color: "silver",
-                          }
-                    }
-                  >
-                    {genr.name}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
-          </View>
-        ) : null}
+        {renderFilterSection(
+          "instruments",
+          musicInstruments,
+          selectedInstruments,
+          selectInstrument
+        )}
+        {renderFilterSection(
+          "genres",
+          musicGenres,
+          selectedGenres,
+          selectGenre
+        )}
       </View>
     );
   };
@@ -647,30 +655,41 @@ const Search = ({ navigation, loggedIn, currentUser }) => {
         }}
       >
         {displayNotFound ? renderNotFoundMessage() : null}
-        {result.map((item, index) => (
-          <TouchableOpacity
-            onPress={() => {
-              searchingFor === "users"
-                ? toUserPage(item)
-                : searchingFor === "bands"
-                ? toBandPage(item)
-                : toPostView(item);
-            }}
-            key={index}
-          >
-            <Avatar
-              avatar={
-                searchingFor === "users"
-                  ? item.avatar
-                  : searchingFor === "bands"
-                  ? item.picture
-                  : item.thumbnail
-              }
-              size={width / 4}
-              withRadius={false}
-            />
-          </TouchableOpacity>
-        ))}
+        {dataLoading
+          ? [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((i) => (
+              <View
+                key={i}
+                style={{
+                  height: width / 4,
+                  width: width / 4,
+                  backgroundColor: "rgba(147,112,219, .3)",
+                }}
+              />
+            ))
+          : result.map((item, index) => (
+              <TouchableOpacity
+                onPress={() => {
+                  searchingFor === "users"
+                    ? toUserPage(item)
+                    : searchingFor === "bands"
+                    ? toBandPage(item)
+                    : toPostView(item);
+                }}
+                key={index}
+              >
+                <Avatar
+                  avatar={
+                    searchingFor === "users"
+                      ? item.avatar
+                      : searchingFor === "bands"
+                      ? item.picture
+                      : item.thumbnail
+                  }
+                  size={width / 4}
+                  withRadius={false}
+                />
+              </TouchableOpacity>
+            ))}
       </ScrollView>
     );
   };
@@ -681,18 +700,12 @@ const Search = ({ navigation, loggedIn, currentUser }) => {
       {/* <SearchResults /> */}
 
       {renderHeader()}
-      {renderMusicFilters()}
+      {searchingFor === "songs" || searchingFor === "artists"
+        ? null
+        : renderMusicFilters()}
       {searchingFor !== "posts" ? renderInputSection() : null}
 
       <ScrollView>
-        {dataLoading ? (
-          <ActivityIndicator
-            color="gray"
-            size="large"
-            style={{ marginTop: 10 }}
-          />
-        ) : null}
-
         {searchingFor === "posts" ||
         searchingFor === "users" ||
         searchingFor === "bands" ? (

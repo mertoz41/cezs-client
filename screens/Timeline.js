@@ -235,7 +235,7 @@ class Timeline extends Component {
   };
 
   renderItem = ({ item, index }) => {
-    return this.state.timeline.length ? (
+    return (
       <PostItem
         origin="timeline"
         isFocused={this.props.isFocused}
@@ -251,8 +251,6 @@ class Timeline extends Component {
         onLoop={this.state.onLoop}
         updateList={this.updateList}
       />
-    ) : (
-      this.renderEmptyMessage()
     );
   };
   nextVideo = () => {
@@ -311,7 +309,7 @@ class Timeline extends Component {
     this.setState({ onLoop: bool });
   };
   renderFlatList = () => {
-    return (
+    return this.state.timeline.length ? (
       <FlatList
         ref={(ref) => {
           this.flatRef = ref;
@@ -331,27 +329,29 @@ class Timeline extends Component {
           />
         }
       />
-      // <FlashList
-      //   ref={(ref) => {
-      //     this.flatRef = ref;
-      //   }}
-      //   data={this.state.timeline}
-      //   renderItem={this.renderItem}
-      //   keyExtractor={(item, index) => "key" + index}
-      //   // style={styles.scroll}
-      //   estimatedItemSize={200}
-      //   // initialNumToRender={5}
-      //   viewabilityConfig={this.viewabilityConfig}
-      //   onViewableItemsChanged={this.viewableItemChanged}
-      //   refreshControl={
-      //     <RefreshControl
-      //       tintColor="white"
-      //       refreshing={this.state.refreshing}
-      //       onRefresh={this.onRefresh}
-      //     />
-      //   }
-      // />
+    ) : (
+      this.renderEmptyMessage()
     );
+    // <FlashList
+    //   ref={(ref) => {
+    //     this.flatRef = ref;
+    //   }}
+    //   data={this.state.timeline}
+    //   renderItem={this.renderItem}
+    //   keyExtractor={(item, index) => "key" + index}
+    //   // style={styles.scroll}
+    //   estimatedItemSize={200}
+    //   // initialNumToRender={5}
+    //   viewabilityConfig={this.viewabilityConfig}
+    //   onViewableItemsChanged={this.viewableItemChanged}
+    //   refreshControl={
+    //     <RefreshControl
+    //       tintColor="white"
+    //       refreshing={this.state.refreshing}
+    //       onRefresh={this.onRefresh}
+    //     />
+    //   }
+    // />
   };
 
   renderEmptyMessage = () => {
@@ -361,13 +361,28 @@ class Timeline extends Component {
           display: "flex",
           justifyContent: "center",
           marginTop: 80,
+          width: "90%",
+          alignSelf: "center",
         }}
       >
-        <Text style={{ alignSelf: "center", fontSize: 25, color: "white" }}>
+        <Text
+          style={{
+            alignSelf: "center",
+            fontSize: 25,
+            color: "white",
+            marginBottom: 20,
+          }}
+        >
           Your timeline is empty.
         </Text>
-        <Text style={{ alignSelf: "center", fontSize: 25, color: "white" }}>
-          Post{" "}
+        <Text
+          style={{
+            alignSelf: "center",
+            fontSize: 25,
+            color: "white",
+            textAlign: "center",
+          }}
+        >
           <Text
             onPress={() => this.props.navigation.navigate("Camera")}
             style={{
@@ -378,9 +393,9 @@ class Timeline extends Component {
               textDecorationLine: "underline",
             }}
           >
-            videos
-          </Text>{" "}
-          or{" "}
+            Post{" "}
+          </Text>
+          videos and{" "}
           <Text
             onPress={() => this.props.navigation.navigate("Search")}
             style={{
@@ -391,9 +406,9 @@ class Timeline extends Component {
               textDecorationLine: "underline",
             }}
           >
-            find musicians
+            discover
           </Text>{" "}
-          to follow.
+          musicians, artists, and songs to follow.
         </Text>
       </View>
     );

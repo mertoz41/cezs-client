@@ -283,7 +283,10 @@ const Discover = ({
             navigation={navigation}
           />
         ) : null}
-        {sectionDisplay === "gigs" && !selectedEvent && !newEvent ? (
+        {sectionDisplay === "gigs" &&
+        !selectedEvent &&
+        !newEvent &&
+        allGigs.length ? (
           <EventFilters
             sectionDisplay={sectionDisplay}
             allGigs={allGigs}
@@ -297,24 +300,6 @@ const Discover = ({
             navigateToPerformer={navigateToPerformer}
           />
         ) : null}
-        {/* {(!selectedEvent &&
-          !newEvent &&
-          sectionDisplay !== "musicians" &&
-          sectionDisplay == "gigs" &&
-          gigCount > 0) ||
-        (!selectedEvent &&
-          !newEvent &&
-          sectionDisplay !== "musicians") ? (
-         
-        ) : null} */}
-        {/* {(selectedEvent &&
-          !selectedEvent.is_audition &&
-          sectionDisplay === "gigs") ||
-        (selectedEvent &&
-          selectedEvent.is_audition &&
-          sectionDisplay === "auditions") ? (
-         
-        ) : null} */}
       </>
     );
   };
