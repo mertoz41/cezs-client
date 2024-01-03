@@ -468,12 +468,12 @@ const Search = ({ navigation, loggedIn, currentUser }) => {
             style={
               list.includes(item)
                 ? {
-                    fontSize: 22,
+                    fontSize:responsiveSizes[height].searchItem,
                     fontWeight: "300",
                     color: "#9370DB",
                   }
                 : {
-                    fontSize: 22,
+                    fontSize:responsiveSizes[height].searchItem,
                     fontWeight: "300",
                     color: "silver",
                   }
@@ -719,7 +719,7 @@ const Search = ({ navigation, loggedIn, currentUser }) => {
             >
               <Text style={responsiveSizes[height].sectionTitle}>
                 {selectedInstruments.length || selectedGenres.length
-                  ? "result"
+                  ? "results"
                   : "most recent"}
               </Text>
               {loading ? (

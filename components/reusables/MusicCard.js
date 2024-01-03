@@ -9,15 +9,7 @@ import {
 import { connect } from "react-redux";
 import { responsiveSizes } from "../../constants/reusableFunctions";
 const { height } = Dimensions.get("window");
-const MusicCard = ({
-  content,
-  title,
-  follows,
-  setFollows,
-  favoriteItems,
-  setTheItem,
-  toFollowers,
-}) => {
+const MusicCard = ({ content, toFollowers }) => {
   useEffect(() => {
     setViewCount(content.view_count);
   }, []);

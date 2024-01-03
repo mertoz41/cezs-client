@@ -225,10 +225,11 @@ function AppNavigator({
                     <View
                       style={{
                         borderRadius: "50%",
-                        height: 15,
-                        width: 15,
+                        height: 20,
+                        width: 20,
                         backgroundColor: "red",
                         right: 0,
+                        justifyContent: "center",
                         position: "absolute",
                         zIndex: 1,
                       }}
@@ -284,29 +285,29 @@ function AppNavigator({
             })(route),
           })}
         />
-          <Tabs.Screen
-            name="Discover"
-            component={Discover}
-            options={({ route }) => ({
-              tabBarVisible: ((route) => {
-                const routeName = getFocusedRouteNameFromRoute(route) ?? "";
-                if (routeName === "Comment") {
-                  return false;
-                } else if (routeName === "EventsMap") {
-                  return false;
-                } else if (routeName === "Messages") {
-                  return false;
-                } else if (routeName === "Message") {
-                  return false;
-                } else if (routeName === "Discover") {
-                  return false;
-                } else if (routeName === "Upload") {
-                  return false;
-                }
-                return true;
-              })(route),
-            })}
-          />
+        <Tabs.Screen
+          name="Discover"
+          component={Discover}
+          options={({ route }) => ({
+            tabBarVisible: ((route) => {
+              const routeName = getFocusedRouteNameFromRoute(route) ?? "";
+              if (routeName === "Comment") {
+                return false;
+              } else if (routeName === "EventsMap") {
+                return false;
+              } else if (routeName === "Messages") {
+                return false;
+              } else if (routeName === "Message") {
+                return false;
+              } else if (routeName === "Discover") {
+                return false;
+              } else if (routeName === "Upload") {
+                return false;
+              }
+              return true;
+            })(route),
+          })}
+        />
 
         <Tabs.Screen
           name="Search"
@@ -324,7 +325,6 @@ function AppNavigator({
           })}
         />
 
-        
         <Tabs.Screen
           name="Profile"
           component={ProfileScreen}

@@ -197,6 +197,7 @@ const MusiciansFilter = ({
       </TouchableOpacity>
     ));
   };
+
   const renderContent = () => {
     return contentDisplay === "users"
       ? selectedInstruments.length || selectedGenres.length
@@ -206,6 +207,7 @@ const MusiciansFilter = ({
       ? renderLocationContent(filterPosts)
       : renderLocationContent(markerPosts);
   };
+
   const renderMusicItem = (item, action, selected) => {
     return selected.includes(item.id) ? (
       <TouchableOpacity

@@ -153,7 +153,7 @@ const Filters = ({
       </View>
       {accountPosts?.length ? (
         <ScrollView horizontal={true} style={{ marginVertical: 5 }}>
-          <TouchableOpacity onPress={() => clearFilter()}>
+          <TouchableOpacity onPress={() => clearFilter()} style={{marginLeft: 5}}>
             <Text
               style={
                 !genreSelections.length && !selectedInstruments.length

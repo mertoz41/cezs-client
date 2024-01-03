@@ -268,10 +268,12 @@ const EventsHeader = ({
               {newEvent ? mapSelectionHeader("new gig") : null}
               {selectedMarker ? mapSelectionHeader(selectedMarker.city) : null}
               {selectedEvent
-                ? mapSelectionHeader(`${
-                    selectedEvent.user
-                      ? selectedEvent.user.username
-                      : selectedEvent.band.name}'s upcoming gig`
+                ? mapSelectionHeader(
+                    `${
+                      selectedEvent.user
+                        ? selectedEvent.user.username
+                        : selectedEvent.band.name
+                    }'s upcoming gig`
                   )
                 : null}
               {newEvent || selectedMarker || selectedEvent ? null : (
