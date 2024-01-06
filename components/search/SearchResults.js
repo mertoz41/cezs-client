@@ -1,73 +1,103 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import {
-  View,
-  Text,
-  StyleSheet,
   TouchableOpacity,
   ScrollView,
-  TextInput,
   Dimensions,
+  View,
+  Text,
   ActivityIndicator,
 } from "react-native";
-import Avatar from "../components/reusables/Avatar";
-import { MaterialIcons } from "@expo/vector-icons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { API_ROOT } from "../constants/index";
-import { connect } from "react-redux";
-import Toast from "react-native-toast-message";
+import Avatar from "../reusables/Avatar";
 import { responsiveSizes } from "../../constants/reusableFunctions";
-import MusicFilters from "./MusicFilters";
+const { width, height } = Dimensions.get("window");
 
-const SearchResults = () => {
+const SearchResults = ({
+  result,
+  loading,
+  selectedLength,
+  dataLoading,
+  navigation,
+  searchingFor,
+}) => {
+  const toUserPage = (item) => {
+    let user = { username: item.username, avatar: item.avatar, id: item.id };
+    navigation.navigate("User", user);
+  };
+  const toBandPage = (item) => {
+    let thatBand = { bandname: item.name, picture: item.picture, id: item.id };
+    navigation.navigate("Band", thatBand);
+  };
+
+  const toPostView = (item) => {
+    let posts = result.map((post) => post.id);
+    let sliced = posts.slice(posts.indexOf(item.id));
+    let obj = {
+      postId: item.id,
+      usage: "search",
+      title: "library",
+      posts: sliced,
+    };
+    navigation.navigate("Posts", obj);
+  };
+  const renderListTitle = () => {
+    return (
+      <View
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+        }}
+      >
+        <Text style={responsiveSizes[height].sectionTitle}>
+          {selectedLength ? "results" : "most recent"}
+        </Text>
+        {loading ? (
+          <ActivityIndicator style={{ marginRight: 10 }} size={"small"} />
+        ) : null}
+      </View>
+    );
+  };
   return (
-    <ScrollView>
-      {searchingFor !== "posts" ? renderInputSection() : null}
-      {dataLoading ? (
-        <ActivityIndicator
-          color="gray"
-          size="large"
-          style={{ marginTop: 10 }}
-        />
-      ) : null}
-      {/* {renderMusicFilters()} */}
-      {searchingFor === "posts" ||
-      searchingFor === "users" ||
-      searchingFor === "bands" ? (
-        <View>
-          <View
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
-            }}
-          >
-            <Text style={responsiveSizes[height].sectionTitle}>
-              {selectedInstruments.length || selectedGenres.length
-                ? "result"
-                : "most recent"}
-            </Text>
-            {loading ? (
-              <ActivityIndicator style={{ marginRight: 10 }} size={"small"} />
-            ) : null}
-          </View>
-          {renderPostResults()}
-        </View>
-      ) : null}
-      {searchingFor === "artists"
-        ? displayNotFound
-          ? renderNotFoundMessage()
-          : result.length
-          ? renderMusicResult(result, toArtistPage)
-          : renderMostSection(artistViews, artistPosts, toArtistPage)
-        : null}
-      {searchingFor === "songs"
-        ? displayNotFound
-          ? renderNotFoundMessage()
-          : result.length
-          ? renderMusicResult(result, selection)
-          : renderMostSection(songViews, songPosts, selection)
-        : null}
-    </ScrollView>
+    <View>
+      {renderListTitle()}
+      <ScrollView
+        contentContainerStyle={{
+          flexDirection: "row",
+          flexWrap: "wrap",
+          height: "auto",
+        }}
+      >
+        {dataLoading
+          ? [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((i) => (
+              <View
+                key={i}
+                style={{
+                  height: width / 4,
+                  width: width / 4,
+                  backgroundColor: "rgba(147,112,219, .3)",
+                }}
+              />
+            ))
+          : result.map((item, index) => (
+              <TouchableOpacity
+                onPress={() => {
+                  searchingFor === "users"
+                    ? toUserPage(item)
+                    : searchingFor === "bands"
+                    ? toBandPage(item)
+                    : toPostView(item);
+                }}
+                key={index}
+              >
+                <Avatar
+                  avatar={item.thumbnail ? item.thumbnail : item.avatar}
+                  size={width / 4}
+                  withRadius={false}
+                />
+              </TouchableOpacity>
+            ))}
+      </ScrollView>
+    </View>
   );
 };
 

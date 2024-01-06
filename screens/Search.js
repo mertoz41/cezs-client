@@ -16,6 +16,7 @@ import { API_ROOT } from "../constants/index";
 import { connect } from "react-redux";
 import Toast from "react-native-toast-message";
 import { responsiveSizes } from "../constants/reusableFunctions";
+import SearchResults from "../components/search/SearchResults";
 const { width, height } = Dimensions.get("window");
 const Search = ({ navigation, loggedIn, currentUser }) => {
   const [searching, setSearching] = useState("");
@@ -150,17 +151,17 @@ const Search = ({ navigation, loggedIn, currentUser }) => {
       .catch((err) => Toast.show({ type: "error", text1: err.message }));
   };
 
-  const toPostView = (item) => {
-    let posts = result.map((post) => post.id);
-    let sliced = posts.slice(posts.indexOf(item.id));
-    let obj = {
-      postId: item.id,
-      usage: "search",
-      title: "library",
-      posts: sliced,
-    };
-    navigation.navigate("Posts", obj);
-  };
+  // const toPostView = (item) => {
+  //   let posts = result.map((post) => post.id);
+  //   let sliced = posts.slice(posts.indexOf(item.id));
+  //   let obj = {
+  //     postId: item.id,
+  //     usage: "search",
+  //     title: "library",
+  //     posts: sliced,
+  //   };
+  //   navigation.navigate("Posts", obj);
+  // };
 
   const selection = (item) => {
     if (searchingFor == "users") {
@@ -468,12 +469,12 @@ const Search = ({ navigation, loggedIn, currentUser }) => {
             style={
               list.includes(item)
                 ? {
-                    fontSize:responsiveSizes[height].searchItem,
+                    fontSize: responsiveSizes[height].searchItem,
                     fontWeight: "300",
                     color: "#9370DB",
                   }
                 : {
-                    fontSize:responsiveSizes[height].searchItem,
+                    fontSize: responsiveSizes[height].searchItem,
                     fontWeight: "300",
                     color: "silver",
                   }
@@ -645,67 +646,74 @@ const Search = ({ navigation, loggedIn, currentUser }) => {
       </Text>
     );
   };
-  const renderPostResults = () => {
-    return (
-      <ScrollView
-        contentContainerStyle={{
-          flexDirection: "row",
-          flexWrap: "wrap",
-          height: "auto",
-        }}
-      >
-        {displayNotFound ? renderNotFoundMessage() : null}
-        {dataLoading
-          ? [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((i) => (
-              <View
-                key={i}
-                style={{
-                  height: width / 4,
-                  width: width / 4,
-                  backgroundColor: "rgba(147,112,219, .3)",
-                }}
-              />
-            ))
-          : result.map((item, index) => (
-              <TouchableOpacity
-                onPress={() => {
-                  searchingFor === "users"
-                    ? toUserPage(item)
-                    : searchingFor === "bands"
-                    ? toBandPage(item)
-                    : toPostView(item);
-                }}
-                key={index}
-              >
-                <Avatar
-                  avatar={
-                    searchingFor === "users"
-                      ? item.avatar
-                      : searchingFor === "bands"
-                      ? item.picture
-                      : item.thumbnail
-                  }
-                  size={width / 4}
-                  withRadius={false}
-                />
-              </TouchableOpacity>
-            ))}
-      </ScrollView>
-    );
-  };
+  // const renderPostResults = () => {
+  //   return (
+  //     <ScrollView
+  //       contentContainerStyle={{
+  //         flexDirection: "row",
+  //         flexWrap: "wrap",
+  //         height: "auto",
+  //       }}
+  //     >
+  //       {displayNotFound ? renderNotFoundMessage() : null}
+  //       {dataLoading
+  //         ? [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((i) => (
+  //             <View
+  //               key={i}
+  //               style={{
+  //                 height: width / 4,
+  //                 width: width / 4,
+  //                 backgroundColor: "rgba(147,112,219, .3)",
+  //               }}
+  //             />
+  //           ))
+  //         : result.map((item, index) => (
+  //             <TouchableOpacity
+  //               onPress={() => {
+  //                 searchingFor === "users"
+  //                   ? toUserPage(item)
+  //                   : searchingFor === "bands"
+  //                   ? toBandPage(item)
+  //                   : toPostView(item);
+  //               }}
+  //               key={index}
+  //             >
+  //               <Avatar
+  //                 avatar={
+  //                   searchingFor === "users"
+  //                     ? item.avatar
+  //                     : searchingFor === "bands"
+  //                     ? item.picture
+  //                     : item.thumbnail
+  //                 }
+  //                 size={width / 4}
+  //                 withRadius={false}
+  //               />
+  //             </TouchableOpacity>
+  //           ))}
+  //     </ScrollView>
+  //   );
+  // };
 
   return (
     <View style={styles.container}>
       {/* <SearchFilters /> */}
-      {/* <SearchResults /> */}
 
       {renderHeader()}
       {searchingFor === "songs" || searchingFor === "artists"
         ? null
         : renderMusicFilters()}
       {searchingFor !== "posts" ? renderInputSection() : null}
+      <SearchResults
+        result={result}
+        loading={loading}
+        selectedLength={selectedGenres.length || selectedInstruments.length? true : false}
+        dataLoading={dataLoading}
+        navigation={navigation}
+        searchingFor={searchingFor}
+      />
 
-      <ScrollView>
+      {/* <ScrollView>
         {searchingFor === "posts" ||
         searchingFor === "users" ||
         searchingFor === "bands" ? (
@@ -743,7 +751,7 @@ const Search = ({ navigation, loggedIn, currentUser }) => {
             ? renderMusicResult(result, selection)
             : renderMostSection(songViews, songPosts, selection)
           : null}
-      </ScrollView>
+      </ScrollView> */}
     </View>
   );
 };
