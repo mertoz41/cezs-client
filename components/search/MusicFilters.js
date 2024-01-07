@@ -2,42 +2,43 @@ import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
-  StyleSheet,
   TouchableOpacity,
   ScrollView,
-  TextInput,
   Dimensions,
-  ActivityIndicator,
 } from "react-native";
-import { MaterialIcons } from "@expo/vector-icons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { API_ROOT } from "../../constants";
-import { connect } from "react-redux";
-import Toast from "react-native-toast-message";
-import { responsiveSizes } from "../../constants/reusableFunctions";
 
-const MusicFilters = () => {
+import { responsiveSizes } from "../../constants/reusableFunctions";
+const { height } = Dimensions.get("window");
+
+const MusicFilters = ({
+  searchingFor,
+  accountInstruments,
+  accountGenres,
+  postInstruments,
+  postGenres,
+  updateResult,
+  getFilterSearch,
+}) => {
   const [selectedInstruments, setSelectedInstruments] = useState([]);
   const [selectedGenres, setSelectedGenres] = useState([]);
+  const [displayedGenres, setDisplayedGenres] = useState([]);
+  const [displayedInstruments, setDisplayedInsturments] = useState([]);
 
   useEffect(() => {
-    let musicInstruments;
-    let musicGenres;
-    switch (searchingFor) {
-      case "users":
-        musicInstruments = accountInstruments;
-        musicGenres = accountGenres;
-        break;
-      case "bands":
-        musicInstruments = accountInstruments;
-        musicGenres = accountGenres;
-        break;
-      case "posts":
-        musicInstruments = postInstruments;
-        musicGenres = postGenres;
-        break;
+    if (searchingFor === "users" || searchingFor === "bands") {
+      setDisplayedGenres(accountGenres);
+      setDisplayedInsturments(accountInstruments);
+    } else {
+      setDisplayedGenres(postGenres);
+      setDisplayedInsturments(postInstruments);
     }
-  }, []);
+  }, [
+    accountInstruments,
+    accountGenres,
+    postInstruments,
+    postGenres,
+    searchingFor,
+  ]);
   const selectInstrument = (inst) => {
     let found = selectedInstruments.find(
       (instrument) => instrument.id === inst.id
@@ -47,7 +48,6 @@ const MusicFilters = () => {
         (instru) => instru.id !== inst.id
       );
       setSelectedInstruments(filtered);
-
       updateResult(selectedGenres, filtered);
     } else {
       let updated = [...selectedInstruments, inst];
@@ -69,93 +69,106 @@ const MusicFilters = () => {
     }
   };
 
-  const getFilterSearch = async (genres, instruments) => {
-    setLoading(true);
-    let genreIds = genres.map((genr) => genr.id);
-    let instrumentIds = instruments.map((inst) => inst.id);
-    let token = await AsyncStorage.getItem("jwt");
-    fetch(`http://${API_ROOT}/${searchingFor}filtersearch`, {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ genres: genreIds, instruments: instrumentIds }),
-    })
-      .then((resp) => resp.json())
-      .then((resp) => {
-        // setResult(sortPosts(resp));
-        setLoading(false);
-      })
-      .catch((err) => Toast.show({ type: "error", text1: err.message }));
+  const filterItem = (item, list, action, i) => {
+    return (
+      <TouchableOpacity
+        key={i}
+        style={{
+          height: "auto",
+          width: "auto",
+          marginLeft: 10,
+
+          borderColor: list.includes(item) ? "#9370DB" : "gray",
+          borderRadius: 10,
+          borderWidth: responsiveSizes[height].borderWidth,
+          paddingHorizontal: 4,
+        }}
+        onPress={() => action(item)}
+      >
+        <Text
+          style={
+            list.includes(item)
+              ? {
+                  fontSize: responsiveSizes[height].searchItem,
+                  fontWeight: "300",
+                  color: "#9370DB",
+                }
+              : {
+                  fontSize: responsiveSizes[height].searchItem,
+                  fontWeight: "300",
+                  color: "silver",
+                }
+          }
+        >
+          {item.name}
+        </Text>
+      </TouchableOpacity>
+    );
   };
 
-  // let musicInstruments;
-  // let musicGenres;
-  // switch (searchingFor) {
-  //   case "users":
-  //     musicInstruments = accountInstruments;
-  //     musicGenres = accountGenres;
-  //     break;
-  //   case "bands":
-  //     musicInstruments = accountInstruments;
-  //     musicGenres = accountGenres;
-  //     break;
-  //   case "posts":
-  //     musicInstruments = postInstruments;
-  //     musicGenres = postGenres;
-  //     break;
-  // }
+  const renderFilterSection = (
+    title,
+    allItems,
+    selectedItems,
+    selectAction
+  ) => {
+    return (
+      <View>
+        <View style={{ marginTop: 5 }}>
+          <Text style={responsiveSizes[height].sectionTitle}>{title}</Text>
+        </View>
+        <ScrollView horizontal={true}>
+          {allItems?.length
+            ? allItems.map((inst, i) =>
+                filterItem(inst, selectedItems, selectAction, i)
+              )
+            : [1, 2, 3, 4, 5].map((i) => renderPlaceholder(i))}
+        </ScrollView>
+      </View>
+    );
+  };
+  const renderPlaceholder = (i) => {
+    return (
+      <TouchableOpacity
+        key={i}
+        style={{
+          height: "auto",
+          width: "auto",
+          marginLeft: 10,
+          backgroundColor: "rgba(147,112,219, .3)",
+          borderColor: "transparent",
+          borderRadius: 10,
+          borderWidth: responsiveSizes[height].borderWidth,
+          paddingHorizontal: 4,
+        }}
+      >
+        <Text
+          style={{
+            fontSize: 22,
+            fontWeight: "300",
+            color: "transparent",
+          }}
+        >
+          bass guitar
+        </Text>
+      </TouchableOpacity>
+    );
+  };
+
   return (
     <View style={{ marginTop: 0 }}>
-      {musicInstruments?.length ? (
-        <View>
-          <Text style={responsiveSizes[height].sectionTitle}>instruments</Text>
-          <ScrollView horizontal={true}>
-            {musicInstruments.map((inst, i) => (
-              <TouchableOpacity
-                key={i}
-                style={styles.filterItem}
-                onPress={() => selectInstrument(inst)}
-              >
-                <Text
-                  style={
-                    selectedInstruments.includes(inst)
-                      ? styles.selectedItemWriting
-                      : styles.sectionItem
-                  }
-                >
-                  {inst.name}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-        </View>
-      ) : null}
-      {musicGenres?.length ? (
-        <View>
-          <Text style={responsiveSizes[height].sectionTitle}>genres</Text>
-          <ScrollView horizontal={true}>
-            {musicGenres.map((genr, i) => (
-              <TouchableOpacity
-                style={styles.filterItem}
-                key={i}
-                onPress={() => selectGenre(genr)}
-              >
-                <Text
-                  style={
-                    selectedGenres.includes(genr)
-                      ? styles.selectedItemWriting
-                      : styles.itemWriting
-                  }
-                >
-                  {genr.name}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-        </View>
-      ) : null}
+      {renderFilterSection(
+        "instruments",
+        displayedInstruments,
+        selectedInstruments,
+        selectInstrument
+      )}
+      {renderFilterSection(
+        "genres",
+        displayedGenres,
+        selectedGenres,
+        selectGenre
+      )}
     </View>
   );
 };

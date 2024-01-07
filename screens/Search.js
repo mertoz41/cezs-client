@@ -17,6 +17,7 @@ import { connect } from "react-redux";
 import Toast from "react-native-toast-message";
 import { responsiveSizes } from "../constants/reusableFunctions";
 import SearchResults from "../components/search/SearchResults";
+import MusicFilters from "../components/search/MusicFilters";
 const { width, height } = Dimensions.get("window");
 const Search = ({ navigation, loggedIn, currentUser }) => {
   const [searching, setSearching] = useState("");
@@ -151,18 +152,6 @@ const Search = ({ navigation, loggedIn, currentUser }) => {
       .catch((err) => Toast.show({ type: "error", text1: err.message }));
   };
 
-  // const toPostView = (item) => {
-  //   let posts = result.map((post) => post.id);
-  //   let sliced = posts.slice(posts.indexOf(item.id));
-  //   let obj = {
-  //     postId: item.id,
-  //     usage: "search",
-  //     title: "library",
-  //     posts: sliced,
-  //   };
-  //   navigation.navigate("Posts", obj);
-  // };
-
   const selection = (item) => {
     if (searchingFor == "users") {
       toUserPage(item);
@@ -220,7 +209,6 @@ const Search = ({ navigation, loggedIn, currentUser }) => {
     setSearching("");
   };
   const emptyResults = () => {
-    // setResult([]);
     setSearching("");
     setDisplayNotFound("");
     setLoading(false);
@@ -237,36 +225,6 @@ const Search = ({ navigation, loggedIn, currentUser }) => {
       return "song";
     } else if (searchingFor == "posts") {
       return "post";
-    }
-  };
-
-  const selectGenre = (genr) => {
-    let found = selectedGenres.find((genre) => genre.id === genr.id);
-    if (found) {
-      let filtered = selectedGenres.filter((genre) => genre.id !== genr.id);
-      setSelectedGenres(filtered);
-      updateResult(filtered, selectedInstruments);
-    } else {
-      let updated = [...selectedGenres, genr];
-      setSelectedGenres(updated);
-      getFilterSearch(updated, selectedInstruments);
-    }
-  };
-  const selectInstrument = (inst) => {
-    let found = selectedInstruments.find(
-      (instrument) => instrument.id === inst.id
-    );
-    if (found) {
-      let filtered = selectedInstruments.filter(
-        (instru) => instru.id !== inst.id
-      );
-      setSelectedInstruments(filtered);
-
-      updateResult(selectedGenres, filtered);
-    } else {
-      let updated = [...selectedInstruments, inst];
-      setSelectedInstruments(updated);
-      getFilterSearch(selectedGenres, updated);
     }
   };
 
@@ -301,6 +259,7 @@ const Search = ({ navigation, loggedIn, currentUser }) => {
       setResult(updatedPosts.length ? updatedPosts : latePosts);
     }
   };
+
   const getFilterSearch = async (genres, instruments) => {
     setLoading(true);
     let genreIds = genres.map((genr) => genr.id);
@@ -431,173 +390,50 @@ const Search = ({ navigation, loggedIn, currentUser }) => {
       </View>
     );
   };
-  const renderMusicFilters = () => {
-    let musicInstruments;
-    let musicGenres;
-    switch (searchingFor) {
-      case "users":
-        musicInstruments = accountInstruments;
-        musicGenres = accountGenres;
-        break;
-      case "bands":
-        musicInstruments = accountInstruments;
-        musicGenres = accountGenres;
-        break;
-      case "posts":
-        musicInstruments = postInstruments;
-        musicGenres = postGenres;
-        break;
-    }
 
-    const filterItem = (item, list, action, i) => {
-      return (
-        <TouchableOpacity
-          key={i}
-          style={{
-            height: "auto",
-            width: "auto",
-            marginLeft: 10,
-
-            borderColor: list.includes(item) ? "#9370DB" : "gray",
-            borderRadius: 10,
-            borderWidth: responsiveSizes[height].borderWidth,
-            paddingHorizontal: 4,
-          }}
-          onPress={() => action(item)}
-        >
-          <Text
-            style={
-              list.includes(item)
-                ? {
-                    fontSize: responsiveSizes[height].searchItem,
-                    fontWeight: "300",
-                    color: "#9370DB",
-                  }
-                : {
-                    fontSize: responsiveSizes[height].searchItem,
-                    fontWeight: "300",
-                    color: "silver",
-                  }
-            }
-          >
-            {item.name}
-          </Text>
-        </TouchableOpacity>
-      );
-    };
-
-    const renderPlaceholder = (i) => {
-      return (
-        <TouchableOpacity
-          key={i}
-          style={{
-            height: "auto",
-            width: "auto",
-            marginLeft: 10,
-            backgroundColor: "rgba(147,112,219, .3)",
-            borderColor: "transparent",
-            borderRadius: 10,
-            borderWidth: responsiveSizes[height].borderWidth,
-            paddingHorizontal: 4,
-          }}
-          // onPress={() => action(item)}
-        >
-          <Text
-            style={{
-              fontSize: 22,
-              fontWeight: "300",
-              color: "transparent",
-            }}
-          >
-            bass guitar
-          </Text>
-        </TouchableOpacity>
-      );
-    };
-
-    const renderFilterSection = (
-      title,
-      allItems,
-      selectedItems,
-      selectAction
-    ) => {
-      return (
-        <View>
-          <View style={{ marginTop: 5 }}>
-            <Text style={responsiveSizes[height].sectionTitle}>{title}</Text>
-          </View>
-          <ScrollView horizontal={true}>
-            {allItems?.length
-              ? allItems.map((inst, i) =>
-                  filterItem(inst, selectedItems, selectAction, i)
-                )
-              : [1, 2, 3, 4, 5].map((i) => renderPlaceholder(i))}
-          </ScrollView>
-        </View>
-      );
-    };
-
-    return (
-      <View style={{ marginTop: 0 }}>
-        {renderFilterSection(
-          "instruments",
-          musicInstruments,
-          selectedInstruments,
-          selectInstrument
-        )}
-        {renderFilterSection(
-          "genres",
-          musicGenres,
-          selectedGenres,
-          selectGenre
-        )}
-      </View>
-    );
-  };
-
-  const renderMusicResult = (musicResult, action) => {
-    return musicResult.map((item) => (
-      <TouchableOpacity
-        onPress={() => action(item)}
-        key={item.id}
-        style={{
-          borderBottomWidth: responsiveSizes[height].borderWidth,
-          borderBottomColor: "gray",
-          margin: 10,
-          paddingVertical: 10,
-          flexDirection: "row",
-        }}
-      >
-        <Text
-          style={{
-            fontSize: responsiveSizes[height].screenTitle,
-            color: "white",
-          }}
-        >
-          {item.name}
-        </Text>
-        {item.artist_name ? (
-          <Text
-            style={{
-              fontSize: responsiveSizes[height].screenTitle,
-              color: "gray",
-            }}
-          >
-            {" "}
-            <Text
-              style={{
-                fontSize: responsiveSizes[height].screenTitle,
-                color: "#9370DB",
-              }}
-            >
-              /
-            </Text>{" "}
-            {item.artist_name}
-          </Text>
-        ) : null}
-      </TouchableOpacity>
-    ));
-  };
+  // const renderMusicResult = (musicResult, action) => {
+  //   return musicResult.map((item) => (
+  //     <TouchableOpacity
+  //       onPress={() => action(item)}
+  //       key={item.id}
+  //       style={{
+  //         borderBottomWidth: responsiveSizes[height].borderWidth,
+  //         borderBottomColor: "gray",
+  //         margin: 10,
+  //         paddingVertical: 10,
+  //         flexDirection: "row",
+  //       }}
+  //     >
+  //       <Text
+  //         style={{
+  //           fontSize: responsiveSizes[height].screenTitle,
+  //           color: "white",
+  //         }}
+  //       >
+  //         {item.name}
+  //       </Text>
+  //       {item.artist_name ? (
+  //         <Text
+  //           style={{
+  //             fontSize: responsiveSizes[height].screenTitle,
+  //             color: "gray",
+  //           }}
+  //         >
+  //           {" "}
+  //           <Text
+  //             style={{
+  //               fontSize: responsiveSizes[height].screenTitle,
+  //               color: "#9370DB",
+  //             }}
+  //           >
+  //             /
+  //           </Text>{" "}
+  //           {item.artist_name}
+  //         </Text>
+  //       ) : null}
+  //     </TouchableOpacity>
+  //   ));
+  // };
 
   const renderInputSection = () => {
     return (
@@ -646,68 +482,28 @@ const Search = ({ navigation, loggedIn, currentUser }) => {
       </Text>
     );
   };
-  // const renderPostResults = () => {
-  //   return (
-  //     <ScrollView
-  //       contentContainerStyle={{
-  //         flexDirection: "row",
-  //         flexWrap: "wrap",
-  //         height: "auto",
-  //       }}
-  //     >
-  //       {displayNotFound ? renderNotFoundMessage() : null}
-  //       {dataLoading
-  //         ? [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((i) => (
-  //             <View
-  //               key={i}
-  //               style={{
-  //                 height: width / 4,
-  //                 width: width / 4,
-  //                 backgroundColor: "rgba(147,112,219, .3)",
-  //               }}
-  //             />
-  //           ))
-  //         : result.map((item, index) => (
-  //             <TouchableOpacity
-  //               onPress={() => {
-  //                 searchingFor === "users"
-  //                   ? toUserPage(item)
-  //                   : searchingFor === "bands"
-  //                   ? toBandPage(item)
-  //                   : toPostView(item);
-  //               }}
-  //               key={index}
-  //             >
-  //               <Avatar
-  //                 avatar={
-  //                   searchingFor === "users"
-  //                     ? item.avatar
-  //                     : searchingFor === "bands"
-  //                     ? item.picture
-  //                     : item.thumbnail
-  //                 }
-  //                 size={width / 4}
-  //                 withRadius={false}
-  //               />
-  //             </TouchableOpacity>
-  //           ))}
-  //     </ScrollView>
-  //   );
-  // };
 
   return (
     <View style={styles.container}>
       {/* <SearchFilters /> */}
 
       {renderHeader()}
-      {searchingFor === "songs" || searchingFor === "artists"
-        ? null
-        : renderMusicFilters()}
+      <MusicFilters
+        searchingFor={searchingFor}
+        accountInstruments={accountInstruments}
+        accountGenres={accountGenres}
+        postInstruments={postInstruments}
+        postGenres={postGenres}
+        updateResult={updateResult}
+        getFilterSearch={getFilterSearch}
+      />
       {searchingFor !== "posts" ? renderInputSection() : null}
       <SearchResults
         result={result}
         loading={loading}
-        selectedLength={selectedGenres.length || selectedInstruments.length? true : false}
+        selectedLength={
+          selectedGenres.length || selectedInstruments.length ? true : false
+        }
         dataLoading={dataLoading}
         navigation={navigation}
         searchingFor={searchingFor}
