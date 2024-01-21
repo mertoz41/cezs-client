@@ -7,7 +7,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import UpcomingEvent from "../components/account/upcomingevent";
 import Info from "../components/account/info";
 import Card from "../components/account/card";
-import UserTabs from "../components/account/Tabs";
+import Tabs from "../components/account/Tabs";
 import { connect } from "react-redux";
 import Toast from "react-native-toast-message";
 import { preparePostView } from "../constants/reusableFunctions";
@@ -17,6 +17,7 @@ const User = ({ route, navigation, chatrooms }) => {
   const [upcomingEvent, setUpcomingEvent] = useState(null);
   const [follows, setFollows] = useState(false);
   const [followerNumber, setFollowerNumber] = useState(null);
+  const [songs, setSongs] = useState([]);
   const translation = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -40,6 +41,12 @@ const User = ({ route, navigation, chatrooms }) => {
         setFollowerNumber(resp.user.followers_count);
         if (resp.user.upcoming_event) {
           setUpcomingEvent(resp.user.upcoming_event);
+        }
+        if (resp.user.posts.length) {
+          let songPosts = resp.user.posts.filter((post) => post.song_name);
+          if (songPosts.length) {
+            setSongs(songPosts);
+          }
         }
         Animated.timing(translation, {
           toValue: 1,
@@ -66,7 +73,7 @@ const User = ({ route, navigation, chatrooms }) => {
     }
   };
 
-  const toSongScreen = (song) => {
+  const toSongPage = (song) => {
     navigation.navigate("Song", { id: song.song_id });
   };
 
@@ -129,15 +136,13 @@ const User = ({ route, navigation, chatrooms }) => {
             instruments={theUser.instruments}
             genres={theUser.genres}
           />
-          {theUser.posts.length || theUser.applauds.length ? (
-            <UserTabs
-              account={theUser}
-              toPostView={toPostView}
-              toSongScreen={toSongScreen}
-              origin={"user"}
-              applauds={theUser.applauds}
-            />
-          ) : null}
+          <Tabs
+            account={theUser}
+            toPostView={toPostView}
+            toSongScreen={toSongPage}
+            origin="user"
+            applauds={theUser.applauds}
+          />
         </ScrollView>
       ) : null}
     </Animated.View>

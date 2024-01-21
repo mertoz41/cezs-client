@@ -6,7 +6,7 @@ const { width } = Dimensions.get("window");
 const Thumbnail = ({ item, toPostView }) => {
   return (
     <TouchableOpacity
-      onPress={() => toPostView(item, "posts")}
+      onPress={() => toPostView(item)}
       key={item.id}
       style={{ height: width / 3, width: width / 3, justifyContent: "center" }}
     >

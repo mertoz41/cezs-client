@@ -7,7 +7,7 @@ import {
   MaterialIcons,
 } from "@expo/vector-icons";
 import SongsList from "./songslist";
-import ThumbnailPosts from "./thumbnailposts";
+import VideoContainer from "../reusables/VideoContainer";
 import { responsiveSizes } from "../../constants/reusableFunctions";
 const initialLayout = { width: Dimensions.get("window").width };
 const { height } = Dimensions.get("window");
@@ -93,7 +93,7 @@ const Tabs = ({ toPostView, account, origin, toSongScreen, applauds }) => {
     switch (route.key) {
       case "posts":
         return (
-          <ThumbnailPosts
+          <VideoContainer
             posts={account.posts}
             display="posts"
             toPostView={toPostView}
@@ -106,7 +106,7 @@ const Tabs = ({ toPostView, account, origin, toSongScreen, applauds }) => {
         );
       case "applauds":
         return (
-          <ThumbnailPosts
+          <VideoContainer
             posts={applauds}
             display="applauds"
             toPostView={toPostView}

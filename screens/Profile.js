@@ -10,19 +10,6 @@ import ProfileHeader from "../components/profile/ProfileHeader";
 import { preparePostView } from "../constants/reusableFunctions";
 
 const Profile = ({ currentUser, navigation }) => {
-  const toMusicPage = (item) => {
-    let contentType = item.album_name
-      ? "Song"
-      : item.artist_name
-      ? "Album"
-      : "Artist";
-    navigation.navigate(contentType, {
-      name: item.name,
-      id: item.id,
-      spotify_id: item.spotify_id,
-    });
-  };
-
   const toFollow = (type) => {
     if (type == "following") {
       navigation.navigate("Follow", {
@@ -38,7 +25,7 @@ const Profile = ({ currentUser, navigation }) => {
       });
     }
   };
-  const toSongScreen = (song) => {
+  const toSongPage = (song) => {
     navigation.navigate("Song", { id: song.song_id });
   };
 
@@ -50,10 +37,16 @@ const Profile = ({ currentUser, navigation }) => {
     navigation.navigate("Band", band);
   };
 
-  const toPostView = (item, posts) => {
-    let obj = preparePostView(item, posts, currentUser.username);
+  const toPostView = (item) => {
+    let obj = preparePostView(item, currentUser.posts, currentUser.username);
     navigation.navigate("Posts", obj);
   };
+
+  const routes = [
+    { key: "posts", title: "posts" },
+    { key: "songs", title: "songs" },
+    { key: "applauds", title: "applauds" },
+  ];
   return (
     <View style={styles.container}>
       <ProfileHeader account={currentUser} navigateEdit={toSettingsScreen} />
@@ -98,15 +91,13 @@ const Profile = ({ currentUser, navigation }) => {
           bands={currentUser.bands}
           theUser={currentUser}
         />
-        {currentUser.posts.length || currentUser.applauds.length ? (
-          <Tabs
-            account={currentUser}
-            toPostView={toPostView}
-            toSongScreen={toSongScreen}
-            origin="user"
-            applauds={currentUser.applauds}
-          />
-        ) : null}
+        <Tabs
+          account={currentUser}
+          toPostView={toPostView}
+          toSongScreen={toSongPage}
+          origin="user"
+          applauds={currentUser.applauds}
+        />
       </ScrollView>
     </View>
   );

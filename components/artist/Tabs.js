@@ -1,15 +1,14 @@
 import React, { useState } from "react";
 import { Text, Dimensions } from "react-native";
-import VideoContainer from "./MusicContent";
 import SongsList from "../account/songslist";
 import { TabView, TabBar } from "react-native-tab-view";
 import { responsiveSizes } from "../../constants/reusableFunctions";
 import { Entypo, MaterialIcons } from "@expo/vector-icons";
-
+import VideoContainer from "../reusables/VideoContainer";
 const { height, width } = Dimensions.get("window");
 const initialLayout = { width: width };
 
-const Tabs = ({ posts, toSongPage, toPostView, songs, routes }) => {
+const Tabs = ({ posts, toSongPage, toPostView, songs, routes, loading }) => {
   const [index, setIndex] = useState(0);
   const renderTabBar = (props) => (
     <TabBar
@@ -43,14 +42,6 @@ const Tabs = ({ posts, toSongPage, toPostView, songs, routes }) => {
               color={focused ? "#9370DB" : "gray"}
             />
           );
-        } else if (route.key === "covers") {
-          return (
-            <Entypo
-              name="note"
-              size={responsiveSizes[height].backwardIcon}
-              color={focused ? "#9370DB" : "gray"}
-            />
-          );
         }
       }}
       renderLabel={({ route, focused }) => (
@@ -66,10 +57,17 @@ const Tabs = ({ posts, toSongPage, toPostView, songs, routes }) => {
       )}
     />
   );
+
   const renderScene = ({ route }) => {
     switch (route.key) {
       case "posts":
-        return <VideoContainer accountPosts={posts} toPostView={toPostView} />;
+        return (
+          <VideoContainer
+            posts={posts}
+            toPostView={toPostView}
+            loading={loading}
+          />
+        );
       case "songs":
         return <SongsList toSongPage={toSongPage} lists={songs} />;
       default:

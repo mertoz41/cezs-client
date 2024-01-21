@@ -7,10 +7,7 @@ import Header from "../components/reusables/MusicHeader";
 import { connect } from "react-redux";
 import Toast from "react-native-toast-message";
 import Tabs from "../components/artist/Tabs";
-import {
-  preparePostView,
-  responsiveSizes,
-} from "../constants/reusableFunctions";
+import { preparePostView } from "../constants/reusableFunctions";
 import Filters from "../components/music/Filters";
 
 const Artist = ({ route, navigation, currentUser }) => {
@@ -97,6 +94,7 @@ const Artist = ({ route, navigation, currentUser }) => {
       />
       {allPosts.length || songs.length ? (
         <Tabs
+          loading={loading}
           posts={allPosts}
           toSongPage={toSongPage}
           songs={songs}

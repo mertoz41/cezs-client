@@ -2,13 +2,14 @@ import React, { useEffect, useState } from "react";
 import { View, StyleSheet, ActivityIndicator } from "react-native";
 import { API_ROOT } from "../constants/index";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import MusicContent from "../components/artist/MusicContent";
+// import MusicContent from "../components/artist/MusicContent";
 import { connect } from "react-redux";
 import MusicHeader from "../components/reusables/MusicHeader";
 import MusicCard from "../components/reusables/MusicCard";
 import Toast from "react-native-toast-message";
 import Filters from "../components/music/Filters";
 import { preparePostView } from "../constants/reusableFunctions";
+import VideoContainer from "../components/reusables/VideoContainer";
 const Song = ({ route, navigation, currentUser }) => {
   const [theSong, setTheSong] = useState(null);
   const [posts, setPosts] = useState([]);
@@ -71,11 +72,7 @@ const Song = ({ route, navigation, currentUser }) => {
         content={theSong}
         setPosts={setPosts}
       />
-      <MusicContent
-        loading={loading}
-        accountPosts={posts}
-        toPostView={toPostView}
-      />
+      <VideoContainer posts={posts} toPostView={toPostView} loading={loading}/>
     </View>
   );
 };
