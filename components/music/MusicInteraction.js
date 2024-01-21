@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, TouchableOpacity, Text, Modal, Dimensions } from "react-native";
 import store from "../../redux/store";
 import { API_ROOT } from "../../constants";
@@ -15,24 +15,20 @@ const { height } = Dimensions.get("window");
 const MusicInteractions = ({
   currentUser,
   content,
-  follows,
-  setFollows,
   favoriteItems,
   title,
   setTheItem,
-  setUsersFavorite,
-  usersFavorite,
-  accountPosts,
 }) => {
   const [modalVisible, setModalVisible] = useState(false);
-
+  // useEffect(() => {console.log(content)}, [content]);
+  // CONTENT HAS follows and user_favorite
   const unfollow = async (item) => {
     let updatedItem = {
       ...item,
       followingusers_count: item.followingusers_count - 1,
+      follows: false,
     };
     setTheItem(updatedItem);
-    setFollows(false);
     let token = await AsyncStorage.getItem("jwt");
     fetch(`http://${API_ROOT}/${title}unfollow/${item.id}`, {
       method: "DELETE",
@@ -44,23 +40,23 @@ const MusicInteractions = ({
       .then((resp) => resp.json())
       .then((resp) => {
         updateCurrentUser("unfollow");
-        removePostsFromTimeline(`${title}_id`, content.id);
+        // removePostsFromTimeline(`${title}_id`, content.id);
       })
       .catch((err) => {
         let updatedItem = {
           ...item,
           followingusers_count: item.followingusers_count + 1,
+          follows: true,
         };
         setTheItem(updatedItem);
-        setFollows(true);
         Toast.show({ type: "error", text1: err.message });
       });
   };
   const follow = async (item) => {
-    setFollows(true);
     let newItem = {
       ...item,
       followingusers_count: item.followingusers_count + 1,
+      follows: true,
     };
     setTheItem(newItem);
     let token = await AsyncStorage.getItem("jwt");
@@ -76,13 +72,13 @@ const MusicInteractions = ({
       .then((resp) => resp.json())
       .then((resp) => {
         updateCurrentUser("follow");
-        addPostsToTimeline(accountPosts.slice(0, 3));
+        // addPostsToTimeline(accountPosts.slice(0, 3));
       })
       .catch((err) => {
-        setFollows(false);
         let newItem = {
           ...item,
           followingusers_count: item.followingusers_count - 1,
+          follows: false,
         };
         setTheItem(newItem);
         Toast.show({ type: "error", text1: err.message });
@@ -137,13 +133,6 @@ const MusicInteractions = ({
     });
   };
 
-  // const checkFavorite = (item) => {
-  //   let found = favoriteItems.find((itm) => itm.id == item?.id);
-  //   if (found) {
-  //     return true;
-  //   }
-  //   return false;
-  // };
   const favorite = async (item) => {
     if (favoriteItems.length === 5) {
       setModalVisible(true);
@@ -151,9 +140,9 @@ const MusicInteractions = ({
       let updatedItem = {
         ...item,
         favoriteusers_count: item.favoriteusers_count + 1,
+        user_favorite: true,
       };
       setTheItem(updatedItem);
-      setUsersFavorite(true);
       let token = await AsyncStorage.getItem("jwt");
 
       let favObj = properFields(item);
@@ -178,9 +167,9 @@ const MusicInteractions = ({
           let fixItem = {
             ...item,
             favoriteusers_count: item.favoriteusers_count - 1,
+            user_favorite: false,
           };
           setTheItem(fixItem);
-          setUsersFavorite(false);
           Toast.show({ type: "error", text1: err.message });
         });
     }
@@ -211,9 +200,9 @@ const MusicInteractions = ({
     let updatedItem = {
       ...item,
       favoriteusers_count: item.favoriteusers_count - 1,
+      user_favorite: false,
     };
     setTheItem(updatedItem);
-    setUsersFavorite(false);
     let token = await AsyncStorage.getItem("jwt");
     let unFavoriteObj;
     switch (title) {
@@ -224,8 +213,8 @@ const MusicInteractions = ({
         unFavoriteObj = { artist_id: item.id };
         break;
     }
-    fetch(`http://${API_ROOT}/deleteuser${title}`, {
-      method: "POST",
+    fetch(`http://${API_ROOT}/user${title}s/${content.id}`, {
+      method: "DELETE",
       headers: {
         "Content-type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -240,9 +229,9 @@ const MusicInteractions = ({
         let updatedItem = {
           ...item,
           favoriteusers_count: item.favoriteusers_count + 1,
+          user_favorite: true,
         };
         setTheItem(updatedItem);
-        setUsersFavorite(true);
         Toast.show({ type: "error", text1: err.message });
       });
   };
@@ -271,19 +260,15 @@ const MusicInteractions = ({
         let updatedItem = {
           ...resp[title],
           favoriteusers_count: content.favoriteusers_count + 1,
+          user_favorite: true,
         };
-        setUsersFavorite(true);
         setTheItem(updatedItem);
       })
       .catch((err) => Toast.show({ type: "error", text1: err.message }));
   };
-  return (
-    <View
-      style={{
-        display: "flex",
-        flexDirection: "row",
-      }}
-    >
+
+  const renderModal = () => {
+    return (
       <Modal
         animationType="fade"
         transparent={true}
@@ -347,35 +332,88 @@ const MusicInteractions = ({
           </TouchableOpacity>
         </View>
       </Modal>
+    );
+  };
+  const renderSkeleton = () => {
+    return (
+      <View
+        style={{ backgroundColor: "rgba(147,112,219, .3)", borderRadius: 10 }}
+      >
+        <Text
+          style={{
+            fontSize: responsiveSizes[height].sliderItemFontSize,
+            color: "transparent",
+            textAlign: "center",
+            padding: 5,
+          }}
+        >
+          follow
+        </Text>
+      </View>
+    );
+  };
+  const renderFollowButton = () => {
+    return content ? (
       <TouchableOpacity
-        onPress={() => (follows ? unfollow(content) : follow(content))}
+        onPress={() => (content.follows ? unfollow(content) : follow(content))}
       >
         <Text
           style={{
             fontSize: responsiveSizes[height].sliderItemFontSize,
             color: "white",
             borderWidth: responsiveSizes[height].borderWidth,
-            borderColor: follows ? "#9370DB" : "gray",
+            borderColor: content.follows ? "#9370DB" : "gray",
             borderRadius: 10,
             textAlign: "center",
             padding: 5,
           }}
         >
-          {follows ? "following" : "follow"}
+          {content.follows ? "following" : "follow"}
         </Text>
       </TouchableOpacity>
+    ) : (
+      renderSkeleton()
+    );
+  };
+  const renderFavButton = () => {
+    return content ? (
       <TouchableOpacity
         style={{ alignSelf: "center", marginLeft: 5 }}
         onPress={() =>
-          usersFavorite ? unfavorite(content) : favorite(content)
+          content.user_favorite ? unfavorite(content) : favorite(content)
         }
       >
         <MaterialIcons
-          name={`favorite${usersFavorite ? "" : "-outline"}`}
+          name={`favorite${content.user_favorite ? "" : "-outline"}`}
           size={responsiveSizes[height].favoriteIcon}
           color="red"
         />
       </TouchableOpacity>
+    ) : (
+      renderFavSkeleton()
+    );
+  };
+  const renderFavSkeleton = () => {
+    return (
+      <View style={{ alignSelf: "center", marginLeft: 5 }}>
+        <MaterialIcons
+          name={`favorite`}
+          size={responsiveSizes[height].favoriteIcon}
+          color="rgba(147,112,219, .3)"
+        />
+      </View>
+    );
+  };
+  return (
+    <View
+      style={{
+        display: "flex",
+        flexDirection: "row",
+      }}
+    >
+      {renderModal()}
+      {renderFollowButton()}
+      {renderFavButton()}
     </View>
   );
 };

@@ -11,10 +11,40 @@ import { responsiveSizes } from "../../constants/reusableFunctions";
 const { height } = Dimensions.get("window");
 const MusicCard = ({ content, toFollowers }) => {
   useEffect(() => {
-    setViewCount(content.view_count);
-  }, []);
+    setViewCount(content?.view_count);
+  }, [content]);
   const [viewCount, setViewCount] = useState(0);
-
+  const renderSkeleton = () => {
+    return (
+      <View>
+        <Text
+          style={{
+            textAlign: "center",
+            fontSize: responsiveSizes[height].sliderItemFontSize,
+            paddingRight: 5,
+            width: "30%",
+            fontWeight: "bold",
+            alignSelf: "center",
+            backgroundColor: "rgba(147,112,219, .3)",
+            color: "transparent",
+          }}
+        >
+          0
+        </Text>
+        <Text
+          style={{
+            textAlign: "center",
+            fontSize: responsiveSizes[height].sliderItemFontSize,
+            color: "transparent",
+            backgroundColor: "rgba(147,112,219, .3)",
+            marginTop: 4,
+          }}
+        >
+          followers
+        </Text>
+      </View>
+    );
+  };
   const renderStats = () => {
     return (
       <View style={styles.bubble}>
@@ -37,6 +67,7 @@ const MusicCard = ({ content, toFollowers }) => {
             {content?.posts && content.posts.length == 1 ? "post" : "posts"}
           </Text>
         </TouchableOpacity>
+
         <TouchableOpacity
           style={styles.numbers}
           onPress={
@@ -70,7 +101,22 @@ const MusicCard = ({ content, toFollowers }) => {
       </View>
     );
   };
-  return <View style={styles.container}>{renderStats()}</View>;
+
+  const renderSkeletonContainer = () => {
+    return (
+      <View style={styles.bubble}>
+        {renderSkeleton()}
+        {renderSkeleton()}
+        {renderSkeleton()}
+        {renderSkeleton()}
+      </View>
+    );
+  };
+  return (
+    <View style={styles.container}>
+      {content ? renderStats() : renderSkeletonContainer()}
+    </View>
+  );
 };
 const styles = StyleSheet.create({
   container: {

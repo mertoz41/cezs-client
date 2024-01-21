@@ -14,8 +14,6 @@ const Song = ({ route, navigation, currentUser }) => {
   const [posts, setPosts] = useState([]);
   const [allPosts, setAllPosts] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [follows, setFollows] = useState(false);
-  const [usersFavorite, setUsersFavorite] = useState(false);
 
   useEffect(() => {
     setLoading(true);
@@ -34,8 +32,6 @@ const Song = ({ route, navigation, currentUser }) => {
       .then((resp) => resp.json())
       .then((resp) => {
         let searchedSong = resp.song;
-        setFollows(resp.follows);
-        setUsersFavorite(resp.user_favorites);
         let sorted = resp.posts.sort((a, b) => {
           return new Date(b.created_at) - new Date(a.created_at);
         });
@@ -64,36 +60,22 @@ const Song = ({ route, navigation, currentUser }) => {
   };
   return (
     <View style={styles.container}>
-      {loading ? (
-        <ActivityIndicator
-          color="gray"
-          size="large"
-          style={{ marginTop: 10 }}
-        />
-      ) : null}
       <MusicHeader item={theSong} goBack={goBack} navigate={navigation} />
-      {theSong ? (
-        <View style={{ flex: 1 }}>
-          <MusicCard
-            usage="tracks"
-            content={theSong}
-            toFollowers={toSongFollowers}
-          />
-          <Filters
-            accountPosts={allPosts}
-            title={"song"}
-            follows={follows}
-            setUsersFavorite={setUsersFavorite}
-            usersFavorite={usersFavorite}
-            setTheItem={setTheSong}
-            favoriteItems={currentUser.favoritesongs}
-            content={theSong}
-            setFollows={setFollows}
-            setPosts={setPosts}
-          />
-          <MusicContent accountPosts={posts} toPostView={toPostView} />
-        </View>
-      ) : null}
+      <MusicCard content={theSong} toFollowers={toSongFollowers} />
+      <Filters
+        loading={loading}
+        accountPosts={allPosts}
+        title={"song"}
+        setTheItem={setTheSong}
+        favoriteItems={currentUser.favoritesongs}
+        content={theSong}
+        setPosts={setPosts}
+      />
+      <MusicContent
+        loading={loading}
+        accountPosts={posts}
+        toPostView={toPostView}
+      />
     </View>
   );
 };

@@ -6,6 +6,63 @@ import { responsiveSizes } from "../../constants/reusableFunctions";
 const { height } = Dimensions.get("window");
 
 const MusicHeader = ({ item, goBack, navigate }) => {
+  const renderSkeleton = () => {
+    return (
+      <View
+        style={{
+          display: "flex",
+          flex: 1,
+          justifyContent: "flex-end",
+          alignSelf: "flex-end",
+          marginRight: 5,
+        }}
+      >
+        <View style={{ zIndex: 0 }}>
+          <View
+            style={{
+              height: 22,
+              width: 170,
+              backgroundColor: "rgba(147,112,219, .3)",
+              alignSelf: "flex-end",
+              position: "absolute",
+            }}
+          />
+          <View
+            style={{
+              height: 13,
+              width: 100,
+              bottom: 0,
+              backgroundColor: "rgba(147,112,219, .3)",
+
+              alignSelf: "flex-end",
+              position: "absolute",
+            }}
+          />
+          <Text
+            style={{
+              textAlign: "right",
+              color: "transparent",
+              fontSize: responsiveSizes[height].postItemSongFont,
+            }}
+          >
+            song name
+          </Text>
+          <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
+            <Text
+              style={{
+                textAlign: "right",
+                color: "transparent",
+                fontSize: responsiveSizes[height].postItemArtistFont,
+                alignSelf: "flex-end",
+              }}
+            >
+              artist name goes here
+            </Text>
+          </View>
+        </View>
+      </View>
+    );
+  };
   return (
     <View
       style={{
@@ -78,7 +135,9 @@ const MusicHeader = ({ item, goBack, navigate }) => {
               </View>
             ) : null}
           </View>
-        ) : null}
+        ) : (
+          renderSkeleton()
+        )}
       </View>
     </View>
   );
