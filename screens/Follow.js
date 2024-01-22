@@ -10,13 +10,11 @@ import {
 } from "react-native";
 import { ListItem } from "react-native-elements";
 import Avatar from "../components/reusables/Avatar";
-import store from "../redux/store";
 import Toast from "react-native-toast-message";
 import { API_ROOT } from "../constants/index";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { connect } from "react-redux";
 import Header from "../components/reusables/Header";
-import { reusableStyles } from "../themes";
 import { responsiveSizes } from "../constants/reusableFunctions";
 const { height } = Dimensions.get("window");
 const Follow = ({ route, navigation, currentUser }) => {
@@ -26,7 +24,6 @@ const Follow = ({ route, navigation, currentUser }) => {
   const [bands, setBands] = useState([]);
   const [songs, setSongs] = useState([]);
   const [followers, setFollowers] = useState([]);
-  const [displaying, setDisplaying] = useState([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -140,17 +137,29 @@ const Follow = ({ route, navigation, currentUser }) => {
     navigation.navigate("Song", song);
   };
 
-  const renderItem = (avatar, item, action) => {
+  const renderItem = (acct, i) => {
+    const action = (item) => {
+      if (item.song_count) {
+        toArtistPage(item);
+      } else if (item.artist_id) {
+        toSongPage(item);
+      } else if (item.username) {
+        toUserPage(item);
+      } else {
+        toBandScreen(item);
+      }
+    };
+
     return (
       <ListItem
-        key={item.id}
+        key={i}
         bottomDivider
         containerStyle={{ backgroundColor: "transparent" }}
-        onPress={() => action(item)}
+        onPress={() => action(acct)}
       >
-        {avatar ? (
+        {acct.avatar || acct.picture ? (
           <Avatar
-            avatar={avatar}
+            avatar={acct.avatar || acct.picture}
             withRadius={true}
             size={responsiveSizes[height].newEventAvatarSize}
           />
@@ -210,68 +219,47 @@ const Follow = ({ route, navigation, currentUser }) => {
     ) : null;
   };
 
+  const renderFollowers = () => {
+    return (
+      <ScrollView>
+        {followers.length ? followers.map((user) => renderItem(user)) : null}
+      </ScrollView>
+    );
+  };
+
+  const renderAllFollowed = () => {
+    const allAccounts = [...users, ...bands, ...artists, ...songs];
+    return <View>{allAccounts.map((acct) => renderItem(acct))}</View>;
+  };
+
+  const renderFollowedAccounts = () => {
+    return (
+      <ScrollView>
+        {followType == "all" ? renderAllFollowed() : null}
+        {users && users.length && followType == "users"
+          ? users.map((user, index) => renderItem(user, index))
+          : null}
+        {bands && bands.length && followType == "bands"
+          ? bands.map((band, index) => renderItem(band, index))
+          : null}
+        {artists && artists.length && followType == "artists"
+          ? artists.map((artis, index) => renderItem(artis, index))
+          : null}
+        {songs && songs.length && followType == "songs"
+          ? songs.map((song, i) => renderItem(song, index))
+          : null}
+      </ScrollView>
+    );
+  };
+
   return (
     <View style={styles.container}>
       <Header title={route.params.type} goBack={backTo} />
       {renderOptions()}
 
-      {route.params.type == "followers" || route.params.type == "favorites" ? (
-        <ScrollView>
-          {followers.length
-            ? followers.map((user) => renderItem(user.avatar, user, toUserPage))
-            : null}
-        </ScrollView>
-      ) : (
-        <ScrollView>
-          {followType == "all" ? (
-            <View>
-              {users.length
-                ? users.map((user) => renderItem(user.avatar, user, toUserPage))
-                : null}
-              {bands.length
-                ? bands.map((band, index) =>
-                    renderItem(band.picture, band, toBandScreen)
-                  )
-                : null}
-
-              {artists.length
-                ? artists.map((artis, index) =>
-                    renderItem(null, artis, toArtistPage)
-                  )
-                : null}
-              {songs.length
-                ? songs.map((song, i) => renderItem(null, song, toSongPage))
-                : null}
-            </View>
-          ) : null}
-
-          {users && users.length && followType == "users" ? (
-            <View>
-              {users.map((user) => renderItem(user.avatar, user, toUserPage))}
-            </View>
-          ) : null}
-          {bands && bands.length && followType == "bands" ? (
-            <View>
-              {bands.map((band, index) =>
-                renderItem(band.picture, band, toBandScreen)
-              )}
-            </View>
-          ) : null}
-          {artists && artists.length && followType == "artists" ? (
-            <View>
-              {artists.map((artis, index) =>
-                renderItem(null, artis, toArtistPage)
-              )}
-            </View>
-          ) : null}
-
-          {songs && songs.length && followType == "songs" ? (
-            <View>
-              {songs.map((song, i) => renderItem(null, song, toSongPage))}
-            </View>
-          ) : null}
-        </ScrollView>
-      )}
+      {route.params.type == "followers" || route.params.type == "favorites"
+        ? renderFollowers()
+        : renderFollowedAccounts()}
     </View>
   );
 };

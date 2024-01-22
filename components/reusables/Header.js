@@ -9,13 +9,10 @@ import {
 import { FontAwesome5 } from "@expo/vector-icons";
 import { responsiveSizes } from "../../constants/reusableFunctions";
 const { height } = Dimensions.get("window");
-const EditHeader = ({
+const Header = ({
   title,
-  actionLabel,
-  action,
-  displayAction,
+
   goBack,
-  loading,
 }) => {
   return (
     <View
@@ -34,20 +31,6 @@ const EditHeader = ({
           marginHorizontal: 10,
         }}
       >
-        <View style={{ display: "flex", flexDirection: "row", flex: 2 }}>
-          {loading ? null : (
-            <TouchableOpacity
-              style={{ alignSelf: "flex-end" }}
-              onPress={() => goBack()}
-            >
-              <FontAwesome5
-                name="backward"
-                size={responsiveSizes[height].backwardIcon}
-                color="gray"
-              />
-            </TouchableOpacity>
-          )}
-        </View>
         <View style={{ display: "flex", flex: 4, justifyContent: "flex-end" }}>
           <Text
             style={{
@@ -60,38 +43,8 @@ const EditHeader = ({
             {title}
           </Text>
         </View>
-        <View style={{ display: "flex", flex: 2, justifyContent: "center" }}>
-          {displayAction &&
-            (loading ? (
-              <ActivityIndicator
-                style={{ alignSelf: "flex-end", marginRight: 10 }}
-                color="gray"
-                size="small"
-              />
-            ) : (
-              <TouchableOpacity
-                style={{
-                  borderWidth: responsiveSizes[height].borderWidth,
-                  borderColor: "#9370DB",
-                  borderRadius: 10,
-                  alignSelf: "flex-end",
-                }}
-                onPress={() => action()}
-              >
-                <Text
-                  style={{
-                    fontSize: responsiveSizes[height].sliderItemFontSize,
-                    color: "white",
-                    padding: 5,
-                  }}
-                >
-                  {actionLabel}
-                </Text>
-              </TouchableOpacity>
-            ))}
-        </View>
       </View>
     </View>
   );
 };
-export default EditHeader;
+export default Header;

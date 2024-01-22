@@ -16,7 +16,7 @@ import {
   preparePostView,
   responsiveSizes,
 } from "../../constants/reusableFunctions";
-const MusiciansFilter = ({
+const SelectedLocation = ({
   selectedMarker,
   toUserPage,
   toBandPage,
@@ -380,4 +380,4 @@ const mapStateToProps = (state) => ({
   markerPosts: state.markerPosts,
   currentUser: state.currentUser,
 });
-export default connect(mapStateToProps)(MusiciansFilter);
+export default connect(mapStateToProps)(SelectedLocation);

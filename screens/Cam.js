@@ -152,6 +152,86 @@ const Cam = ({ navigation }) => {
   const stopRecording = () => {
     cameraRef.current.stopRecording();
   };
+  const renderBottomButtons = () => {
+    return (
+      <View style={styles.section}>
+        <View
+          style={{
+            overflow: "hidden",
+            borderRadius: 10,
+            marginBottom: 20,
+          }}
+        >
+          <BlurView intensity={40} tint="dark" style={styles.bottom}>
+            <View style={styles.bottomButton}>
+              {recording ? null : loading ? (
+                <></>
+              ) : (
+                <TouchableOpacity onPress={() => openCameraRoll()}>
+                  <FontAwesome name="folder-open-o" size={34} color="white" />
+                </TouchableOpacity>
+              )}
+            </View>
+            <View style={styles.bottomButton}>
+              <TouchableOpacity onPress={() => recordVid()}>
+                {recording ? (
+                  <Entypo name="controller-stop" size={64} color="#9370DB" />
+                ) : loading ? (
+                  <></>
+                ) : (
+                  <Entypo name="controller-record" size={64} color="red" />
+                )}
+              </TouchableOpacity>
+            </View>
+            {timerOn && timerSecond !== 0 ? (
+              recording ? null : (
+                <Text
+                  style={{
+                    position: "absolute",
+                    right: 82,
+                    top: 20,
+                    zIndex: 10,
+                    fontSize: 33,
+                    color: "#9370DB",
+                  }}
+                >
+                  {timerDisplay}
+                </Text>
+              )
+            ) : null}
+
+            <View style={styles.bottomButton}>
+              {recording || loading ? null : (
+                <Tooltip
+                  popover={displayTimerOptions()}
+                  highlightColor="transparent"
+                  pointerColor="white"
+                  height={90}
+                  backgroundColor="white"
+                  closeOnlyOnBackdropPress={false}
+                  ref={tooltipRef}
+                >
+                  {timerOn ? (
+                    <MaterialCommunityIcons
+                      name="timer-outline"
+                      size={38}
+                      color="white"
+                    />
+                  ) : (
+                    <MaterialCommunityIcons
+                      name="timer-off-outline"
+                      size={38}
+                      color="white"
+                    />
+                  )}
+                </Tooltip>
+              )}
+            </View>
+          </BlurView>
+        </View>
+      </View>
+    );
+  };
   return (
     <View style={styles.container}>
       {recording || loading ? null : (
@@ -167,90 +247,7 @@ const Cam = ({ navigation }) => {
           <View style={styles.section}>
             <View style={styles.top}></View>
           </View>
-          <View style={styles.section}>
-            <View
-              style={{
-                overflow: "hidden",
-                borderRadius: 10,
-                marginBottom: 20,
-              }}
-            >
-              <BlurView intensity={40} tint="dark" style={styles.bottom}>
-                <View style={styles.bottomButton}>
-                  {recording ? null : loading ? (
-                    <></>
-                  ) : (
-                    <TouchableOpacity onPress={() => openCameraRoll()}>
-                      <FontAwesome
-                        name="folder-open-o"
-                        size={34}
-                        color="white"
-                      />
-                    </TouchableOpacity>
-                  )}
-                </View>
-                <View style={styles.bottomButton}>
-                  <TouchableOpacity onPress={() => recordVid()}>
-                    {recording ? (
-                      <Entypo
-                        name="controller-stop"
-                        size={64}
-                        color="#9370DB"
-                      />
-                    ) : loading ? (
-                      <></>
-                    ) : (
-                      <Entypo name="controller-record" size={64} color="red" />
-                    )}
-                  </TouchableOpacity>
-                </View>
-                {timerOn && timerSecond !== 0 ? (
-                  recording ? null : (
-                    <Text
-                      style={{
-                        position: "absolute",
-                        right: 82,
-                        top: 20,
-                        zIndex: 10,
-                        fontSize: 33,
-                        color: "#9370DB",
-                      }}
-                    >
-                      {timerDisplay}
-                    </Text>
-                  )
-                ) : null}
-
-                <View style={styles.bottomButton}>
-                  {recording || loading ? null : (
-                    <Tooltip
-                      popover={displayTimerOptions()}
-                      highlightColor="transparent"
-                      pointerColor="white"
-                      height={90}
-                      backgroundColor="white"
-                      closeOnlyOnBackdropPress={false}
-                      ref={tooltipRef}
-                    >
-                      {timerOn ? (
-                        <MaterialCommunityIcons
-                          name="timer-outline"
-                          size={38}
-                          color="white"
-                        />
-                      ) : (
-                        <MaterialCommunityIcons
-                          name="timer-off-outline"
-                          size={38}
-                          color="white"
-                        />
-                      )}
-                    </Tooltip>
-                  )}
-                </View>
-              </BlurView>
-            </View>
-          </View>
+          {renderBottomButtons()}
         </View>
       </Camera>
     </View>

@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { ListItem } from "react-native-elements";
 import { getTiming, responsiveSizes } from "../constants/reusableFunctions";
 import { Feather } from "@expo/vector-icons";
-import EditHeader from "../components/reusables/Header";
+import ActionHeader from "../components/reusables/ActionHeader";
 import Avatar from "../components/reusables/Avatar";
 const { height } = Dimensions.get("window");
 const Messages = ({ navigation, currentUser, chatrooms }) => {
@@ -21,7 +21,7 @@ const Messages = ({ navigation, currentUser, chatrooms }) => {
   };
   return (
     <View style={styles.container}>
-      <EditHeader
+      <ActionHeader
         title="messages"
         goBack={navigation.goBack}
         actionLabel="new"

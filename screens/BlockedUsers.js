@@ -11,7 +11,7 @@ import {
 import { connect } from "react-redux";
 import { API_ROOT } from "../constants";
 import store from "../redux/store";
-import EditHeader from "../components/reusables/Header";
+import Header from "../components/reusables/Header";
 import Toast from "react-native-toast-message";
 
 const BlockedUsers = ({ currentUser, navigation }) => {
@@ -24,7 +24,7 @@ const BlockedUsers = ({ currentUser, navigation }) => {
     getBlockedAccounts();
   }, []);
 
-  getBlockedAccounts = async () => {
+  const getBlockedAccounts = async () => {
     let token = await AsyncStorage.getItem("jwt");
     fetch(`http://${API_ROOT}/userblocks`, {
       headers: {
@@ -41,7 +41,7 @@ const BlockedUsers = ({ currentUser, navigation }) => {
       .catch((err) => Toast.show({ type: "error", text1: err.message }));
   };
 
-  unblockAccount = async (account) => {
+  const unblockAccount = async (account) => {
     let token = await AsyncStorage.getItem("jwt");
     fetch(
       `http://${API_ROOT}/unblock${account.username ? "user" : "band"}/${
@@ -79,12 +79,73 @@ const BlockedUsers = ({ currentUser, navigation }) => {
       .catch((err) => Toast.show({ type: "error", text1: err.message }));
   };
 
-  goBack = () => {
+  const goBack = () => {
     navigation.goBack();
   };
+
+  const renderBlockedAccounts = (list) => {
+    return (
+      <View>
+        {list.map((acct, i) => (
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              margin: 10,
+              borderBottomWidth: 1,
+              borderBottomColor: "darkgray",
+              paddingBottom: 5,
+            }}
+            key={i}
+          >
+            <View style={{ flexDirection: "row" }}>
+              <Avatar
+                source={{ uri: acct.avatar ? acct.avatar : acct.picture }}
+                avatarStyle={{ borderRadius: 10 }}
+                size={"medium"}
+              />
+              <Text
+                style={{
+                  fontSize: 22,
+                  alignSelf: "center",
+                  marginLeft: 10,
+                  fontWeight: "600",
+                  color: "white",
+                }}
+              >
+                {acct.username ? acct.username : acct.name}
+              </Text>
+            </View>
+            <TouchableOpacity
+              style={{
+                borderColor: "#9370DB",
+                borderWidth: 1,
+                alignSelf: "center",
+                padding: 5,
+                borderRadius: 10,
+              }}
+              onPress={() => unblockAccount(acct)}
+            >
+              <Text
+                style={{
+                  fontSize: 20,
+                  alignSelf: "center",
+                  fontWeight: "600",
+                  color: "white",
+                }}
+              >
+                unblock
+              </Text>
+            </TouchableOpacity>
+          </View>
+        ))}
+      </View>
+    );
+  };
+
   return (
     <View style={styles.container}>
-      <EditHeader title="blocked accounts" goBack={goBack} />
+      <Header title="blocked accounts" goBack={goBack} />
       {loading ? (
         <ActivityIndicator
           color="gray"
@@ -92,116 +153,8 @@ const BlockedUsers = ({ currentUser, navigation }) => {
           style={{ marginTop: 10 }}
         />
       ) : null}
-      {users.length
-        ? users.map((usr, i) => (
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                margin: 10,
-                borderBottomWidth: 1,
-                borderBottomColor: "darkgray",
-                paddingBottom: 5,
-              }}
-              key={i}
-            >
-              <View style={{ flexDirection: "row" }}>
-                <Avatar
-                  source={{ uri: usr.avatar }}
-                  avatarStyle={{ borderRadius: 10 }}
-                  size={"medium"}
-                />
-                <Text
-                  style={{
-                    fontSize: 22,
-                    alignSelf: "center",
-                    marginLeft: 10,
-                    fontWeight: "600",
-                    color: "white",
-                  }}
-                >
-                  {usr.username}
-                </Text>
-              </View>
-              <TouchableOpacity
-                style={{
-                  borderColor: "#9370DB",
-                  borderWidth: 1,
-                  alignSelf: "center",
-                  padding: 5,
-                  borderRadius: 10,
-                }}
-                onPress={() => unblockAccount(usr)}
-              >
-                <Text
-                  style={{
-                    fontSize: 20,
-                    alignSelf: "center",
-                    fontWeight: "600",
-                    color: "white",
-                  }}
-                >
-                  unblock
-                </Text>
-              </TouchableOpacity>
-            </View>
-          ))
-        : null}
-      {bands.length
-        ? bands.map((band, i) => (
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                margin: 10,
-                borderBottomWidth: 1,
-                borderBottomColor: "darkgray",
-                paddingBottom: 5,
-              }}
-              key={i}
-            >
-              <View style={{ flexDirection: "row" }}>
-                <Avatar
-                  source={{ uri: band.picture }}
-                  avatarStyle={{ borderRadius: 10 }}
-                  size={"medium"}
-                />
-                <Text
-                  style={{
-                    fontSize: 22,
-                    alignSelf: "center",
-                    marginLeft: 10,
-                    fontWeight: "600",
-                    color: "white",
-                  }}
-                >
-                  {band.name}
-                </Text>
-              </View>
-              <TouchableOpacity
-                style={{
-                  borderColor: "#9370DB",
-                  alignSelf: "center",
-                  padding: 5,
-                  borderWidth: 1,
-                  borderRadius: 10,
-                }}
-                onPress={() => unblockAccount(band)}
-              >
-                <Text
-                  style={{
-                    fontSize: 20,
-                    alignSelf: "center",
-                    fontWeight: "600",
-                    color: "white",
-                  }}
-                >
-                  unblock
-                </Text>
-              </TouchableOpacity>
-            </View>
-          ))
-        : null}
+      {renderBlockedAccounts(users)}
+      {renderBlockedAccounts(bands)}
     </View>
   );
 };

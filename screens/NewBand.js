@@ -6,7 +6,7 @@ import axios from "axios";
 import store from "../redux/store";
 import { API_ROOT } from "../constants/index";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import EditHeader from "../components/reusables/Header";
+import ActionHeader from "../components/reusables/ActionHeader";
 import EditSection from "../components/useredit/EditSection";
 import SliderSection from "../components/useredit/SliderSection";
 import RenderAvatarSection from "../components/useredit/AvatarSection";
@@ -103,8 +103,7 @@ const NewBand = ({ navigation, currentUser }) => {
     if (name.length > 17) {
       Toast.show({
         type: "error",
-        text1: "Error",
-        text2: "Name must be less than 17 characters.",
+        text1: "Name must be less than 17 characters.",
       });
     } else {
       setCreateLoading(true);
@@ -185,7 +184,7 @@ const NewBand = ({ navigation, currentUser }) => {
   };
   return (
     <View style={styles.container}>
-      <EditHeader
+      <ActionHeader
         title="new band"
         displayAction={checkForm()}
         actionLabel="create"

@@ -15,7 +15,7 @@ import AvatarSection from "./AvatarSection";
 import EditSection from "./EditSection";
 import InstrumentEdit from "./InstrumentGenreEdit";
 import { responsiveSizes } from "../../constants/reusableFunctions";
-import EditHeader from "../reusables/Header";
+import ActionHeader from "../reusables/ActionHeader";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from "react-native-toast-message";
 import store from "../../redux/store";
@@ -48,11 +48,6 @@ const EditField = ({ currentUser, navigation }) => {
   const [removedInstruments, setRemovedInstruments] = useState([]);
   const [removedArtists, setRemovedArtists] = useState([]);
   const [removedSongs, setRemovedSongs] = useState([]);
-
-  //   useEffect(() => {
-  //     checkSaveButton();
-  //     // updateEditUser(currentUser);
-  //   });
 
   const updateEditUser = (user) => {
     setLocation(user.location?.city);
@@ -433,7 +428,7 @@ const EditField = ({ currentUser, navigation }) => {
   };
   return (
     <View>
-      <EditHeader
+      <ActionHeader
         title="settings"
         actionLabel="save"
         action={updateUser}

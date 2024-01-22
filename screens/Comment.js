@@ -14,7 +14,6 @@ import { FontAwesome5, Feather } from "@expo/vector-icons";
 import InputField from "../components/account/inputfield";
 import { getTiming } from "../constants/reusableFunctions";
 import { Avatar, ListItem } from "react-native-elements";
-import { reusableStyles } from "../themes";
 import Toast from "react-native-toast-message";
 import OptionsButton from "../components/reusables/OptionsButton";
 const Comment = ({ route, navigation, currentUser, timeline }) => {
@@ -27,7 +26,6 @@ const Comment = ({ route, navigation, currentUser, timeline }) => {
     setLoading(true);
     getComments(route.params.id);
   }, []);
-  const _MS_PER_DAY = 1000 * 60 * 60 * 24;
   const scrollViewRef = useRef();
 
   const getComments = async (id) => {
@@ -45,9 +43,6 @@ const Comment = ({ route, navigation, currentUser, timeline }) => {
         setLoading(false);
       })
       .catch((err) => Toast.show({ type: "error", text1: err.message }));
-  };
-  const backTo = () => {
-    navigation.goBack();
   };
 
   const deleteComment = async (comment) => {
@@ -303,17 +298,9 @@ const Comment = ({ route, navigation, currentUser, timeline }) => {
       </ListItem>
     );
   };
-  return (
-    <View style={styles.container}>
-      {renderHeader()}
-      {loading ? (
-        <ActivityIndicator
-          color="gray"
-          size="large"
-          style={{ marginTop: 10 }}
-        />
-      ) : null}
 
+  const renderList = () => {
+    return (
       <ScrollView
         style={styles.container}
         ref={scrollViewRef}
@@ -330,6 +317,20 @@ const Comment = ({ route, navigation, currentUser, timeline }) => {
             return renderApplauder(user);
           })}
       </ScrollView>
+    );
+  };
+  return (
+    <View style={styles.container}>
+      {renderHeader()}
+      {loading ? (
+        <ActivityIndicator
+          color="gray"
+          size="large"
+          style={{ marginTop: 10 }}
+        />
+      ) : null}
+      {renderList()}
+
       {displaying === "comments" && (
         <InputField
           focusing={commenting}

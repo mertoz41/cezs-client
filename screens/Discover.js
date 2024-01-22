@@ -7,7 +7,7 @@ import { API_ROOT } from "../constants/index";
 import { connect } from "react-redux";
 import store from "../redux/store";
 import EventFilters from "../components/discover/EventFilters";
-import MusiciansFilter from "../components/discover/MusiciansFilters";
+import SelectedLocation from "../components/discover/SelectedLocation";
 import NewEvent from "../components/events/NewEvent";
 import Event from "../components/discover/Event";
 import Toast from "react-native-toast-message";
@@ -277,7 +277,7 @@ const Discover = ({
     return (
       <>
         {!newEvent && selectedMarker && sectionDisplay !== "gigs" ? (
-          <MusiciansFilter
+          <SelectedLocation
             toUserPage={toUserPage}
             toBandPage={toBandPage}
             navigation={navigation}

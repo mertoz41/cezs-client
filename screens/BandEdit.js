@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   StyleSheet,
@@ -7,24 +7,19 @@ import {
   Keyboard,
   TouchableOpacity,
   Text,
-  Animated,
   Modal,
-  Dimensions,
 } from "react-native";
 import AvatarSection from "../components/useredit/AvatarSection";
 import EditSection from "../components/useredit/EditSection";
 import SliderSection from "../components/useredit/SliderSection";
 import { API_ROOT } from "../constants";
 import store from "../redux/store";
-import { FontAwesome5 } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as ImagePicker from "expo-image-picker";
 import axios from "axios";
 import Toast from "react-native-toast-message";
-import { HERE_API_KEY } from "@env";
+import ActionHeader from "../components/reusables/ActionHeader";
 import { connect } from "react-redux";
-import { responsiveSizes } from "../constants/reusableFunctions";
-const { height } = Dimensions.get("window");
 const BandEdit = ({ route, navigation, currentUser }) => {
   const [searchingMember, setSearchingMember] = useState("");
   const [memberResults, setMemberResults] = useState([]);
@@ -35,7 +30,7 @@ const BandEdit = ({ route, navigation, currentUser }) => {
   const [bandPic, setBandPic] = useState(route.params.picture);
   const [picDetails, setPicDetails] = useState(null);
   const [bandBio, setBandBio] = useState(route.params.bio);
-
+  const [loading, setLoading] = useState(false);
   const [selectedMembers, setSelectedMembers] = useState(route.params.members);
   const [newLocation, setNewLocation] = useState(null);
   const [removedMembers, setRemovedMembers] = useState([]);
@@ -92,7 +87,7 @@ const BandEdit = ({ route, navigation, currentUser }) => {
         showToast("success", "Avatar changed.");
       })
       .catch((err) => showToast("error", err.message));
-    setLoading(false);
+    // setLoading(false);
     // setPicDetails({
     //   uri: pickedPic.assets[0].uri,
     //   type: `${pickedPic.assets[0].type}/${fileEnding}`,
@@ -236,7 +231,7 @@ const BandEdit = ({ route, navigation, currentUser }) => {
         formData.append("removedGenres[]", mapped[i]);
       }
     }
-
+    setLoading(true);
     await axios
       .put(`http://${API_ROOT}/bands/${route.params.id}`, formData, {
         headers: {
@@ -268,116 +263,9 @@ const BandEdit = ({ route, navigation, currentUser }) => {
           });
           navigation.goBack();
         }
+        setLoading(false);
       })
       .catch((err) => Toast.show({ type: "error", text1: err.message }));
-  };
-
-  const renderHeader = () => {
-    const renderLeftSide = () => {
-      return (
-        <View
-          style={{
-            flex: 1,
-            justifyContent: "flex-end",
-          }}
-        >
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <FontAwesome5
-              name="backward"
-              size={responsiveSizes[height].backwardIcon}
-              color="gray"
-            />
-          </TouchableOpacity>
-        </View>
-      );
-    };
-
-    const renderMiddle = () => {
-      const titleSize = (title) => {
-        if (title.length >= 17) {
-          return 22;
-        } else {
-          return 30;
-        }
-      };
-      return (
-        <View
-          style={{ flex: 3, flexDirection: "row", justifyContent: "center" }}
-        >
-          <Text
-            style={{
-              fontSize: responsiveSizes[height].screenTitle,
-              color: "white",
-              alignSelf: "center",
-            }}
-          >
-            {bandName}
-          </Text>
-        </View>
-      );
-    };
-    const renderRightSide = () => {
-      return (
-        <View
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            flex: 1,
-            justifyContent: "flex-end",
-            alignSelf: "flex-end",
-          }}
-        >
-          {checkSaveButton() ? (
-            <TouchableOpacity
-              onPress={() => updateBand()}
-              style={{
-                paddingHorizontal: 5,
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "flex-end",
-              }}
-            >
-              <Text
-                style={{
-                  fontSize: responsiveSizes[height].sliderItemFontSize,
-                  color: "white",
-                  textAlign: "center",
-                  borderWidth: responsiveSizes[height].borderWidth,
-                  borderColor: "#9370DB",
-                  borderRadius: 10,
-                  padding: 3,
-                }}
-              >
-                save
-              </Text>
-            </TouchableOpacity>
-          ) : null}
-        </View>
-      );
-    };
-    return (
-      <View
-        style={{
-          height: 80,
-          display: "flex",
-          justifyContent: "flex-end",
-        }}
-      >
-        <View
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
-            marginHorizontal: 10,
-            paddingBottom: 5,
-          }}
-        >
-          {renderLeftSide()}
-          {renderMiddle()}
-          {renderRightSide()}
-        </View>
-      </View>
-    );
   };
 
   const checkNewMember = (members) => {
@@ -520,9 +408,21 @@ const BandEdit = ({ route, navigation, currentUser }) => {
       .catch((err) => console.log(err));
   };
 
+  const goBack = () => {
+    navigation.goBack();
+  };
+
   return (
     <View style={{ opacity: 1 }}>
-      {renderHeader()}
+      {/* {renderHeader()} */}
+      <ActionHeader
+        title={bandName}
+        actionLabel={"save"}
+        action={updateBand}
+        displayAction={checkSaveButton()}
+        goBack={goBack}
+        loading={loading}
+      />
       {renderModal(deleteModal, "band", deleteBand, route.params.id)}
 
       <KeyboardAvoidingView behavior="padding">
