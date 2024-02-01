@@ -5,6 +5,8 @@ Music app designed for instrumentalists, built with JavaScript, React Native, Ex
 App combines a music library with maps to connect users through music taste and geolocation to collaborate. 
 Allows users to create their portfolios as they contribute to the music library and pinpoint upcoming gigs on the map.
 
+Available in the <a href="https://apps.apple.com/us/app/cezs/id6450903389">App Store</a>.
+
 # Screenshots
 <img src="https://github.com/mertoz41/cezs-client/assets/61475669/c7500edc-fe18-463a-b72f-f0ff0b77b210" alt="discover screen" width="170"/>
 <img src="https://github.com/mertoz41/cezs-client/assets/61475669/39d1ea3c-5228-4202-bf53-76d71e852902" alt="search screen" width="170"/>
